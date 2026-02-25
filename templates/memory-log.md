@@ -31,6 +31,12 @@
   - 结果: {{HVR_1_DETAIL}}
   - 证据: `{{HVR_1_EVIDENCE}}`
 
+## 新功能开发记录
+- [{{FEATURE_DATE}}] 规划新功能: {{FEATURE_NAME}}
+  - 描述: {{FEATURE_DESC}}
+  - 步骤: {{FEATURE_STEP}}
+  - 影响文件: {{FEATURE_FILES}}
+
 ## 会话历史
 
 ### {{SESSION_1_ID}} ({{SESSION_1_DATE}})

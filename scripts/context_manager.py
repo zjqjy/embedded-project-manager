@@ -81,6 +81,46 @@ class ProjectContextManager:
         
         return result
     
+    def read_project_spec(self) -> Optional[Dict[str, Any]]:
+        """读取项目规格单"""
+        if not self.project_spec_path.exists():
+            return None
+        
+        content = self.project_spec_path.read_text(encoding="utf-8")
+        return self._parse_project_spec(content)
+    
+    def _parse_project_spec(self, content: str) -> Dict[str, Any]:
+        """解析项目规格单内容"""
+        result = {
+            "project_name": "",
+            "chip_model": "",
+            "dev_env": "",
+            "current_step": "",
+            "project_status": ""
+        }
+        
+        # 提取项目名
+        name_match = re.search(r'# 项目规格单：(.+)', content)
+        if name_match:
+            result["project_name"] = name_match.group(1).strip()
+        
+        # 提取芯片型号
+        chip_match = re.search(r'\*\*芯片型号\*\*: (.+)', content)
+        if chip_match:
+            result["chip_model"] = chip_match.group(1).strip()
+        
+        # 提取开发环境
+        env_match = re.search(r'\*\*开发环境\*\*: (.+)', content)
+        if env_match:
+            result["dev_env"] = env_match.group(1).strip()
+        
+        # 提取当前步骤
+        step_match = re.search(r'\*\*当前步骤\*\*: (.+)', content)
+        if step_match:
+            result["current_step"] = step_match.group(1).strip()
+        
+        return result
+    
     def generate_session_id(self) -> str:
         """生成会话ID"""
         now = datetime.now()
@@ -88,7 +128,6 @@ class ProjectContextManager:
     
     def generate_project_id(self, project_name: str) -> str:
         """生成项目ID"""
-        # 将项目名称转换为短ID
         short_name = project_name.lower().replace(" ", "-")[:20]
         now = datetime.now()
         return f"proj-{short_name}-{now.strftime('%y%m%d')}"
@@ -99,7 +138,6 @@ class ProjectContextManager:
         if not memory:
             return "未找到项目记忆日志"
         
-        # 计算时间差
         last_active = memory.get("last_active", "未知")
         
         summary = f"""🔍 检测到项目: [{memory.get('project_name', '未知')}]
@@ -118,20 +156,21 @@ class ProjectContextManager:
     
     def update_global_index(self, project_info: Dict[str, str]) -> None:
         """更新全局项目索引"""
-        # 确保目录存在
         self.GLOBAL_INDEX_PATH.parent.mkdir(parents=True, exist_ok=True)
         
-        # 读取现有索引或创建新索引
         if self.GLOBAL_INDEX_PATH.exists():
             content = self.GLOBAL_INDEX_PATH.read_text(encoding="utf-8")
         else:
             content = self._create_default_index()
         
-        # 更新项目信息
         content = self._update_project_in_index(content, project_info)
-        
-        # 写回文件
         self.GLOBAL_INDEX_PATH.write_text(content, encoding="utf-8")
+    
+    def read_global_index(self) -> Optional[str]:
+        """读取全局索引"""
+        if not self.GLOBAL_INDEX_PATH.exists():
+            return None
+        return self.GLOBAL_INDEX_PATH.read_text(encoding="utf-8")
     
     def _create_default_index(self) -> str:
         """创建默认索引内容"""
@@ -163,7 +202,8 @@ class ProjectContextManager:
 
 | 命令 | 说明 |
 |------|------|
-| `项目索引` | 显示此索引 |
+| `项目索引` | 显示当前项目状态 |
+| `全局索引` | 显示所有项目状态 |
 | `恢复项目 <名称>` | 恢复指定项目 |
 | `跨项目切换 <名称>` | 保存当前，切换项目 |
 | `上下文摘要` | 当前会话摘要 |
@@ -197,7 +237,6 @@ class ProjectContextManager:
 - **快速恢复**: `恢复项目 {project_short}`
 
 """
-            # 插入到活跃项目部分
             content = content.replace(
                 "## 活跃项目\n",
                 f"## 活跃项目\n\n{project_entry}"
@@ -238,6 +277,36 @@ class ProjectContextManager:
         
         content = checkpoint_path.read_text(encoding="utf-8")
         return json.loads(content)
+    
+    def find_project_in_index(self, project_name: str) -> Optional[Dict[str, str]]:
+        """在全局索引中查找项目"""
+        content = self.read_global_index()
+        if not content:
+            return None
+        
+        # 查找项目名称
+        pattern = rf"### \d+\. {re.escape(project_name)}.*?(?=###|\n## |$)"
+        match = re.search(pattern, content, re.DOTALL)
+        
+        if not match:
+            return None
+        
+        project_section = match.group(0)
+        
+        result = {}
+        path_match = re.search(r'\*\*路径\*\*: (.+)', project_section)
+        if path_match:
+            result["path"] = path_match.group(1).strip()
+        
+        step_match = re.search(r'\*\*当前步骤\*\*: (.+)', project_section)
+        if step_match:
+            result["step"] = step_match.group(1).strip()
+        
+        issue_match = re.search(r'\*\*待解决\*\*: (.+)', project_section)
+        if issue_match:
+            result["issue"] = issue_match.group(1).strip()
+        
+        return result
 
 
 def main():
@@ -246,7 +315,7 @@ def main():
     
     if len(sys.argv) < 2:
         print("用法: python context_manager.py <命令> [参数]")
-        print("命令: detect, summary, update-index, save-checkpoint")
+        print("命令: detect, summary, update-index, read-index, find-project, save-checkpoint")
         return
     
     command = sys.argv[1]
@@ -274,9 +343,27 @@ def main():
         manager.update_global_index(project_info)
         print("全局索引已更新")
     
+    elif command == "read-index":
+        content = manager.read_global_index()
+        if content:
+            print(content)
+        else:
+            print("全局索引不存在")
+    
+    elif command == "find-project":
+        if len(sys.argv) < 3:
+            print("用法: find-project <项目名称>")
+            return
+        project_name = sys.argv[2]
+        result = manager.find_project_in_index(project_name)
+        if result:
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+        else:
+            print(f"未找到项目: {project_name}")
+    
     elif command == "save-checkpoint":
         session_id = manager.generate_session_id()
-        context = {"test": "data"}  # 实际使用时传入真实上下文
+        context = {"test": "data"}
         manager.save_checkpoint(session_id, context)
         print(f"检查点已保存: {session_id}")
     
