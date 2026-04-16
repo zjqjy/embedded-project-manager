@@ -397,6 +397,8 @@ SKILL/
 | 2026-02-27 | 全部 | commit | 完成基本功能，还存在全局索global-index未使用的情况 (266918e) |
 | 2026-03-27 | project-spec.md | update | 更新为S2-S6开发规划 |
 | 2026-03-27 | memory-log.md | update | 记录实用性修复讨论结论 |
+| 2026-04-16 | SKILL.md |重构 | 按新格式重构，支持tab补齐 |
+| 2026-04-16 | project-spec.md | update | 添加S7记录 |
 
 ---
 
@@ -413,3 +415,12 @@ SKILL/
 **目的**: 讨论并规划P0优先级的改进
 **讨论内容**: 见上方"实用性修复讨论记录"
 **结论**: 规划完成，待开发
+
+### 2026-04-16 - SKILL.md Tab补齐优化
+**目的**: 让子命令参数支持tab补齐
+**问题**: 用户输入 `/em verify` 后按TAB无法补齐参数
+**解决方案**:
+1. 按新格式重构SKILL.md，添加Parameters选项
+2. verify/result/help三个命令添加枚举选项
+3. 保留commands/目录供AI查阅详细说明
+**结论**: S7完成，文件已更新

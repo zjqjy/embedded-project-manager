@@ -152,6 +152,18 @@
      - 支持按日期/按类型分类
      - 包含归档位置引用
 
+### S7: SKILL.md Tab补齐优化 ✅ 完成
+- **日期**: 2026-04-16
+- **功能描述**: SKILL.md 命令格式重构，支持子命令参数 tab 补齐
+- **开发内容**:
+  1. **SKILL.md 命令格式重构** ✅
+     - 按新格式重写所有命令定义（14个命令）
+     - 3个命令添加 Parameters 选项（verify, result, help）
+     - 文件结构补全（discussion/, history/, logs/）
+  2. **commands/ 目录保留** ✅
+     - 保留 commands/ 目录供 AI 查阅详细说明
+- **讨论文件**: `.emv2/discussion/20260416-skill-tab-completion/`
+
 ---
 
 ## 依赖关系
@@ -205,6 +217,7 @@ S6(归档机制) ── 可独立进行
 | 日期 | 讨论内容 | 结论文件 |
 |------|----------|----------|
 | 2026-03-27 | 实用性修复需求讨论 | `.emv2/discussion/20260327-practical-fix/` |
+| 2026-04-16 | SKILL.md Tab补齐优化 | `.emv2/discussion/20260416-skill-tab-completion/` |
 
 ---
 

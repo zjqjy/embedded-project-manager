@@ -1,8 +1,7 @@
 ---
 name: em
 description: 嵌入式项目开发管家 - 人机协作测试、存量项目审计、新功能开发
-argument-hint: /em <command> [args]
-shortcut-commands: si, init, new, disc, verify, result, stat, arch, help, sum, rec, pi, gi, sw
+argument-hint: "<si|init|new|disc|verify|result|stat|rec|sw|arch|sum|pi|gi|help> [args]"
 ---
 
 # EM - 嵌入式项目开发管家
@@ -43,26 +42,26 @@ shortcut-commands: si, init, new, disc, verify, result, stat, arch, help, sum, r
 | `/em gi` | 全局索引 | `/em gi` |
 | `/em sw` | 跨项目切换 | `/em sw myproject` |
 
-## 工作流推荐
-
-根据当前状态自动推荐命令：
-
-```
-📍 当前: [从 memory-log.md 读取]
-   ↓
-下一步:
-   → /em verify s3   # 准备验证S3
-   → /em disc         # 继续讨论
-```
-
 ## 文件结构
 
 ```
 .emv2/
-├── project-spec.md    # 项目规格单
-├── memory-log.md      # 记忆日志（必读）
-├── problem-log.md      # 问题追踪
-└── checkpoints/        # HVR文件
+├── project-spec.md      # 项目规格单
+├── memory-log.md        # 记忆日志（必读）
+├── problem-log.md       # 问题追踪
+├── decision-log.md      # 决策记录
+├── discussion/          # 讨论结果
+│   └── <需求ID>/
+│       ├── requirements.md
+│       ├── rules.md
+│       ├── hardware.md
+│       └── milestones.md
+├── checkpoints/         # HVR文件
+│   └── HVR-S<X>-<N>.md
+├── history/             # 归档
+│   └── index.md
+└── logs/                # 串口日志
+    └── serial_<步骤>_<问题>.log
 ```
 
 ## 详细文档
@@ -72,4 +71,4 @@ shortcut-commands: si, init, new, disc, verify, result, stat, arch, help, sum, r
 - **templates/** - 模板文件
 
 ---
-查看详细: `/em help <command>`
+查看详细: /em help verify
