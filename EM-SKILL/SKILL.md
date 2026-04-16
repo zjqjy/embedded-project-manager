@@ -1,10 +1,62 @@
 ---
 name: em
 description: 嵌入式项目开发管家 - 人机协作测试、存量项目审计、新功能开发
-argument-hint: "<si|init|new|disc|verify|result|stat|rec|sw|arch|sum|pi|gi|help> [args]"
+argument-hint: "si|init|new|disc|verify|result|stat|rec|sw|arch|sum|pi|gi|initem|help [command]"
 ---
 
 # EM - 嵌入式项目开发管家
+
+你接收到的参数：`$ARGUMENTS`
+
+请根据第一个参数执行对应功能：
+
+## 子命令路由
+
+如果 `$0` 是 `si`：
+- 执行存量接入，路径为 `$1`
+
+如果 `$0` 是 `init`：
+- 执行项目初始化，名称为 `$1`
+
+如果 `$0` 是 `new`：
+- 执行新功能开发流程，功能描述为 `$1`
+
+如果 `$0` 是 `disc`：
+- 进入讨论流程模式
+
+如果 `$0` 是 `verify`：
+- 执行验证步骤 `$1`（s1-s6）
+
+如果 `$0` 是 `result`：
+- 记录验证结果 `$1`
+
+如果 `$0` 是 `stat`：
+- 查看当前项目状态
+
+如果 `$0` 是 `rec`：
+- 恢复项目，可选路径 `$1`
+
+如果 `$0` 是 `sw`：
+- 跨项目切换，名称/路径为 `$1`
+
+如果 `$0` 是 `arch`：
+- 执行归档
+
+如果 `$0` 是 `sum`：
+- 生成上下文摘要
+
+如果 `$0` 是 `pi`：
+- 查看项目索引
+
+如果 `$0` 是 `gi`：
+- 查看全局索引
+
+如果 `$0` 是 `help`：
+- 如果有 `$1`，显示 `commands/$1.md` 内容
+- 如果无 `$1`，显示所有命令列表
+
+如果 `$0` 是 `initem`：
+- 执行工具初始化，检查并更新 `~/.claude/settings.json` 配置
 
 ## 快速开始
 
@@ -41,6 +93,7 @@ argument-hint: "<si|init|new|disc|verify|result|stat|rec|sw|arch|sum|pi|gi|help>
 | `/em pi` | 项目索引 | `/em pi` |
 | `/em gi` | 全局索引 | `/em gi` |
 | `/em sw` | 跨项目切换 | `/em sw myproject` |
+| `/em initem` | 工具初始化 | `/em initem` |
 
 ## 文件结构
 

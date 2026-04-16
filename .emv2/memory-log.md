@@ -386,6 +386,11 @@ SKILL/
 - 决策记录在 `memory-log.md` 而非单独 `decision-log.md`
 - 原因：避免文件丢失，每次读取项目状态时会加载 memory-log.md
 
+### 2026-04-16 - S8验证完成
+**问题**: 添加具体路径 `./.emv2/*.md` 不生效
+**原因**: Claude Code 和 Windows 的 bug
+**解决**: 使用全局 `Read` 权限绕过 bug
+
 ---
 
 ## 代码变更记录
@@ -399,6 +404,8 @@ SKILL/
 | 2026-03-27 | memory-log.md | update | 记录实用性修复讨论结论 |
 | 2026-04-16 | SKILL.md |重构 | 按新格式重构，支持tab补齐 |
 | 2026-04-16 | project-spec.md | update | 添加S7记录 |
+| 2026-04-16 | project-spec.md | update | 添加S8记录（.emv2文件自动读取） |
+| 2026-04-16 | .emv2/discussion/20260416-auto-read-emv2/ | create | S8讨论文件 | |
 
 ---
 

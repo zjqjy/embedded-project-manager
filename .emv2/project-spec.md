@@ -164,6 +164,40 @@
      - 保留 commands/ 目录供 AI 查阅详细说明
 - **讨论文件**: `.emv2/discussion/20260416-skill-tab-completion/`
 
+### S8: .emv2 文件自动读取 ✅ 完成
+- **日期**: 2026-04-16
+- **功能描述**: 对 `.emv2` 下文件（除 discussion/ 外）设置自动读取权限
+- **讨论文件**: `.emv2/discussion/20260416-auto-read-emv2/`
+- **开发内容**:
+  1. **S8-A: settings.json 检查模块**
+     - 检查 `~/.claude/settings.json` 是否存在
+     - 读取现有 permissions 配置
+     - 检查是否已有 .emv2 相关规则
+  2. **S8-B: 配置更新模块**
+     - 备份现有 settings.json
+     - 追加 .emv2 信任规则
+     - 写回配置文件
+  3. **S8-C: 工具初始化命令 `/em initem`**
+     - 创建 `/em init-em` 命令
+     - 检查并更新 settings.json 配置
+- **配置规则**:
+  - `Read` - 全局读取权限（因 Claude Code 和 Windows 的 bug，具体路径 `./.emv2/*.md` 不生效）
+  - `defaultMode: "acceptEdits"` - 默认接受编辑
+  - discussion/ 保持需确认（不配置）
+- **触发时机**: 首次使用 EM-SKILL 前执行 `/em initem`
+
+### S9: initem 优化 ✅ 完成
+- **日期**: 2026-04-16
+- **功能描述**: 优化 `/em initem` 命令说明，添加好处提醒
+- **讨论文件**: `.emv2/discussion/20260416-initem-optimization/`
+- **开发内容**:
+  1. **命令改名**: `/em init-em` → `/em initem`
+  2. **添加好处说明**: 添加"为什么需要执行这个"章节，包含好处列表
+  3. **精简 permissions**: 只保留用户指定的基础配置
+- **权限配置**:
+  - allow: Read, Glob, Grep, Search, Bash(git:status), Bash(git:diff), Bash(npm:test), Bash(npm run:build)
+  - deny: Bash(rm:*), Bash(sudo:*), Bash(git push:*)
+
 ---
 
 ## 依赖关系
@@ -218,6 +252,8 @@ S6(归档机制) ── 可独立进行
 |------|----------|----------|
 | 2026-03-27 | 实用性修复需求讨论 | `.emv2/discussion/20260327-practical-fix/` |
 | 2026-04-16 | SKILL.md Tab补齐优化 | `.emv2/discussion/20260416-skill-tab-completion/` |
+| 2026-04-16 | .emv2 文件自动读取 | `.emv2/discussion/20260416-auto-read-emv2/` |
+| 2026-04-16 | initem 优化 | `.emv2/discussion/20260416-initem-optimization/` |
 
 ---
 
@@ -232,6 +268,7 @@ S6(归档机制) ── 可独立进行
 
 ### 已解决问题
 1. 基本功能搭建完成 - 2026-02-25
+2. S8-.emv2文件自动读取 - 2026-04-16（使用全局Read绕过Claude Code/Windows bug）
 
 ---
 
