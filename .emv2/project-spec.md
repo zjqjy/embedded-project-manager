@@ -54,7 +54,7 @@
 - **验证方式**: 用一个实际需求测试完整讨论流程
 
 ### S3: HVR工作流增强 🔴 P0优先
-- **状态**: 🚧 开发中
+- **状态**: ✅ 完成 (2026-04-16)
 - **前置条件**: S2 完成
 - **功能描述**: 失败自动记录问题 → 触发讨论 → 闭环记录
 - **开发内容**:
@@ -76,7 +76,7 @@
 - **验证方式**: 模拟一次失败+解决流程
 
 ### S4: 芯片学习机制 🔴 P0优先
-- **状态**: 🚧 开发中
+- **状态**: ✅ 完成 (2026-04-16)
 - **前置条件**: S2 完成
 - **功能描述**: 存量接入和初始化时学习用户常用芯片
 - **开发内容**:
@@ -129,25 +129,41 @@
 - **状态**: 🚧 开发中
 - **前置条件**: S1 完成（可并行开发）
 - **功能描述**: 分层记录 + 定期归档，避免膨胀但保证可查
+- **归档文件类型**:
+
+| 文件 | 触发条件 | 说明 |
+|------|----------|------|
+| memory-log.md | > 200行 | 记忆日志，按会话归档 |
+| project-spec.md | S完成后 | 项目规格单，按里程碑归档 |
+| problem-log.md | > 100行 | 问题追踪记录 |
+| decision-log.md | > 100行 | 关键决策记录 |
+
 - **开发内容**:
-  1. **problem-log.md** ✅ (templates/problem-log.md)
+  1. **memory-log.md 归档** ✅
+     - 按会话归档到 history/
+     - 保留最近3个月活跃内容
+     - 归档触发: > 200行
+  2. **project-spec.md 归档** ✅
+     - 每个S完成后归档
+     - 里程碑节点归档
+  3. **problem-log.md** ✅ (templates/problem-log.md)
      - 问题追踪专用文件
      - 格式：问题描述 → 分析 → 解决 → 闭环
-  2. **decision-log.md** ✅ (templates/decision-log.md)
+  4. **decision-log.md** ✅ (templates/decision-log.md)
      - 关键决策记录
      - 格式：决策内容 → 理由 → 影响
-  3. **归档机制** ✅
+  5. **归档机制** ✅
      - 归档路径: `.emv2/history/<年份>/<月份>/<日期>/`
      - 例: `.emv2/history/2026/03/27/problem-log.md`
      - **触发方式**:
        - 会话结束自动归档
-       - 文件过大时自动归档（如 >100行）
-       - 手动命令: `归档` 或 `归档 problem-log`
-  4. **引用完整性** ✅
-     - 归档格式: `[.emv2/history/<年>/<月>/<日>/problem-log.md#标题]`
+       - 文件过大时自动归档
+       - 手动命令: `/em arch` 或 `/em arch memory-log`
+  6. **引用完整性** ✅
+     - 归档格式: `[.emv2/history/<年>/<月>/<日>/文件名.md#标题]`
      - 创建 `history/index.md` 作为总入口 (templates/history-index.md)
      - 归档记录包含原文链接
-  5. **归档索引** ✅
+  7. **归档索引** ✅
      - 模板: templates/history-index.md
      - 支持按日期/按类型分类
      - 包含归档位置引用
@@ -276,3 +292,7 @@ S6(归档机制) ── 可独立进行
 - Skill 安装路径: C:\Users\23393\.claude\skills\embedded-project-manager-v2
 - chips.json 路径: C:\Users\23393\.claude\chips.json
 - 全局索引: C:\Users\23393\.claude\embedded-projects-index.md
+
+1
+2
+4

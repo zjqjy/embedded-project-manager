@@ -29,7 +29,7 @@
 ## 需要确保的 permissions 配置
 
 ```json
-"permissions": {
+ "permissions": {
     "allow": [
       "Read",
       "Glob",
@@ -39,12 +39,16 @@
       "Bash(git:diff)",
       "Bash(npm:test)",
       "Bash(npm run:build)",
+      "Bash(ls -la)",
+      "Bash(ls)",
       "Edit(**/.emv2/**/*.md)",
       "Write(**/.emv2/**/*.md)"
     ],
-    "deny": [
-      "Edit(**/.emv2/discussion/**/*.md)",
+    "ask": [
       "Write(**/.emv2/discussion/**/*.md)",
+      "Edit(**/.emv2/discussion/**/*.md)"
+    ],
+    "deny": [
       "Bash(rm:*)",
       "Bash(sudo:*)",
       "Bash(git push:*)"
