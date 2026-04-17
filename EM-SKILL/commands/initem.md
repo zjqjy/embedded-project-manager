@@ -39,8 +39,7 @@
       "Bash(git:diff)",
       "Bash(npm:test)",
       "Bash(npm run:build)",
-      "Bash(ls -la)",
-      "Bash(ls)",
+      "Bash(ls *)",
       "Edit(**/.emv2/**/*.md)",
       "Write(**/.emv2/**/*.md)"
     ],
