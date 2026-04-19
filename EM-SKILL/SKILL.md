@@ -13,7 +13,7 @@ argument-hint: "si|init|new|disc|verify|result|stat|rec|sw|arch|sum|pi|gi|initem
 ## 子命令路由
 
 如果 `$0` 是 `si`：
-- 执行存量接入，路径为 `$1`
+- 执行存量接入，路径为 `$1`（空时使用当前目录 `.`）
 
 如果 `$0` 是 `init`：
 - 执行项目初始化，名称为 `$1`
