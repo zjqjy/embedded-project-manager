@@ -1,0 +1,12 @@
+{
+  "id": "20260419-initem-python-check",
+  "status": "completed",
+  "decisions": {
+    "python_version": "3.12",
+    "dependencies": ["pyserial", "mcp"],
+    "install_method": "pip",
+    "error_handling": "manual_hint",
+    "need_download_link": true
+  },
+  "completed_at": "2026-04-19"
+}

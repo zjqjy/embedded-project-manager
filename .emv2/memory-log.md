@@ -71,7 +71,17 @@
   - S5工作流讨论（/em disc S5）
   - 修正工作流：/em result应在验证阶段
   - 明确失败流程：AI读MCP + 人类观察 → 共同分析 → 共同修改
-- **产出**: 更新hvr-workflow.md反映正确工作流
+  - **initem增强讨论**（/em new）
+    - 新增：Python自检 + 环境依赖安装
+    - 决策：Python 3.12, pip直接安装, 失败提示手动
+  - **initem实现**
+    - 更新 initem.md 文档
+    - 安装 mcp 依赖
+- **产出**: 更新hvr-workflow.md反映正确工作流, initem.md增强
+  - **README完善讨论**（/em new）
+    - 问题：完整开发流程描述不清楚
+    - 新增：方式A存量接入、方式B空项目两种完整流程
+    - 更新：EM-SKILL/README.md
 
 ### sess-20260419-001 (2026-04-19)
 - **主要内容**:
@@ -103,6 +113,15 @@
 ## 最近更新
 
 ### 2026-04-19
+- **README完善**（17:30）
+  - 新增完整开发流程说明
+  - 方式A：存量接入（/em si）
+  - 方式B：空项目（/em init）
+  - 文档：EM-SKILL/README.md
+- **initem增强**（17:00）
+  - 新功能：Python自检 + 环境依赖自动安装
+  - 依赖：pyserial, mcp
+  - 文档更新：EM-SKILL/commands/initem.md
 - S5讨论完成
   - 确定：MCP工具 + tkinter UI + 人-AI协作验证流程
   - 方案：C-b（MCP自带UI）
