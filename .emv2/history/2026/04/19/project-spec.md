@@ -1,4 +1,4 @@
-<!-- 归档内容见 .emv2/history/2026/04/19/project-spec.md -->
+<!-- 归档内容见 .emv2/history/2026/04/16/project-spec.md -->
 
 # 项目规格单：embedded-project-manager-v2
 

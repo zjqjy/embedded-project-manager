@@ -1,4 +1,4 @@
-<!-- 归档内容见 .emv2/history/2026/04/19/memory-log.md -->
+<!-- 归档内容见 .emv2/history/2026/04/16/memory-log.md -->
 
 # 项目记忆日志 - embedded-project-manager-v2
 
