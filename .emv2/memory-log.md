@@ -102,6 +102,14 @@
 
 ## 最近更新
 
+### 2026-04-20
+- embed-ai-tool 整合讨论
+  - 探索 embed-ai-tool：17个技能，6大类（构建/烧录/调试/协议/驱动/流水线）
+  - 确定最终方案：协作分工（EM流程控制 + embed-ai-tool具体执行）
+  - 整合点：verify 阶段调用 embed-ai-tool 技能
+  - 待执行任务：更新 verify.md 和 hvr-workflow.md
+- 讨论目录：`.emv2/discussion/20260420-embed-ai-tool-integration/`
+
 ### 2026-04-19
 - S5讨论完成
   - 确定：MCP工具 + tkinter UI + 人-AI协作验证流程

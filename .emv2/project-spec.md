@@ -94,7 +94,36 @@
 
 ---
 
+## embed-ai-tool 整合
+
+### 整合方案
+**协作分工**
+- EM = 流程控制（verify 命令）
+- embed-ai-tool = 具体执行（编译/烧录/监控/调试）
+
+### 整合点
+
+| EM 阶段 | 调用 embed-ai-tool 技能 |
+|---------|------------------------|
+| verify S4 | flash-openocd + serial-monitor |
+| verify S5 | serial-monitor |
+| verify 编译 | build-keil / build-cmake / build-platformio |
+| verify 烧录 | flash-openocd / flash-keil / flash-platformio |
+| verify CAN | can-debug |
+| verify Modbus | modbus-debug |
+
+### 讨论记录
+- 讨论目录: `.emv2/discussion/20260420-embed-ai-tool-integration/`
+
+### 待执行任务
+- [ ] 更新 verify.md 添加 embed-ai-tool 调用说明
+- [ ] 更新 hvr-workflow.md
+- [ ] 验证整合效果
+
+---
+
 ## 参考文档
 - Skill 安装路径: C:\Users\23393\.claude\skills\EM-SKILL
 - chips.json 路径: C:\Users\23393\.claude\chips.json
+- embed-ai-tool 路径: D:\DeskTop\WorkSpace\Code\embed-ai-tool
 - 归档索引: .emv2/history/index.md
