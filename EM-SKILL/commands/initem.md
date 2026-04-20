@@ -1,7 +1,9 @@
 # 命令: /em initem (工具初始化)
 
 ## 功能
-检查并更新 `~/.claude/settings.json` 配置，确保 EM 工具的基础 permissions 配置完整。
+1. 检查并更新 `~/.claude/settings.json` 配置
+2. 检查 Python 环境
+3. 安装 MCP 工具依赖（pyserial, mcp）
 
 ## 触发
 ```
@@ -89,4 +91,95 @@
 ⚠️ 检测到权限配置不完整
 - 缺少: npm:test, npm run:build
 - 是否修复？[是] [否]
+```
+
+---
+
+## Python 环境检查
+
+### 检查流程
+```
+1. 检查 Python 是否安装（python --version）
+   └─→ 无 → 显示安装指南，终止
+   └─→ 有 → 继续
+
+2. 检查依赖是否安装（pip show）
+   ├─→ pyserial
+   └─→ mcp
+
+3. 未安装 → pip install
+   ├─→ 成功 → ✅
+   └─→ 失败 → 提示手动安装
+```
+
+### 依赖列表
+| 依赖 | 用途 |
+|------|------|
+| pyserial | S5 串口工具 |
+| mcp | MCP SDK |
+
+### 输出示例
+
+#### 情况1: 无 Python
+```
+🔍 检查 Python 安装...
+❌ 未检测到 Python
+
+📥 Python 安装指南:
+- 下载: https://www.python.org/downloads/
+- 版本: Python 3.12
+- 注意事项:
+  1. 勾选 "Add Python to PATH"
+  2. 选择 Customized Installation
+  3. 勾选 pip
+
+安装后请重新运行 /em initem
+```
+
+#### 情况2: 有 Python，依赖已安装
+```
+🔍 检查 Python 安装...
+✅ Python 3.12.3 已安装
+
+🔍 检查 MCP 工具依赖...
+✅ pyserial 已安装
+✅ mcp 已安装
+
+✅ 环境就绪！
+```
+
+#### 情况3: 有 Python，依赖未安装
+```
+🔍 检查 Python 安装...
+✅ Python 3.12.3 已安装
+
+🔍 检查 MCP 工具依赖...
+❌ pyserial 未安装
+❌ mcp 未安装
+
+📦 正在安装依赖...
+✅ pyserial 安装成功
+✅ mcp 安装成功
+
+✅ 环境就绪！
+```
+
+#### 情况4: pip 安装失败
+```
+🔍 检查 Python 安装...
+✅ Python 3.12.3 已安装
+
+🔍 检查 MCP 工具依赖...
+❌ pyserial 未安装
+❌ mcp 未安装
+
+📦 正在安装依赖...
+❌ pyserial 安装失败
+
+⚠️ 手动安装提示:
+请在命令行执行:
+  pip install pyserial mcp
+
+或使用国内镜像:
+  pip install pyserial mcp -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
