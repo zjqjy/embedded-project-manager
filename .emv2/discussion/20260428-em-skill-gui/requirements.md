@@ -16,9 +16,15 @@
 - **收藏功能**: ✅ 支持
 
 ## M3: Claude Code桥接
-- **方案**: CLI管道（常驻子进程，复用同一会话）
-- **进程管理**: GuI保持一个常驻Claude子进程
-- **消息展示**: Markdown渲染 + 流式逐字显示
+- **方案**: `claude -p` 单次调用（非持久会话）
+- **进程管理**: 每次操作新建子进程，完成后销毁；串行执行
+- **消息展示**: Markdown渲染 + 流式逐字显示（stream-json）
+- **权限模式**: 用户可选三种模式，**默认C（交互模式）**
+  - **A: 静默模式** → `--permission-mode acceptEdits`，自动允许，无提示
+  - **B: 通知模式** → `--permission-mode acceptEdits`，自动允许，日志区显示操作记录
+  - **C: 交互模式（默认）** → `--permission-mode default`，GUI弹窗让用户确认/拒绝
+- **tool_use事件展示**: stream-json中的工具调用事件（Read/Write/Bash等）显示在日志区
+- **与initem关系**: initem配置settings.json权限（交互模式），GUI权限模式（-p模式）独立控制，互补不冲突
 
 ## M4: 项目管理面板
 - 项目名称 & 路径展示

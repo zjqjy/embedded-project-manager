@@ -28,6 +28,7 @@
 | S5 | 串口调试工具 | ✅ 完成 | 2026-04-19 |
 | S6 | 文件归档机制 | ✅ 完成 | 2026-04-17 |
 | S7 | EM-SKILL GUI桌面应用 | 🚧 讨论完成 | 2026-04-28 |
+| S8 | 优化项目文件模板 | 🚧 讨论中 | 2026-04-28 |
 
 ---
 
@@ -206,6 +207,26 @@ EM-SKILL的GUI前端，替代命令行操作，提供可视化项目管理界面
 - [ ] B: `commands/result.md` 推进逻辑
 - [ ] C: `commands/verify.md` 状态变更
 - [ ] D: `workflows/hvr-workflow.md` 流程图
+
+---
+
+## S8 优化项目文件模板（讨论中）
+
+### 讨论记录
+- 讨论目录: `.emv2/discussion/20260428-optimize-templates/`
+
+### 目标
+消除 project-spec.md、memory-log.md、全局文件之间的重复信息，一条信息只在一个地方维护。
+
+### 待执行任务
+- [ ] A: project-spec.md 瘦身
+- [ ] B: memory-log.md 统一
+- [ ] C: SKILL.md 精简
+- [ ] D: commands/*.md 瘦身
+- [ ] E: workflows/*.md 结构对齐
+- [ ] F: help.md 独立维护命令列表
+
+---
 
 ## 参考文档
 - Skill 安装路径: C:\Users\23393\.claude\skills\EM-SKILL

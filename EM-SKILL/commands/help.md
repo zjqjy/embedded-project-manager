@@ -9,35 +9,42 @@
 ```
 
 ## 无参数时
-显示所有命令列表和简介
+显示命令列表
+
+```
+项目管理:
+  si <path>    存量接入
+  init <name>  项目初始化
+  stat         当前步骤状态
+  rec [name]   恢复项目
+
+开发流程:
+  new <描述>   新功能开发（自动分配S编号）
+  disc [id]    讨论流程（5阶段）
+  verify s<N>  验证（自动状态变更）
+  result <步>-<结果>  提交结果（自动推进）
+
+工具:
+  arch         归档
+  help [命令]  查看帮助
+  sum          上下文摘要
+  pi           项目索引
+  gi           全局索引
+  sw <项目>    跨项目切换
+  initem       工具初始化
+```
 
 ## 有参数时
 显示指定命令的详细帮助
 
-## 示例
-
 ```
-/em help           # 显示所有命令
-/em help verify    # 显示 verify 命令帮助
-/em help result    # 显示 result 命令帮助
-/em help disc      # 显示 disc 命令帮助
+/em help verify    # 显示 verify 命令
+/em help new       # 显示 new 命令（含编号规则）
+/em help result    # 显示 result 命令（含状态推进逻辑）
+/em help disc      # 显示 disc 命令（讨论流程）
 ```
 
-## 命令索引
-
-| 命令 | 文件 |
-|------|------|
-| `/em si` | commands/si.md |
-| `/em init` | commands/init.md |
-| `/em new` | commands/new.md |
-| `/em disc` | commands/disc.md |
-| `/em verify` | commands/verify.md |
-| `/em result` | commands/result.md |
-| `/em stat` | commands/stat.md |
-| `/em arch` | commands/arch.md |
-| `/em help` | commands/help.md |
-
-## 工作流帮助
+## 工作流细则
 
 | 工作流 | 文件 |
 |--------|------|
