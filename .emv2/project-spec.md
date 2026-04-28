@@ -5,7 +5,7 @@
 ## Meta
 - **创建日期**: 2026-02-25
 - **项目类型**: Claude Skill 元仓库
-- **当前步骤**: S7-开发中
+- **当前步骤**: S7-A(开发中)
 - **整体状态**: S1-S6 全部完成 ✅ / S7 EM-SKILL GUI 开发中 🚧
 - **项目路径**: D:\DeskTop\WorkSpace\Code\embedded-project-manager
 
@@ -182,12 +182,30 @@ EM-SKILL的GUI前端，替代命令行操作，提供可视化项目管理界面
 - 存量编号从 S7 开始递增
 
 ### 待执行任务
-- [ ] A: `new.md` 编号逻辑
-- [ ] B: `project-spec.md` 存量补号
-- [ ] C: `stat.md` 兼容
-- [ ] D: `verify.md` 引用对齐
+- [x] A: `new.md` 编号逻辑
+- [x] B: `project-spec.md` 存量补号
+- [x] C: `stat.md` 兼容
+- [x] D: `verify.md` 引用对齐
 
 ---
+
+## 步骤状态自动推进机制（讨论完成）
+
+### 讨论记录
+- 讨论目录: `.emv2/discussion/20260428-step-state-machine/`
+
+### 方案要点
+- 子步骤完成自动推进到下一子步骤
+- 状态标签：🔲 待开发 → 🚧 开发中 → 🔄 验证中 → ✅ 完成 / 🔁 返工中
+- verify 发出时自动变更为「验证中」
+- result 通过时推进，失败时变更为「返工中」
+- Meta 区格式：`当前步骤: S7-A(开发中)`
+
+### 待执行任务
+- [ ] A: `project-spec.md` 状态格式
+- [ ] B: `commands/result.md` 推进逻辑
+- [ ] C: `commands/verify.md` 状态变更
+- [ ] D: `workflows/hvr-workflow.md` 流程图
 
 ## 参考文档
 - Skill 安装路径: C:\Users\23393\.claude\skills\EM-SKILL

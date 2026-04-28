@@ -136,6 +136,15 @@
   - 下一步：S7-A 技术验证（Claude CLI管道通信）
 
 ### 2026-04-28
+- `/em disc` 讨论：步骤状态自动推进机制
+  - 问题：开发完成后当前步骤不会自动推进
+  - 方案：子步骤完成自动推进，verify→验证中，result通过→完成+推进
+  - 状态标签体系：🔲待开发→🚧开发中→🔄验证中→✅完成/🔁返工中
+  - Meta区格式：`当前步骤: S7-A(开发中)`
+  - 讨论目录：`.emv2/discussion/20260428-step-state-machine/`
+  - 待执行任务：修改 result.md、verify.md、project-spec.md、hvr-workflow.md
+
+### 2026-04-28
 - `/em disc` 讨论：new 命令步骤编号机制
   - 问题：new 流程没有标号，无法指示当前步骤位置
   - 方案：`/em new` 自动分配 S(N+1)，编号格式 S<数字>
