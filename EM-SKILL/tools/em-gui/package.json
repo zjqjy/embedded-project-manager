@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
     "@tauri-apps/api": "^2.10.1",
+    "element-plus": "^2.13.7",
     "vue": "^3.5.32"
   },
   "devDependencies": {

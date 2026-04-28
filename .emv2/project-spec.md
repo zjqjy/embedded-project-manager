@@ -132,99 +132,16 @@ EM-SKILL的GUI前端，替代命令行操作，提供可视化项目管理界面
 
 ---
 
-## embed-ai-tool 整合
+## 讨论索引
 
-### 整合方案
-**协作分工**
-- EM = 流程控制（verify 命令）
-- embed-ai-tool = 具体执行（编译/烧录/监控/调试）
-
-### 整合顺序
-
-| 步骤 | 工具 | 状态 | 说明 |
-|------|------|------|------|
-| 1 | build-keil | 待整合 | 编译构建 |
-| 2 | flash-openocd | 待整合 | 烧录固件 |
-| 3 | serial-monitor | 跳过 | 使用 EM 自带 S5 工具 |
-
-### 整合对照表
-
-| EM 阶段 | 调用 embed-ai-tool 技能 |
-|---------|------------------------|
-| verify 编译 | build-keil / build-cmake / build-platformio |
-| verify 烧录 | flash-openocd / flash-keil / flash-platformio |
-| verify 运行 | serial-monitor |
-| verify CAN | can-debug |
-| verify Modbus | modbus-debug |
-| verify 调试 | debug-gdb-openocd |
-
-### 讨论记录
-- 讨论目录: `.emv2/discussion/20260420-embed-ai-tool-integration/`
-
-### 已完成
-- [完成] 整合方案确定：协作分工模式
-
-### 待执行任务
-- [ ] 整合 1/2: build-keil → 更新 verify.md + hvr-workflow.md
-- [ ] 整合 2/2: flash-openocd → 更新 verify.md + hvr-workflow.md
-- [ ] 验证整合效果
-
----
-
-## new 命令步骤编号机制（讨论完成）
-
-### 讨论记录
-- 讨论目录: `.emv2/discussion/20260428-new-step-id/`
-
-### 方案要点
-- `/em new` 自动读取 project-spec.md 步骤表，取最大 S 编号 +1
-- 编号格式: `S<数字>`（如 S7）
-- 废弃编号不复用
-- 存量编号从 S7 开始递增
-
-### 待执行任务
-- [x] A: `new.md` 编号逻辑
-- [x] B: `project-spec.md` 存量补号
-- [x] C: `stat.md` 兼容
-- [x] D: `verify.md` 引用对齐
-
----
-
-## 步骤状态自动推进机制（讨论完成）
-
-### 讨论记录
-- 讨论目录: `.emv2/discussion/20260428-step-state-machine/`
-
-### 方案要点
-- 子步骤完成自动推进到下一子步骤
-- 状态标签：🔲 待开发 → 🚧 开发中 → 🔄 验证中 → ✅ 完成 / 🔁 返工中
-- verify 发出时自动变更为「验证中」
-- result 通过时推进，失败时变更为「返工中」
-- Meta 区格式：`当前步骤: S7-A(开发中)`
-
-### 待执行任务
-- [ ] A: `project-spec.md` 状态格式
-- [ ] B: `commands/result.md` 推进逻辑
-- [ ] C: `commands/verify.md` 状态变更
-- [ ] D: `workflows/hvr-workflow.md` 流程图
-
----
-
-## S8 优化项目文件模板（讨论中）
-
-### 讨论记录
-- 讨论目录: `.emv2/discussion/20260428-optimize-templates/`
-
-### 目标
-消除 project-spec.md、memory-log.md、全局文件之间的重复信息，一条信息只在一个地方维护。
-
-### 待执行任务
-- [ ] A: project-spec.md 瘦身
-- [ ] B: memory-log.md 统一
-- [ ] C: SKILL.md 精简
-- [ ] D: commands/*.md 瘦身
-- [ ] E: workflows/*.md 结构对齐
-- [ ] F: help.md 独立维护命令列表
+| 讨论 | 目录 |
+|------|------|
+| S5 串口调试讨论 | `.emv2/discussion/20260419-s5-serial-debug/` |
+| embed-ai-tool 整合讨论 | `.emv2/discussion/20260420-embed-ai-tool-integration/` |
+| S7 GUI 讨论 | `.emv2/discussion/20260428-em-skill-gui/` |
+| new 命令步骤编号讨论 | `.emv2/discussion/20260428-new-step-id/` |
+| 步骤状态自动推进讨论 | `.emv2/discussion/20260428-step-state-machine/` |
+| S8 优化模板讨论 | `.emv2/discussion/20260428-optimize-templates/` |
 
 ---
 
