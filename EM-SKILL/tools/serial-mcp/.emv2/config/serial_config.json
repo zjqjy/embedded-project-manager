@@ -1,5 +1,5 @@
 {
-  "port": "COM6",
+  "port": "COM10",
   "baudrate": 921600,
   "bytesize": 8,
   "parity": "N",

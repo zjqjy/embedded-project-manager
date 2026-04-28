@@ -5,8 +5,10 @@
 
 ## 触发
 ```
-/em verify <步骤>
+/em verify s<编号>    # 如 /em verify s7
 ```
+
+**步骤参数使用 new 命令分配的 S 编号**（如 S7），详见 new.md。
 
 ## 执行流程
 

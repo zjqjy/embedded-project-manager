@@ -5,8 +5,8 @@
 ## Meta
 - **创建日期**: 2026-02-25
 - **项目类型**: Claude Skill 元仓库
-- **当前步骤**: S1-S6全部完成
-- **整体状态**: S1-S6 全部完成 ✅
+- **当前步骤**: S7-开发中
+- **整体状态**: S1-S6 全部完成 ✅ / S7 EM-SKILL GUI 开发中 🚧
 - **项目路径**: D:\DeskTop\WorkSpace\Code\embedded-project-manager
 
 ## 全局检查点（Gates）
@@ -27,6 +27,7 @@
 | S4 | 芯片学习机制 | ✅ 完成 | 2026-04-16 |
 | S5 | 串口调试工具 | ✅ 完成 | 2026-04-19 |
 | S6 | 文件归档机制 | ✅ 完成 | 2026-04-17 |
+| S7 | EM-SKILL GUI桌面应用 | 🚧 讨论完成 | 2026-04-28 |
 
 ---
 
@@ -69,6 +70,42 @@
 
 ---
 
+## S7 EM-SKILL GUI 桌面应用
+
+### 核心定位
+**S7 = Tauri桌面应用 + Vue3 UI + Claude CLI管道双向通信**
+
+EM-SKILL的GUI前端，替代命令行操作，提供可视化项目管理界面。
+
+### 子流程
+
+| 子步骤 | 名称 | 状态 | 优先级 | 说明 |
+|--------|------|------|--------|------|
+| S7-A | 技术验证 | 🔲 待开发 | P0 | 验证Claude CLI管道通信可行性 |
+| S7-B | 项目脚手架 | 🔲 待开发 | P0 | 初始化Tauri+Vue3+Vite+Element Plus项目框架 |
+| S7-C | Claude Code桥接 | 🔲 待开发 | P0 | 常驻子进程管理、命令发送、流式输出接收 |
+| S7-D | 项目管理面板 | 🔲 待开发 | P0 | 项目信息读取、步骤状态展示、待办事项 |
+| S7-E | 命令快捷操作区 | 🔲 待开发 | P0 | 一键按钮面板、命令历史/收藏 |
+| S7-F | 日志与输出面板 | 🔲 待开发 | P0 | Markdown渲染、日志搜索/导出 |
+| S7-G | 串口工具(Vue版) | 🔲 待开发 | P1 | 重写串口面板，保留原tkinter工具 |
+| S7-H | VS Code Extension | 🔲 待开发 | P2 | 轻量Extension嵌入VS Code侧栏 |
+| S7-I | 技能整合框架 | 🔲 待开发 | P2 | 插件式架构，后续整合embed-ai-tool |
+
+### 技术方案
+
+| 项目 | 选择 |
+|------|------|
+| 桌面框架 | Tauri (Rust + Web前端) |
+| 前端框架 | Vue3 + Vite |
+| UI组件库 | Element Plus |
+| Claude通信 | CLI管道（常驻子进程，stdin/stdout实时双向） |
+| 串口工具 | Vue重写（保留原tkinter工具） |
+
+### 讨论记录
+- 讨论目录: `.emv2/discussion/20260428-em-skill-gui/`
+
+---
+
 ## 归档文件类型
 
 | 文件 | 触发条件 | 说明 |
@@ -101,24 +138,54 @@
 - EM = 流程控制（verify 命令）
 - embed-ai-tool = 具体执行（编译/烧录/监控/调试）
 
-### 整合点
+### 整合顺序
+
+| 步骤 | 工具 | 状态 | 说明 |
+|------|------|------|------|
+| 1 | build-keil | 待整合 | 编译构建 |
+| 2 | flash-openocd | 待整合 | 烧录固件 |
+| 3 | serial-monitor | 跳过 | 使用 EM 自带 S5 工具 |
+
+### 整合对照表
 
 | EM 阶段 | 调用 embed-ai-tool 技能 |
 |---------|------------------------|
-| verify S4 | flash-openocd + serial-monitor |
-| verify S5 | serial-monitor |
 | verify 编译 | build-keil / build-cmake / build-platformio |
 | verify 烧录 | flash-openocd / flash-keil / flash-platformio |
+| verify 运行 | serial-monitor |
 | verify CAN | can-debug |
 | verify Modbus | modbus-debug |
+| verify 调试 | debug-gdb-openocd |
 
 ### 讨论记录
 - 讨论目录: `.emv2/discussion/20260420-embed-ai-tool-integration/`
 
+### 已完成
+- [完成] 整合方案确定：协作分工模式
+
 ### 待执行任务
-- [ ] 更新 verify.md 添加 embed-ai-tool 调用说明
-- [ ] 更新 hvr-workflow.md
+- [ ] 整合 1/2: build-keil → 更新 verify.md + hvr-workflow.md
+- [ ] 整合 2/2: flash-openocd → 更新 verify.md + hvr-workflow.md
 - [ ] 验证整合效果
+
+---
+
+## new 命令步骤编号机制（讨论完成）
+
+### 讨论记录
+- 讨论目录: `.emv2/discussion/20260428-new-step-id/`
+
+### 方案要点
+- `/em new` 自动读取 project-spec.md 步骤表，取最大 S 编号 +1
+- 编号格式: `S<数字>`（如 S7）
+- 废弃编号不复用
+- 存量编号从 S7 开始递增
+
+### 待执行任务
+- [ ] A: `new.md` 编号逻辑
+- [ ] B: `project-spec.md` 存量补号
+- [ ] C: `stat.md` 兼容
+- [ ] D: `verify.md` 引用对齐
 
 ---
 
