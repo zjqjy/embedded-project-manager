@@ -1,23 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
-const emit = defineEmits<{
-  'menu-select': [index: string]
+defineProps<{
+  active: string
 }>()
 
-const activeIndex = ref('project')
-
-function handleSelect(index: string) {
-  activeIndex.value = index
-  emit('menu-select', index)
-}
+const emit = defineEmits<{
+  select: [index: string]
+}>()
 </script>
 
 <template>
   <el-aside width="200px" class="app-sidebar">
     <el-menu
-      :default-active="activeIndex"
-      @select="handleSelect"
+      :default-active="active"
+      @select="emit('select', $event)"
       class="sidebar-menu"
     >
       <el-menu-item index="project">

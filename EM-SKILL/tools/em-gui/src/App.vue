@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Sidebar from './components/Sidebar.vue'
+import ProjectPanel from './components/ProjectPanel.vue'
+import ActionsPanel from './components/ActionsPanel.vue'
+import SerialMonitor from './components/SerialMonitor.vue'
+import OutputPanel from './components/OutputPanel.vue'
+import OperationLog from './components/OperationLog.vue'
+import { bridgeState } from './claude/bridge'
 
 const activeView = ref('project')
-const permissionMode = ref('interactive') // interactive | notify | silent
-
-function onMenuSelect(index: string) {
-  activeView.value = index
-}
+const permissionMode = ref('interactive')
 </script>
 
 <template>
@@ -25,45 +27,69 @@ function onMenuSelect(index: string) {
           <el-option label="通知模式" value="notify" />
           <el-option label="静默模式" value="silent" />
         </el-select>
-        <el-button :icon="Setting" circle size="small" />
       </div>
     </el-header>
 
     <!-- 主体区域 -->
     <el-container class="app-body">
       <!-- 侧边栏 -->
-      <Sidebar @menu-select="onMenuSelect" />
+      <Sidebar :active="activeView" @select="activeView = $event" />
 
       <!-- 主内容区 -->
       <el-main class="app-main">
-        <div v-if="activeView === 'project'" class="view-placeholder">
-          <el-icon :size="48"><DataBoard /></el-icon>
-          <h2>项目管理面板</h2>
-          <p>项目状态、步骤进度、待办事项</p>
+        <ProjectPanel v-if="activeView === 'project'" />
+        <ActionsPanel v-else-if="activeView === 'actions'" />
+        <SerialMonitor v-else-if="activeView === 'serial'" />
+
+        <!-- 日志输出页面 -->
+        <div v-else-if="activeView === 'output'" class="output-page">
+          <div class="panel-header">
+            <h2>日志输出</h2>
+          </div>
+          <el-row :gutter="12" class="output-split">
+            <el-col :span="16">
+              <OutputPanel :text="bridgeState.lastResult" />
+            </el-col>
+            <el-col :span="8">
+              <el-card shadow="never" class="log-sidebar">
+                <template #header>
+                  <div class="card-header">
+                    <el-icon><Document /></el-icon>
+                    <span>操作记录</span>
+                  </div>
+                </template>
+                <OperationLog :operations="bridgeState.operations" />
+              </el-card>
+            </el-col>
+          </el-row>
         </div>
 
-        <div v-else-if="activeView === 'actions'" class="view-placeholder">
-          <el-icon :size="48"><Monitor /></el-icon>
-          <h2>命令快捷操作区</h2>
-          <p>一键执行常用命令</p>
-        </div>
-
-        <div v-else-if="activeView === 'serial'" class="view-placeholder">
-          <el-icon :size="48"><Connection /></el-icon>
-          <h2>串口监控工具</h2>
-          <p>串口配置、收发、日志</p>
-        </div>
-
-        <div v-else-if="activeView === 'output'" class="view-placeholder">
-          <el-icon :size="48"><ChatDotSquare /></el-icon>
-          <h2>日志与输出面板</h2>
-          <p>Claude 回复、操作记录、日志搜索</p>
-        </div>
-
-        <div v-else class="view-placeholder">
-          <el-icon :size="48"><Setting /></el-icon>
-          <h2>设置</h2>
-          <p>GUI 配置与偏好</p>
+        <!-- 设置页面 -->
+        <div v-else class="settings-page">
+          <div class="panel-header">
+            <h2>设置</h2>
+          </div>
+          <el-card shadow="never">
+            <el-form label-width="120px" size="small">
+              <el-form-item label="权限模式">
+                <el-select v-model="permissionMode" style="width: 200px">
+                  <el-option label="交互模式（每次确认）" value="interactive" />
+                  <el-option label="通知模式（自动允许）" value="notify" />
+                  <el-option label="静默模式（无提示）" value="silent" />
+                </el-select>
+                <div class="form-tip">
+                  控制 Claude 操作文件时的权限行为
+                </div>
+              </el-form-item>
+              <el-divider />
+              <el-form-item label="项目路径">
+                <el-input
+                  :model-value="'D:\\DeskTop\\WorkSpace\\Code\\embedded-project-manager'"
+                  disabled
+                />
+              </el-form-item>
+            </el-form>
+          </el-card>
         </div>
       </el-main>
     </el-container>
@@ -120,23 +146,52 @@ function onMenuSelect(index: string) {
   overflow-y: auto;
 }
 
-.view-placeholder {
+/* 日志页面布局 */
+.output-page {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: #909399;
   gap: 12px;
 }
 
-.view-placeholder h2 {
-  margin: 0;
-  color: #606266;
+.output-split {
+  flex: 1;
+  overflow: hidden;
 }
 
-.view-placeholder p {
-  margin: 0;
+.output-split :deep(.el-col) {
+  height: 100%;
+}
+
+.log-sidebar {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.log-sidebar :deep(.el-card__body) {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* 面板公共样式 */
+.panel-header h2 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  color: #303133;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-tip {
+  font-size: 12px;
   color: #c0c4cc;
+  margin-top: 4px;
 }
 </style>

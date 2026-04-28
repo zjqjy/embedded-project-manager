@@ -2,42 +2,41 @@
 
 ## 当前问题
 
-### [2026-04-15] S3 HVR工作流增强验证失败
+### [2026-04-28] S7-C Claude Code桥接验证失败：Windows环境兼容性
 - **状态**: open
-- **步骤**: S3-HVR工作流增强
-- **发现时间**: 2026-04-15
-- **描述**: HVR工作流增强功能没有正确执行流程
+- **步骤**: S7-C — Claude Code 桥接（Rust后端）
+- **发现时间**: 2026-04-28
+- **描述**: GUI 中调用 Claude CLI 在 Windows 上存在多兼容性问题
 
 ### 问题详情
-根据 out/s2.txt 中的失败记录，发现以下问题：
 
-1. **提交结果后未更新HVR文件** - 应该先更新HVR记录实际结果
-2. **失败后没有进入讨论模式** - 直接修改了代码，跳过了讨论流程
-3. **没有按照流程操作** - 跳过了问题讨论步骤
+1. **AI未按技能流程执行**:
+   - 用户要求"启动一下"，AI 未先启动 GUI，直接进入代码修改
+   - 偏离了用户请求本意，浪费了用户时间
 
-### 相关文件
-- HVR文件: [.emv2/checkpoints/HVR-S3-001.md]
-- 失败执行记录: [.emv2/out/s2.txt]
+2. **Claude CLI 路径解析失败**:
+   - Rust 的 `Command::new("claude")` 找不到 npm 安装的 `claude.cmd`
+   - 第一次已修复：改为使用 `claude.cmd`
 
-### [2026-04-16] S3 验证失败-模拟测试 ✅ 已闭环
-- **状态**: resolved (2026-04-16)
-- **步骤**: S3-HVR工作流增强
-- **发现时间**: 2026-04-16
-- **描述**: 模拟提交失败结果，验证 HVR 工作流
-- **解决方案**: HVR工作流正确执行，失败触发、问题讨论模式均正常
+3. **claude.cmd 弹出控制台窗口**:
+   - 批处理文件触发 cmd.exe 窗口
+   - 第二次修复：改用 `node` + 直接调用 `cli.js` + `CREATE_NO_WINDOW`
 
-### 问题详情
-根据 HVR-S3-002 测试结果：
+4. **缺少 git-bash 环境**:
+   - Claude Code on Windows 需要 git-bash
+   - 第三次修复：添加 `find_git_bash_path()` 自动检测
+   - 已检测到用户 git-bash 在 `D:\ZouJinQiang\App\Git\bin`
 
-1. **失败触发**: `/em result S3-失败-未知，看看效果怎么样` - ✅ 正常
-2. **HVR文件**: 已更新 [.emv2/checkpoints/HVR-S3-002.md] - ✅ 正常
-3. **问题讨论**: 进入讨论模式 - ✅ 正常
-4. **成功提交**: `/em result S3-通过` - ✅ 正常
+### 当前状态
+- 已针对上述3个技术问题做了修复（claude.rs），但尚未验证修复是否生效
+- 流程层面的 AI 不按指令执行问题需在讨论中解决
 
 ### 相关文件
-- HVR文件: [.emv2/checkpoints/HVR-S3-002.md]
+- HVR文件: [.emv2/checkpoints/HVR-S7-001.md]
+- Claude桥接代码: [EM-SKILL/tools/em-gui/src-tauri/src/claude.rs]
 
 ---
 
 ## 历史归档
 <!-- 已闭环问题归档索引 -->
+
