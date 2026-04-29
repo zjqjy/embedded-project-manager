@@ -16,7 +16,12 @@
 │  用户: /em verify s3                                      │
 │       ↓                                                   │
 │  AI: 🔄 状态: 🚧开发中→🔄验证中                           │
-│  AI: 生成HVR → 启动S5工具（后台）                         │
+│  AI: 生成HVR                                              │
+│  AI: 调用 EM-SKILL 工具:                                   │
+│      - 需要编译 → 调用 build-keil                          │
+│      - 需要烧录 → 调用 flash-openocd                       │
+│      - 需要串口 → 启动 serial-mcp/serial-monitor           │
+│  AI: 记录工具执行结果到 HVR                                │
 └─────────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -204,6 +209,21 @@ B. **建议的排查方向**:
 
 ---
 
+### 技能声明
+| 技能 | 工具 | 状态 |
+|------|------|------|
+| build-keil | `EM-SKILL/tools/build-keil/scripts/keil_builder.py` | ⬜ 待执行 |
+| flash-openocd | `EM-SKILL/tools/flash-openocd/scripts/openocd_flasher.py` | ⬜ 待执行 |
+| serial-monitor | `EM-SKILL/tools/serial-mcp/` + `EM-SKILL/tools/serial-monitor/` | ⬜ 待执行 |
+
+### AI 自动验证流程
+1. AI 调用 build-keil 编译固件
+2. AI 调用 flash-openocd 烧录固件（如需要）
+3. AI 启动 S5 串口工具（后台）
+4. AI 记录结果 → 提示人类进行最终验证
+
+---
+
 ### 操作清单（人类执行）
 - [ ] 1. 在S5工具配置串口参数
 - [ ] 2. 点击连接
@@ -235,13 +255,20 @@ B. **建议的排查方向**:
 
 ---
 
+### AI 工具执行记录
+| 时间 | 技能 | 命令 | 状态 |
+|------|------|------|------|
+| | build-keil | | |
+| | flash-openocd | | |
+
 ### 执行记录
 | 时间 | 操作 | 结果 |
 |------|------|------|
 | | | |
 
 ### 相关日志
-- 路径: `.emv2/logs/serial_<步骤>_<问题>.log`
+- 编译日志: `.emv2/logs/build_<步骤>_<时间>.log`
+- 串口日志: `.emv2/logs/serial_<步骤>_<问题>.log`
 
 ---
 

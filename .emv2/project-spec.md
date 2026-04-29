@@ -5,8 +5,8 @@
 ## Meta
 - **创建日期**: 2026-02-25
 - **项目类型**: Claude Skill 元仓库
-- **当前步骤**: S8(讨论中)
-- **整体状态**: S1-S6 全部完成 ✅ / S7 EM-SKILL GUI ⏸️ 暂停 / S8 讨论中 🚧
+- **当前步骤**: S9(开发中)
+- **整体状态**: S1-S6 全部完成 ✅ / S7 EM-SKILL GUI ⏸️ 暂停 / S8 模板优化 ✅ 完成 / S9 embed-ai-tool 整合 🚧 开发中
 - **项目路径**: D:\DeskTop\WorkSpace\Code\embedded-project-manager
 
 ## 全局检查点（Gates）
@@ -28,7 +28,8 @@
 | S5 | 串口调试工具 | ✅ 完成 | 2026-04-19 |
 | S6 | 文件归档机制 | ✅ 完成 | 2026-04-17 |
 | S7 | EM-SKILL GUI桌面应用 | ⏸️ 暂停（延后开发） | 2026-04-28 |
-| S8 | 优化项目文件模板 | 🚧 讨论中 | 2026-04-28 |
+| S8 | 优化项目文件模板 | ✅ 完成 | 2026-04-28 |
+| S9 | embed-ai-tool 整合 | 🚧 开发中 | 2026-04-29 |
 
 ---
 
@@ -104,6 +105,37 @@ EM-SKILL的GUI前端，替代命令行操作，提供可视化项目管理界面
 
 ### 讨论记录
 - 讨论目录: `.emv2/discussion/20260428-em-skill-gui/`
+
+---
+
+## S9 embed-ai-tool 整合
+
+### 核心定位
+**EM = 流程控制（verify 命令），embed-ai-tool = 具体执行（编译/烧录/监控）**
+
+embed-ai-tool 的脚本已合并到 `EM-SKILL/tools/` 目录，EM-SKILL 实现自包含。
+
+### 子流程
+
+| 子步骤 | 名称 | 状态 | 说明 |
+|--------|------|------|------|
+| S9-A | 工具初始化+权限配置 | ✅ 完成 | initem.md 新增工具路径自动探测/注册流程 |
+| S9-B | build-keil 脚本整合 | ✅ 完成 | 合并到 EM-SKILL/tools/build-keil/ |
+| S9-C | flash-openocd 脚本整合 | ✅ 完成 | 合并到 EM-SKILL/tools/flash-openocd/ + 修复硬编码bug |
+| S9-D | serial-monitor 脚本整合 | ✅ 完成 | 合并到 EM-SKILL/tools/serial-monitor/ |
+| S9-E | HVR 工作流更新 | ✅ 完成 | hvr-workflow.md 新增技能声明+AI执行记录 |
+| S9-F | 全流程验证 | 🔲 待验证 | 验证编译+烧录+串口完整流程 |
+
+### 技术方案
+
+| 项目 | 选择 |
+|------|------|
+| 脚本位置 | EM-SKILL/tools/ 内自包含 |
+| 配置读取 | tool_config.py（EM-SKILL/tools/shared/） |
+| 串口工具 | S5 serial-mcp (GUI) + serial-monitor (CLI) 并存 |
+
+### 讨论记录
+- 讨论目录: `.emv2/discussion/20260420-embed-ai-tool-integration/`
 
 ---
 
