@@ -93,7 +93,7 @@ embedded-project-manager/
 在 Claude Code 对话中输入：
 
 ```
-帮我安装 https://github.com/zjqjy/embedded-project-manager.git 的 skill
+帮我安装 https://github.com/zjqjy/embedded-project-manager.git 的 skill，指定 embed-ai-tool整合 分支
 ```
 
 这会克隆整个项目仓库，其中包含：
