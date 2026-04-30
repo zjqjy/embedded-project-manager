@@ -2,10 +2,12 @@
 
 ## 当前问题
 
-### [2026-04-30] S9-F 全流程验证 - P0问题已修复
-- **状态**: P0 已修复，待验证
+### [2026-04-30] S9-F 全流程验证 - ✅ 通过
+- **状态**: closed
 - **步骤**: S9-F — embed-ai-tool 整合全流程验证
-- **修复时间**: 2026-04-30
+- **验证时间**: 2026-04-30
+- **验证方式**: OTA 项目实际烧录验证
+- **结论**: 编译→烧录→串口全流程验证通过
 
 ### 问题清单
 
@@ -31,10 +33,10 @@
 - **修复**: serial_monitor.py 新增 `--step` 参数和自动检测 `.emv2/logs/` 功能
 - **文件**: `EM-SKILL/tools/serial-monitor/scripts/serial_monitor.py`
 
-**P2: 权限弹窗过多**
+**✅ P2: 权限弹窗过多** (已修复 2026-04-30)
 - **现象**: 验证过程中 Claude Code 频繁弹出权限确认
-- **根因**: `~/.claude/settings.json` 的 permissions 配置不完整
-- **待办**: initem.md 中 permissions 配置需改为精确路径白名单
+- **修复**: 更新 initem.md，添加精确路径白名单配置
+- **文件**: `EM-SKILL/commands/initem.md`
 
 **✅ P1-3: openocd_flasher J-Link 烧录后程序不运行** (已修复 2026-04-30)
 - **现象**: 使用 J-Link 烧录后，程序不自动运行，需要手动复位

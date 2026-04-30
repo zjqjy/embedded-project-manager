@@ -131,11 +131,44 @@ for name, info in list_tools().items():
 
 ### 新增 permissions 配置
 
-同时需要在 `~/.claude/settings.json` 的 `permissions.allow` 中添加脚本执行权限：
+需要在 `~/.claude/settings.json` 的 `permissions.allow` 中**添加**脚本执行权限：
 
 ```json
-"Bash(python *)"
+"permissions": {
+  "allow": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Search",
+    "Bash(git:status)",
+    "Bash(git:diff)",
+    "Bash(npm:test)",
+    "Bash(npm run:build)",
+    "Bash(ls:*)",
+    "Edit(**/.emv2/**/*.md)",
+    "Write(**/.emv2/**/*.md)",
+    "Bash(python:*)",
+    "Bash(python */EM-SKILL/tools/build-keil/*.py)",
+    "Bash(python */EM-SKILL/tools/flash-openocd/*.py)",
+    "Bash(python */EM-SKILL/tools/serial-monitor/*.py)"
+  ],
+  "ask": [
+    "Write(**/.emv2/discussion/**/*.md)",
+    "Edit(**/.emv2/discussion/**/*.md)"
+  ],
+  "deny": [
+    "Bash(rm:*)",
+    "Bash(sudo:*)",
+    "Bash(git push:*)"
+  ]
+}
 ```
+
+**说明**：
+- 保留原有基础权限（Read, Glob, Grep 等）
+- 新增 `Bash(python:*)` - 允许执行 python 命令
+- 精确路径白名单 - 只允许执行 EM-SKILL 目录下的工具脚本
+- 避免使用 `Bash(python *)` 这样的宽泛通配符
 
 ### 注册的工具
 
