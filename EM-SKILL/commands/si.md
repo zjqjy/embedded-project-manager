@@ -35,7 +35,7 @@
 
 4. **创建 .emv2/ 目录结构**
 5. **生成/更新 project-spec.md 和 memory-log.md**
-6. **更新全局索引**
+6. **更新全局索引:embedded-projects-index.md,一般在.claude里**
 7. **输出审计报告**
 
 ## 输出格式

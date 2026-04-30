@@ -1,4 +1,0 @@
-# Cargo 配置 - MSVC 链接器
-# 显式指定 MSVC link.exe 避免 Cygwin/MSYS2 link.exe 的干扰
-[target.x86_64-pc-windows-msvc]
-linker = "C:\\Program Files\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe"

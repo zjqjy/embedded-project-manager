@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import shutil
 import subprocess
@@ -23,6 +24,18 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Iterable
+
+# 引入 tool_config 以支持配置的工具路径
+_SCRIPT_DIR = Path(__file__).resolve().parent
+_SKILLS_DIR = _SCRIPT_DIR.parent.parent
+for _candidate in [_SKILLS_DIR / "shared", _SKILLS_DIR.parent / "shared"]:
+    if (_candidate / "tool_config.py").exists():
+        sys.path.insert(0, str(_candidate))
+        break
+try:
+    from tool_config import get_tool_path
+except ImportError:
+    get_tool_path = None  # type: ignore
 
 if sys.stdout and hasattr(sys.stdout, "reconfigure"):
     try:
@@ -216,12 +229,29 @@ def open_serial(port: str, baudrate: int):
         return None
 
 
+def _get_openocd_executable() -> str | None:
+    """获取 OpenOCD 可执行文件路径（配置优先于 PATH）。"""
+    if get_tool_path:
+        configured = get_tool_path("openocd")
+        if configured:
+            # 如果是绝对路径，直接返回；否则用 which 查找
+            if Path(configured).is_absolute():
+                return configured
+            found = shutil.which(configured)
+            if found:
+                return found
+            # 配置了但找不到，尝试当作命令名查找
+            return shutil.which("openocd") or configured
+    return shutil.which("openocd")
+
+
 def check_openocd() -> bool:
-    return shutil.which("openocd") is not None
+    return _get_openocd_executable() is not None
 
 
 def detect_available_debuggers() -> list[str]:
-    if not check_openocd():
+    openocd_exec = _get_openocd_executable()
+    if not openocd_exec:
         return []
 
     detected: list[str] = []
@@ -230,10 +260,10 @@ def detect_available_debuggers() -> list[str]:
         interface_cfg = INTERFACE_CONFIGS[interface]
         try:
             result = subprocess.run(
-                ["openocd", "-f", interface_cfg, "-c", "init; exit"],
+                [openocd_exec, "-f", interface_cfg, "-c", "init; exit"],
                 capture_output=True,
                 text=True,
-                timeout=3,
+                timeout=8,
             )
         except Exception:
             continue
@@ -295,7 +325,12 @@ def build_openocd_command(
         print("   请提供 `--openocd-config` 或 `--openocd-target`。")
         return None
 
-    command_line = ["openocd"]
+    openocd_exec = _get_openocd_executable()
+    if not openocd_exec:
+        print("❌ 未找到 OpenOCD")
+        return None
+
+    command_line = [openocd_exec]
     for cfg in configs:
         command_line.extend(["-f", cfg])
     command_line.extend(["-c", command])
@@ -626,7 +661,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--clear", action="store_true", help="读取前清空缓冲区")
     parser.add_argument("--wait", help="等待特定字符串出现后结束")
     parser.add_argument("--monitor", action="store_true", help="持续监视，直到 Ctrl+C")
-    parser.add_argument("--save", help="将日志保存到文件")
+    parser.add_argument("--save", help="将日志保存到文件（默认自动保存到 .emv2/logs/）")
+    parser.add_argument("--step", help="当前验证步骤（如 S9），用于日志命名")
     parser.add_argument("--timestamp", action="store_true", help="显示时间戳")
     parser.add_argument("-v", "--verbose", action="store_true", help="输出详细分析")
     parser.add_argument("--keep", action="store_true", help="保留已有缓冲区内容")
@@ -658,6 +694,35 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _detect_emv2_logs_dir() -> Path | None:
+    """自动检测当前目录是否在 EM 项目中，返回 .emv2/logs/ 路径。"""
+    cwd = Path.cwd()
+    emv2_dir = cwd / ".emv2"
+    if emv2_dir.is_dir():
+        logs_dir = emv2_dir / "logs"
+        logs_dir.mkdir(parents=True, exist_ok=True)
+        return logs_dir
+    return None
+
+
+def _build_default_log_path(step: str | None, project: str | None) -> Path | None:
+    """根据步骤和项目构建默认日志路径。"""
+    logs_dir = _detect_emv2_logs_dir()
+    if logs_dir is None:
+        return None
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    if step and project:
+        return logs_dir / f"serial_{step}_{project}_{timestamp}.log"
+    elif step:
+        return logs_dir / f"serial_{step}_{timestamp}.log"
+    elif project:
+        return logs_dir / f"serial_{project}_{timestamp}.log"
+    else:
+        return logs_dir / f"serial_{timestamp}.log"
+
+
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
@@ -669,6 +734,15 @@ def main() -> int:
     if args.list:
         list_serial_ports()
         return 0
+
+    # 处理日志保存路径
+    save_file = args.save
+    if not save_file:
+        # 自动检测 .emv2/logs/ 目录
+        default_log = _build_default_log_path(args.step, args.project)
+        if default_log:
+            save_file = str(default_log)
+            print(f"ℹ️ 自动日志路径: {save_file}")
 
     port = args.port
     if args.auto or not port:
@@ -696,7 +770,7 @@ def main() -> int:
             clear_first=args.clear,
             wait_pattern=args.wait,
             monitor_mode=args.monitor,
-            save_file=args.save,
+            save_file=save_file,
             show_timestamp=args.timestamp,
             keep_buffer=args.keep,
             wait_reset=args.wait_reset,
