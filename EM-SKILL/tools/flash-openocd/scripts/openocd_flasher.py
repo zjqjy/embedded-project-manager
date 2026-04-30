@@ -238,7 +238,6 @@ def build_flash_command(
     reset: bool,
     custom_command: str | None,
     openocd_path: str | None = None,
-    preserve_bootloader: bool = False,
 ) -> list[str] | None:
     if not openocd_path:
         openocd_path = get_tool_path("openocd") or "openocd"
@@ -273,31 +272,31 @@ def build_flash_command(
     else:
         artifact_posix = str(artifact).replace("\\", "/")
         # J-Link 需要特殊处理：先 halt 再烧录，最后 reset run
-        erase_mode = "preserve" if preserve_bootloader else "full"
         if interface == "jlink":
-            program_parts = [
-                "init",
-                "halt",
-                f"program {artifact_posix} erase {erase_mode}"
-            ]
+            # J-Link: init; halt; program <file>; verify; reset run; exit
+            openocd_cmds = ["init", "halt"]
+            program_cmd = f"program {artifact_posix}"
             if artifact_kind == "bin" and base_address:
-                program_parts.append(base_address)
+                program_cmd += f" {base_address}"
             if verify:
-                program_parts.append("verify")
+                program_cmd += " verify"
             if reset:
-                program_parts.extend(["reset", "run"])
-            program_parts.append("exit")
+                program_cmd += " reset run"
+            openocd_cmds.append(program_cmd)
+            openocd_cmds.append("exit")
         else:
-            program_parts = [f"program {artifact_posix} erase {erase_mode}"]
+            # ST-Link/CMSIS-DAP: init; program <file>; verify; reset; exit
+            openocd_cmds = ["init"]
+            program_cmd = f"program {artifact_posix}"
             if artifact_kind == "bin" and base_address:
-                program_parts.append(base_address)
+                program_cmd += f" {base_address}"
             if verify:
-                program_parts.append("verify")
+                program_cmd += " verify"
             if reset:
-                program_parts.append("reset")
-            program_parts.append("exit")
-            program_parts.insert(0, "init")
-        flash_cmd = "; ".join(program_parts)
+                program_cmd += " reset"
+            openocd_cmds.append(program_cmd)
+            openocd_cmds.append("exit")
+        flash_cmd = "; ".join(openocd_cmds)
         cmd.extend(["-c", flash_cmd])
 
     return cmd
@@ -426,7 +425,6 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--base-address", help="BIN 文件烧录基地址（十六进制）")
     parser.add_argument("--no-verify", action="store_true", help="跳过烧录后校验")
     parser.add_argument("--no-reset", action="store_true", help="烧录后不复位")
-    parser.add_argument("--preserve-bootloader", action="store_true", help="保留 bootloader 区域，只擦除要烧录的区域")
     parser.add_argument("--no-detect", action="store_true", help="禁止自动探测调试接口")
     parser.add_argument("--scan-configs", help="扫描指定目录中的 OpenOCD 配置线索")
     parser.add_argument("--openocd-command", help="自定义 OpenOCD 烧录命令")
@@ -512,7 +510,6 @@ def main() -> int:
         reset=reset,
         custom_command=args.openocd_command,
         openocd_path=openocd_path,
-        preserve_bootloader=args.preserve_bootloader,
     )
     if cmd is None:
         return 1

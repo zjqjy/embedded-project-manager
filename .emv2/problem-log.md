@@ -43,7 +43,13 @@
 
 **✅ P1-4: openocd_flasher 需要支持部分擦除（保留 bootloader）** (已修复 2026-04-30)
 - **现象**: 有 bootloader 的项目不希望全部擦除
-- **修复**: 新增 `--preserve-bootloader` 选项，使用 `program ... erase preserve`
+- **修复**: 移除错误的 `erase` 参数（OpenOCD 不支持），直接使用 `program` 命令会自动处理擦除
+- **文件**: `EM-SKILL/tools/flash-openocd/scripts/openocd_flasher.py`
+
+**✅ P1-8: openocd_flasher OpenOCD 命令格式错误** (已修复 2026-04-30)
+- **现象**: 烧录时报 `Error: Invalid command argument`
+- **根因**: 我错误理解了 OpenOCD program 命令格式
+- **修复**: 修正命令格式为 `program <file> [verify] [reset]`，参数用空格分隔
 - **文件**: `EM-SKILL/tools/flash-openocd/scripts/openocd_flasher.py`
 
 **✅ P1-5: S5 GUI 启动缺少步骤和路径参数** (已修复 2026-04-30)
