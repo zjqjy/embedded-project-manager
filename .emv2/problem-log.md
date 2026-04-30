@@ -9,6 +9,27 @@
 - **验证方式**: OTA 项目实际烧录验证
 - **结论**: 编译→烧录→串口全流程验证通过
 
+### [2026-04-30] S10 串口监控 + initem 优化
+- **状态**: open
+- **描述**: 串口监控错过消息、GIT启动、initem 需包含 OpenOCD 下载
+
+#### 问题清单
+
+**P1-9: 串口监控错过启动消息**
+- **现象**: 验证流程：编译→烧录→打开串口监控，但打开串口时已错过很多启动消息
+- **需求**: 打开串口后能自动重启开发板
+- **修复方向**: serial-monitor 有 `--auto-reset` 参数，烧录后自动复位开发板
+
+**P1-10: serial-mcp GUI 启动方式错误**
+- **现象**: 有 GUI 的 serial-mcp 用 Windows `start` 命令打开
+- **需求**: 应该直接用 Python 运行 `.py` 程序
+- **修复方向**: verify.md 中改为 `python serial_monitor.py` 而不是 `start "" bat`
+
+**P1-11: initem 需包含 OpenOCD 下载**
+- **现象**: initem 没有强制要求下载 OpenOCD
+- **需求**: OpenOCD 是必须下载的工具
+- **修复方向**: initem.md 增加 OpenOCD 下载指引
+
 ### 问题清单
 
 **✅ P0-1: openocd_flasher --detect 探针检测不准确** (已修复 2026-04-30)

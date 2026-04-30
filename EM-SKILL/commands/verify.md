@@ -28,8 +28,8 @@
 ## S5工具启动（串口调试）
 
 ```bash
-# 传入项目路径和步骤参数，确保日志保存到 .emv2/logs/
-start "" "EM-SKILL\tools\serial-mcp\start.bat" "%CD%" "S9"
+# 使用 Python 直接启动，确保日志保存到 .emv2/logs/
+python EM-SKILL/tools/serial-mcp/serial_monitor.py --project "%CD%" --step "S9"
 ```
 
 GUI程序启动后独立运行，AI继续其他工作。
@@ -153,6 +153,25 @@ EM-SKILL 内置两个串口工具：
 | serial-monitor (CLI) | `EM-SKILL/tools/serial-monitor/scripts/serial_monitor.py` | 脚本式串口抓取（定长/关键字/持续） |
 
 S5 工具用于人工观察，serial-monitor 用于 AI 自动抓取日志。
+
+### 避免错过启动消息
+
+如果需要在烧录后观察完整的启动日志，使用 `--wait-reset --auto-reset` 参数：
+
+```bash
+python EM-SKILL/tools/serial-monitor/scripts/serial_monitor.py \
+  --port COM5 \
+  --baud 115200 \
+  --duration 10 \
+  --wait-reset \
+  --auto-reset \
+  --save .emv2/logs/serial_S9.log
+```
+
+**工作流程**：
+1. 打开串口，开始监听
+2. 自动复位开发板（通过 OpenOCD）
+3. 捕获完整的启动日志
 
 ## 相关文件
 - workflows/hvr-workflow.md - HVR工作流细则（含模板和流程图）
