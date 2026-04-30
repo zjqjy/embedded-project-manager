@@ -17,8 +17,10 @@
 3. 🔄 **更新 Meta**：当前步骤: S7-A(验证中)
 4. 生成 HVR 文件（增强版）
 5. 保存到 `.emv2/checkpoints/HVR-<步骤>-<序号>.md`
-6. 启动S5串口工具
-7. 输出验证清单
+6. 自动编译
+8. 下载,默认stlink，探测作为参考，如果探测成功的下载失败，可以三个都试一遍下载
+7. 启动串口工具，两个工具都要注意参数,要注意要采集完整信息，执行复位mcu时需要和下载成功的调试工具对应
+9. 输出验证清单
 
 ## HVR 文件
 
@@ -156,22 +158,39 @@ S5 工具用于人工观察，serial-monitor 用于 AI 自动抓取日志。
 
 ### 避免错过启动消息
 
-如果需要在烧录后观察完整的启动日志，使用 `--wait-reset --auto-reset` 参数：
+**关键：必须指定 OpenOCD 参数，否则复位会失败！**
+
+如果需要在烧录后观察完整的启动日志，使用以下完整参数：
 
 ```bash
 python EM-SKILL/tools/serial-monitor/scripts/serial_monitor.py \
   --port COM5 \
   --baud 115200 \
-  --duration 10 \
+  --duration 15 \
   --wait-reset \
   --auto-reset \
+  --interface stlink \
+  --openocd-config interface/stlink.cfg \
+  --openocd-target target/stm32f4x.cfg \
   --save .emv2/logs/serial_S9.log
 ```
 
+**参数说明**：
+| 参数 | 说明 |
+|------|------|
+| `--interface` | 必须与烧录时使用的接口一致 (stlink/jlink/cmsis-dap) |
+| `--openocd-config` | OpenOCD 接口配置文件 |
+| `--openocd-target` | OpenOCD 目标芯片配置文件 |
+
 **工作流程**：
 1. 打开串口，开始监听
-2. 自动复位开发板（通过 OpenOCD）
-3. 捕获完整的启动日志
+2. OpenOCD 执行 `reset halt` 复位开发板
+3. MCU 重启后输出完整启动日志
+4. 捕获完整的启动日志并保存
+
+**常见错误**：
+- ❌ 不传 `--interface`：OpenOCD 自动选择错误接口，导致 `Unsupported transport`
+- ❌ 不传 `--openocd-config`：配置文件路径不对，导致 `invalid command name`
 
 ## 相关文件
 - workflows/hvr-workflow.md - HVR工作流细则（含模板和流程图）
