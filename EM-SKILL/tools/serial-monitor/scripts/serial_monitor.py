@@ -478,7 +478,7 @@ def read_serial(
                 except pyserial.SerialException as exc:
                     raise RuntimeError(f"串口读取失败: {exc}") from exc
 
-                text = data.decode("utf-8", errors="ignore")
+                text = data.decode("latin-1", errors="replace")
                 for char in text:
                     if char == "\r":
                         continue

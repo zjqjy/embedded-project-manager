@@ -370,7 +370,7 @@ class SerialMonitor:
         while self.is_receiving and self.serial_port and self.serial_port.is_open:
             try:
                 if self.serial_port.in_waiting:
-                    line = self.serial_port.readline().decode('utf-8', errors='ignore').strip()
+                    line = self.serial_port.readline().decode('latin-1', errors='replace').strip()
                     if line:
                         # 添加时间戳
                         if self.timestamp_var.get():
