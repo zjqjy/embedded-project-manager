@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit --amend --author=\"zjq <zjq@example.com>\" --no-edit)"
+    ]
+  }
+}

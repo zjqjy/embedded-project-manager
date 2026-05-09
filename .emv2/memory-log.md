@@ -4,50 +4,21 @@
 
 ## 会话指纹
 - **项目ID**: proj-emv2-260225
-- **当前会话**: sess-20260419-002
-- **会话链**: sess-20260225-001 → sess-20260227-001 → sess-20260327-001 → sess-20260415-001 → sess-20260416-001 → sess-20260417-001 → sess-20260419-001 → sess-20260419-002
+- **当前会话**: sess-20260429-001
+- **会话链**: sess-20260225-001 → ... → sess-20260429-001 → sess-20260430-001
 
 ## 快速恢复信息
 ```
 恢复命令: /em rec emv2
-最后活跃: 2026-04-19
-状态: S5完成，工作流已修正
+最后活跃: 2026-04-30
+状态: S9 ✅ 完成
 ```
 
 ## 当前状态
-- **步骤**: S5-串口调试工具（✅ 完成）
-- **状态**: S4/S5/S6全部完成
-- **最后活跃**: 2026-04-19
-- **最后会话ID**: sess-20260419-001
-
----
-
-## 开发步骤状态
-
-| 步骤 | 名称 | 状态 | 日期 |
-|------|------|------|------|
-| S1 | 存量接入 | ✅ 完成 | 2026-02-25 |
-| S2 | 需求对齐讨论流程 | ✅ 规划完成 | 2026-03-27 |
-| S3 | HVR工作流增强 | ✅ 完成 | 2026-04-16 |
-| S4 | 芯片学习机制 | ✅ 完成 | 2026-04-16 |
-| S5 | 串口调试工具 | 🚧 讨论完成 | 2026-04-19 |
-| S6 | 文件归档机制 | ✅ 完成 | 2026-04-17 |
-
----
-
-## 待办事项
-
-### 下一步（最高优先级）
-1. [高] S5-A MCP工具开发（tkinter UI + pyserial + MCP Server）
-
-### 已完成
-- [完成] S4芯片学习机制 - 2026-04-16
-- [完成] S6归档机制 - 2026-04-17
-  - 阈值：memory-log > 600行，problem/decision > 300行
-- [完成] S5讨论 - 2026-04-19
-  - 确定：MCP工具 + tkinter UI + 人-AI协作验证流程
-
----
+- **步骤**: S9 ✅ 完成
+- **状态**: S1-S9 全部完成 ✅ / S7 ⏸️ 暂停
+- **最后活跃**: 2026-04-30
+- **最后会话ID**: sess-20260430-001
 
 ## 关键决策
 
@@ -61,12 +32,66 @@
   - 方案：C-b（MCP自带UI）
   - 技术：tkinter + pyserial + MCP Server
   - 功能：串口配置/收发/日志保存/MCP接口
+- [2026-04-28] S7讨论完成：
+  - 技术栈：Tauri + Vue3 + Vite + Element Plus
+  - Claude通信：CLI管道（常驻子进程，stdin/stdout实时双向）
+  - 定位：GUI是EM-SKILL的前端外壳，不替代原技能
+  - 触发方式：桌面快捷方式为主
+  - 串口工具：Vue重写（保留原tkinter工具）
+  - 第一期：仅Windows，代码按跨平台写
+- [2026-04-28] S7 ⏸️ 暂停：Windows兼容性问题待后续版本修复，S7整体延后开发
+- [2026-04-29] S9 embed-ai-tool 整合开发：
+  - 整合模型：EM = 流程控制，embed-ai-tool = 具体执行
+  - embed-ai-tool 脚本合并到 EM-SKILL/tools/ 目录（自包含）
+  - build-keil、flash-openocd、serial-monitor 都合并进来
+  - 工具路径自动探测 + 手动备选（detect_tools.py）
+  - 修复 openocd_flasher.py build_flash_command 硬编码 "openocd" 的 bug
+  - HVR 模板新增技能声明和 AI 执行记录表
 
 ---
 
 ## 会话历史
 
-### sess-20260419-002 (2026-04-19) ← 当前
+### sess-20260430-001 (2026-04-30) ← 当前
+- **主要内容**:
+  - S9-F 全流程验证
+  - 用 OTA 项目验证编译→烧录流程
+  - 修复 P0-1: openocd_flasher --detect 优先使用配置路径
+  - 修复 P0-2: serial-monitor --auto-reset 引入 tool_config
+  - 修复 P1-2: verify.md 自动连续执行三步
+  - 修复 P1-3: J-Link 烧录后程序自动运行
+  - 修复 P1-8: OpenOCD 命令格式错误（erase 参数不支持）
+  - 修复 P2: initem.md 权限配置说明
+  - EM-SKILL 技能安装到全局目录
+- **产出**: S9 全部完成，OTA 项目验证通过
+- **下一步**: 项目归档或开始新功能
+
+### sess-20260429-001 (2026-04-29)
+- **主要内容**:
+  - S9 embed-ai-tool 整合实施
+  - 整合模型确定：EM = 流程控制，embed-ai-tool = 执行
+  - embed-ai-tool 脚本合并到 EM-SKILL/tools/
+  - initem.md 新增工具路径自动探测流程（detect_tools.py）
+  - verify.md 新增 build-keil / flash-openocd / serial-monitor 调用说明
+  - hvr-workflow.md 更新流程图和 HVR 模板
+  - 修复 openocd_flasher.py 硬编码 bug（build_flash_command 未使用配置路径）
+  - 更新 milestones.md 从 S7→S9 重编号
+- **产出**: S9-A~E 全部完成，待 S9-F 全流程验证
+- **下一步**: S9-F 全流程验证（编译+烧录+串口）
+
+### sess-20260428-001 (2026-04-28)
+- **主要内容**:
+  - S7 EM-SKILL GUI 讨论（/em new EM-SKILL GUI界面）
+  - 技术栈确定：Tauri + Vue3 + Vite + Element Plus
+  - Claude通信方案：CLI管道（常驻子进程，实时双向）
+  - GUI定位：EM-SKILL前端外壳，不替代原技能
+  - 触发方式：桌面快捷方式为主
+  - 串口工具：Vue重写（保留原tkinter工具）
+  - 第一期：仅Windows，代码按跨平台写
+- **产出**: S7讨论完成，9个子步骤（S7-A~S7-I）已规划
+- **下一步**: S7-A 技术验证（Claude CLI管道通信）
+
+### sess-20260419-002 (2026-04-19)
 - **主要内容**:
   - S5工作流讨论（/em disc S5）
   - 修正工作流：/em result应在验证阶段
@@ -108,43 +133,4 @@
   - S6归档机制讨论（memory-log和project-spec为归档重点）
 - **产出**: S4验证通过，S6讨论完成
 
----
-
-## 最近更新
-
-### 2026-04-19
-- **README完善**（17:30）
-  - 新增完整开发流程说明
-  - 方式A：存量接入（/em si）
-  - 方式B：空项目（/em init）
-  - 文档：EM-SKILL/README.md
-- **initem增强**（17:00）
-  - 新功能：Python自检 + 环境依赖自动安装
-  - 依赖：pyserial, mcp
-  - 文档更新：EM-SKILL/commands/initem.md
-- S5讨论完成
-  - 确定：MCP工具 + tkinter UI + 人-AI协作验证流程
-  - 方案：C-b（MCP自带UI）
-  - 技术：tkinter + pyserial
-  - 功能：串口配置/收发/日志保存/MCP接口
-  - 更新：hvr-workflow.md、discussion目录
-- S5开发完成（14:40）
-  - MCP集成到serial_monitor.py
-  - 通过文件共享与Claude通信
-  - MCP测试：serial_status/serial_read/serial_log_file 全部通过
-  - HVR-S5-001验证通过
-
-### 2026-04-17
-- S6归档机制验证通过
-  - 更新归档阈值：memory-log > 600行，problem/decision > 300行
-  - arch.md 已更新支持新类型
-  - history-index.md 已更新支持新类型
-
-### 2026-04-16
-- S4芯片学习验证通过
-  - GD32F7xx正确识别
-  - chips.json已更新
-- S6归档讨论完成
-  - 确定memory-log和project-spec为归档重点
-
----
+<!-- 会话历史在本次会话结束后自动记录 -->

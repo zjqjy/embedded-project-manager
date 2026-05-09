@@ -1,96 +1,110 @@
 # 命令: /em initem (工具初始化)
 
 ## 功能
-1. 检查并更新 `~/.claude/settings.json` 配置
-2. 检查 Python 环境
-3. 安装 MCP 工具依赖（pyserial, mcp）
+初始化 EM-SKILL 开发环境，包含：
+1. 更新 Claude 权限配置
+2. 探测并注册工具路径
+3. 自动下载 OpenOCD（如果未安装）
 
 ## 触发
 ```
 /em initem
 ```
 
-## 为什么需要执行这个？
+## 执行流程
 
-执行 `/em initem` 后，EM 工具将获得以下基础权限：
+### 步骤 1: 更新权限配置
 
-| 权限 | 效果 |
-|------|------|
-| `Read` | 读取文件 |
-| `Glob` | 查找文件 |
-| `Grep` | 搜索内容 |
-| `Search` | 网络搜索 |
-| `Bash(git:status)` | 查看 Git 状态 |
-| `Bash(git:diff)` | 查看 Git 差异 |
-
-**好处**：
-- ✅ 减少交互确认，提升效率
-- ✅ 工具能正常使用基础功能
-- ✅ 防止权限不足导致的操作失败
-
-## 需要确保的 permissions 配置
+自动更新 `~/.claude/settings.json`，添加脚本执行权限：
 
 ```json
- "permissions": {
-    "allow": [
-      "Read",
-      "Glob",
-      "Grep",
-      "Search",
-      "Bash(git:status)",
-      "Bash(git:diff)",
-      "Bash(npm:test)",
-      "Bash(npm run:build)",
-      "Bash(ls *)",
-      "Edit(**/.emv2/**/*.md)",
-      "Write(**/.emv2/**/*.md)"
-    ],
-    "ask": [
-      "Write(**/.emv2/discussion/**/*.md)",
-      "Edit(**/.emv2/discussion/**/*.md)"
-    ],
-    "deny": [
-      "Bash(rm:*)",
-      "Bash(sudo:*)",
-      "Bash(git push:*)"
-    ]
-  }
+"permissions": {
+  "allow": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Search",
+    "Bash(git:status)",
+    "Bash(git:diff)",
+    "Bash(npm:test)",
+    "Bash(npm run:build)",
+    "Bash(ls:*)",
+    "Edit(**/.emv2/**/*.md)",
+    "Write(**/.emv2/**/*.md)",
+    "Bash(python:*)",
+    "Bash(python */EM-SKILL/tools/build-keil/*.py)",
+    "Bash(python */EM-SKILL/tools/flash-openocd/*.py)",
+    "Bash(python */EM-SKILL/tools/serial-monitor/*.py)"
+  ],
+  "ask": [
+    "Write(**/.emv2/discussion/**/*.md)",
+    "Edit(**/.emv2/discussion/**/*.md)"
+  ],
+  "deny": [
+    "Bash(rm:*)",
+    "Bash(sudo:*)",
+    "Bash(git push:*)"
+  ]
+}
 ```
 
-## 输出示例
+### 步骤 2: 探测工具路径
 
-### 首次运行（无配置）
-```
-🔧 工具初始化
-
-检查 ~/.claude/settings.json...
-- 文件不存在，创建中...
-- 备份: ~/.claude/settings.json.bak
-- 添加基础权限配置...
-
-✅ 配置完成！
-
-效果：
-  - 基础权限配置 ✓
-  - 减少确认交互，提升效率 ✓
+```bash
+python EM-SKILL/tools/shared/detect_tools.py
 ```
 
-### 已配置
-```
-🔧 工具初始化
+找到的工具自动注册到 `%APPDATA%/em_skill/config.json`。
 
-检查 ~/.claude/settings.json...
-✅ 已有完整权限配置，无需重复配置
+### 步骤 3: 注册工具
+
+| 工具 | config key | 必须 | 说明 |
+|------|-----------|------|------|
+| OpenOCD | `openocd` | ✅ 必须 | 烧录工具（未安装则自动下载） |
+| Keil UV4 | `uv4` | 必须 | 编译工具（用户手动指定） |
+| J-Link | `jlink` | 可选 | 烧录工具 |
+
+未找到的工具：
+- OpenOCD → 自动下载
+- Keil UV4 → 提示用户手动指定
+- 其他 → 提示用户手动指定
+
+### 步骤 4: 自动下载 OpenOCD
+
+OpenOCD 是烧录的必须工具。如果未安装，自动下载：
+
+```bash
+# 下载地址
+https://github.com/xpack-dev-tools/openocd-xpack/releases
+
+# 选择版本（如 xpack-openocd-0.12.0-7-win32-x64.zip）
+# 解压到常用目录
 ```
 
-### 配置异常
-```
-🔧 工具初始化
+## 完整输出示例
 
-检查 ~/.claude/settings.json...
-⚠️ 检测到权限配置不完整
-- 缺少: npm:test, npm run:build
-- 是否修复？[是] [否]
+```
+🔧 EM-SKILL 工具初始化
+
+[1/4] 更新权限配置...
+  ✅ permissions 已更新
+
+[2/4] 探测工具...
+  ✅ openocd: D:/OpenOCD/xpack-openocd-0.12.0-7/bin/openocd.exe
+  ⚠️ uv4: 未找到（可选）
+  ⚠️ jlink: 未找到（可选）
+
+[3/4] 注册工具路径...
+  ✅ openocd 已注册
+
+[4/4] 检查 OpenOCD...
+  ✅ OpenOCD 可用
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ 初始化完成！
+
+已注册工具：
+  - openocd: D:/OpenOCD/xpack-openocd-0.12.0-7/bin/openocd.exe
 ```
 
 ---

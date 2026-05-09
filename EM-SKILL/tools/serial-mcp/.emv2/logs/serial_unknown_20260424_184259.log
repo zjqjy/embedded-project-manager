@@ -1,0 +1,104 @@
+[18:43:02] cmd ndl sn=8
+[18:43:02] en=1
+[18:43:02] set_en=1
+[18:43:02] key:pin=0 sta=0
+[18:43:02] cmd normal
+[18:43:02] sys_sta=1
+[18:43:02] Height 36 91 252 46
+[18:43:02] a:877592,b:824080,d:776370,e:773748,s:824080,h:877592,s:867596,r:781613
+[18:43:02] h:36,r:91,t:252,c:0,rg:46
+[18:43:02] Height 32 114 252 41
+[18:43:02] a:877592,b:834042,d:774273,e:771651,s:834042,h:877592,s:867596,r:778991
+[18:43:02] h:32,r:114,t:252,c:0,rg:41
+[18:43:02] head sys sta=1
+[18:43:02] cir_1_26
+[18:43:02] go to B
+[18:43:02] cir_1_26
+[18:43:02] go to B
+[18:43:02] cur_on_dst
+[18:43:02] cmd shaft=1
+[18:43:02] run=1
+[18:43:02] go to B
+[18:43:02] cur_on_dst
+[18:43:02] emb start
+[18:43:02] head emb_stat=2
+[18:43:02] cmd close jump
+[18:43:02] cur_on_dst
+[18:43:02] E_B 1106
+[18:43:03] B_E 2775
+[18:43:03] is_at_D:482,actual_pos:772133,POS_D:771651
+[18:43:03] E_B 1106
+[18:43:03] is_at_B:62123,actual_pos:771919,POS_D:834042
+[18:43:03] trip failed, accumulated_fails=1
+[18:43:03] B_E 2775
+[18:43:03] is_at_D:60807,actual_pos:832458,POS_D:771651
+[18:43:03] trip failed, accumulated_fails=2
+[18:43:03] trip failed, accumulated_fails=1
+[18:43:03] E_B 1106
+[18:43:03] is_at_B:61865,actual_pos:772177,POS_D:834042
+[18:43:03] trip failed, accumulated_fails=3
+[18:43:03] trip failed, accumulated_fails=2
+[18:43:03] B_E 2775
+[18:43:03] is_at_D:61482,actual_pos:833133,POS_D:771651
+[18:43:03] trip failed, accumulated_fails=4
+[18:43:03] trip failed, accumulated_fails=3
+[18:43:03] E_B 1106
+[18:43:03] is_at_B:62084,actual_pos:771958,POS_D:834042
+[18:43:03] trip failed, accumulated_fails=5
+[18:43:03] trip failed, accumulated_fails=4
+[18:43:03] B_E 2775
+[18:43:03] is_at_D:61820,actual_pos:833471,POS_D:771651
+[18:43:03] trip failed, accumulated_fails=6
+[18:43:03] trip failed, accumulated_fails=5
+[18:43:03] E_B 1106
+[18:43:03] is_at_B:62414,actual_pos:771628,POS_D:834042
+[18:43:03] trip failed, accumulated_fails=7
+[18:43:03] trip failed, accumulated_fails=6
+[18:43:03] B_E 2775
+[18:43:03] is_at_D:62030,actual_pos:833681,POS_D:771651
+[18:43:03] trip failed, accumulated_fails=8
+[18:43:03] trip failed, accumulated_fails=7
+[18:43:04] E_B 1106
+[18:43:04] is_at_B:62469,actual_pos:771573,POS_D:834042
+[18:43:04] trip failed, accumulated_fails=9
+[18:43:04] trip failed, accumulated_fails=8
+[18:43:04] B_E 2775
+[18:43:04] is_at_D:62228,actual_pos:833879,POS_D:771651
+[18:43:04] trip failed, accumulated_fails=10
+[18:43:04] trip failed
+[18:43:04] trip failed, accumulated_fails=9
+[18:43:04] send alarm=0x8000
+[18:43:04] E_B 1106
+[18:43:04] B_E 2776
+[18:43:04] E_B 1106
+[18:43:04] B_E 2775
+[18:43:04] run=1
+[18:43:04] sys_sta=1
+[18:43:04] head_sta=1
+[18:43:04] jmp val=4
+[18:43:04] cmd jmp
+[18:43:04] need jump
+[18:43:04] match_start cnt=231 angle=120 Tcnt=1
+[18:43:04] E_B 1106
+[18:43:05] B_E 2775
+[18:43:05] match_stop1 cnt=3106 angle=19 Tcnt=0
+[18:43:05] cmd shaft=0
+[18:43:05] run=0
+[18:43:05] sys_sta=3
+[18:43:05] head_sta=1
+[18:43:05] jmp val=0
+[18:43:05] no jump
+[18:43:05] head sys sta=3
+[18:43:05] head emb_stat=0
+[18:43:05] cir_1_21
+[18:43:05] go to B
+[18:43:05] cir_1_21
+[18:43:05] go to B
+[18:43:05] cur_on_dst
+[18:43:05] frq=100~800: min=0  max=14
+[18:43:05] pulse=162: min=0 max=14
+[18:43:05] pulse=162 acc_pulse=28 Lmax_pulse=134
+[18:43:10] cir_1_22
+[18:43:10] go to B
+[18:43:10] cur_on_dst
+[18:43:15] cmd shaft=0
