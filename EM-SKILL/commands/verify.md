@@ -12,25 +12,89 @@
 
 ## 执行流程
 
-1. 读取项目当前步骤
-2. 🔄 **更新状态**：当前子步骤 🚧 开发中 → 🔄 验证中
-3. 🔄 **更新 Meta**：当前步骤: S7-A(验证中)
-4. 生成 HVR 文件（增强版）
-5. 保存到 `.emv2/checkpoints/HVR-<步骤>-<序号>.md`
-6. 自动编译
-8. 下载,默认stlink，探测作为参考，如果探测成功的下载失败，可以三个都试一遍下载
-7. 启动串口工具，两个工具都要注意参数,要注意要采集完整信息，执行复位mcu时需要和下载成功的调试工具对应
-9. 输出验证清单
+1. **【状态目录检测】** 调用 `get_state_dir()` 确定 `<STATE_DIR>`（S10-B 通用化）
+2. 读取项目当前步骤
+3. 🔄 **更新状态**：当前子步骤 🚧 开发中 → 🔄 验证中
+4. 🔄 **更新 Meta**：当前步骤: S7-A(验证中)
+5. 生成 HVR 文件（增强版）
+6. 保存到 `<STATE_DIR>/checkpoints/HVR-<步骤>-<序号>.md`
+7. 自动编译
+9. 下载,默认stlink，探测作为参考，如果探测成功的下载失败，可以三个都试一遍下载
+8. 启动串口工具，两个工具都要注意参数,要注意要采集完整信息，执行复位mcu时需要和下载成功的调试工具对应
+10. 输出验证清单
+11. 💡 **【提议 commit】**（S10-D 集成）见下方
+
+## 提议 commit 流程（S10-D）
+
+> **触发点**：HVR 验证流程完成（即第 10 步"输出验证清单"之后），
+> 适用于"通过"和"失败"两种情况——失败时仍可提议 commit 暂存当前进度。
+
+### AI 行为
+
+HVR 文件生成、工具执行结果记录完成后，AI **不直接 commit**，而是输出"提议"：
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+💡 提议 commit  (S10-D Git 集成)
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+建议 commit message:
+  [S<step>] feat: verify <步骤描述> with HVR-<序号>
+
+待提交文件:
+  M  <STATE_DIR>/checkpoints/HVR-<步骤>-<序号>.md
+  M  <STATE_DIR>/project-spec.md
+  ?? <STATE_DIR>/logs/build_<步骤>_<时间>.log
+
+确认提交？[y/n/edit]
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### 用户响应
+
+| 用户输入 | AI 行为 |
+|----------|---------|
+| `y` / `确认` | 执行 `git add` + `git commit -m "..."` |
+| `n` / `取消` | 跳过本次 commit，保留到下次 |
+| `edit` / `修改为: ...` | 用新 message 重新提议一次 |
+| `amend` | 加入上一次 commit（需用户已 commit 过） |
+
+### 执行约束
+
+- ✅ 允许 `git status` / `git add` / `git commit -m "..."`（见 initem.md 白名单）
+- ❌ **禁止** `git push`（无论用户如何要求，必须拒绝并提示手动 push）
+- ❌ **禁止** `--no-verify` / `--force` 等破坏性选项
+- ❌ **禁止** `git commit --amend` 改写历史（如需修改走"新 commit"）
+
+### 提议规则
+
+- **commit message 必须**以 `[S<n>]` 开头（EM 自定义规范，未配置默认 B 方案）
+- **type** 推断依据：
+  - 新增功能 / HVR 通过 → `feat`
+  - 修复问题 → `fix`
+  - 仅文档/HVR → `docs`
+  - 仅日志文件 → 通常不打入 commit（`.gitignore` 过滤）
+- **scope** 可选：`(scope)` 紧跟 type 后
+- **subject** ≤ 50 字符，**body** 可选（解释 HVR 关键结论）
+
+### 跳过条件
+
+下列情况 AI 应**不**提议 commit（仅在用户主动要求时才提交）：
+
+- 工作区无变更（`git status` 干净）
+- 仅有日志/构建产物（应加入 `.gitignore`）
+- 用户在 HVR 流程中明确说"暂不提交"
 
 ## HVR 文件
 
-- 生成到 `.emv2/checkpoints/HVR-<步骤>-<序号>.md`
+## HVR 文件
+
+- 生成到 `<STATE_DIR>/checkpoints/HVR-<步骤>-<序号>.md`（实际路径由 `get_state_dir()` 解析）
 - HVR 模板和工作流细则详见 `workflows/hvr-workflow.md`
 
 ## S5工具启动（串口调试）
 
 ```bash
-# 使用 Python 直接启动，确保日志保存到 .emv2/logs/
+# 使用 Python 直接启动，确保日志保存到 <STATE_DIR>/logs/
 python EM-SKILL/tools/serial-mcp/serial_monitor.py --project "%CD%" --step "S9"
 ```
 
@@ -172,7 +236,7 @@ python EM-SKILL/tools/serial-monitor/scripts/serial_monitor.py \
   --interface stlink \
   --openocd-config interface/stlink.cfg \
   --openocd-target target/stm32f4x.cfg \
-  --save .emv2/logs/serial_S9.log
+  --save <STATE_DIR>/logs/serial_S9.log
 ```
 
 **参数说明**：

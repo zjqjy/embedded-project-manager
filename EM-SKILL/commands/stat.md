@@ -10,10 +10,14 @@
 
 ## 执行流程
 
-1. 读取 `.emv2/memory-log.md`
-2. 读取 `.emv2/project-spec.md`
-3. 解析「开发步骤状态」表，提取当前最大 S 编号
-4. 生成状态摘要（含当前步骤编号）
+1. **【状态目录检测】** 调用 `get_state_dir()` 确定 `<STATE_DIR>`（S10-B 通用化）
+2. 读取 `<STATE_DIR>/memory-log.md`
+3. 读取 `<STATE_DIR>/project-spec.md`
+4. 解析「开发步骤状态」表，提取当前最大 S 编号
+5. 生成状态摘要（含当前步骤编号）
+
+> 📌 **目录通用化（S10-B）**：所有 `.emv2/` 引用替换为 `<STATE_DIR>/`，
+> 实际路径由 `get_state_dir()` 解析（`.em/` 优先，回退 `.emv2/`）。
 
 ## 输出格式
 

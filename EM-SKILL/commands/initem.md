@@ -29,6 +29,8 @@
     "Bash(npm:test)",
     "Bash(npm run:build)",
     "Bash(ls:*)",
+    "Edit(**/.em/**/*.md)",
+    "Write(**/.em/**/*.md)",
     "Edit(**/.emv2/**/*.md)",
     "Write(**/.emv2/**/*.md)",
     "Bash(python:*)",
@@ -37,6 +39,8 @@
     "Bash(python */EM-SKILL/tools/serial-monitor/*.py)"
   ],
   "ask": [
+    "Write(**/.em/discussion/**/*.md)",
+    "Edit(**/.em/discussion/**/*.md)",
     "Write(**/.emv2/discussion/**/*.md)",
     "Edit(**/.emv2/discussion/**/*.md)"
   ],
@@ -80,6 +84,47 @@ https://github.com/xpack-dev-tools/openocd-xpack/releases
 # 选择版本（如 xpack-openocd-0.12.0-7-win32-x64.zip）
 # 解压到常用目录
 ```
+
+## Git 权限配置
+
+EM-SKILL 集成 Git 工作流，需在 Claude Code settings.json 中添加以下白名单。
+
+### 推荐配置（追加到 .claude/settings.json 的 permissions.allow）
+
+```json
+[
+  "Bash(git status:*)",
+  "Bash(git diff:*)",
+  "Bash(git log:*)",
+  "Bash(git add:*)",
+  "Bash(git commit:*)",
+  "Bash(git checkout -b feature/*)",
+  "Bash(git tag:*)"
+]
+```
+
+### 显式禁止列表（追加到 permissions.deny）
+
+```json
+[
+  "Bash(git push:*)",
+  "Bash(git push origin:*)"
+]
+```
+
+### 触发点说明
+
+| 触发点 | 命令 | 动作 |
+|--------|------|------|
+| 步骤状态变更 | `/em new / verify / arch` 流程 | AI 提议 commit，用户确认 |
+| HVR 验证通过 | `/em verify s<n>` 完成 | AI 提议 commit |
+| 问题解决 | problem-log 状态 close | AI 提议 commit |
+| 归档完成 | `/em arch` 步骤 5/5 | 自动打 tag |
+
+> ⚠️ **重要原则**：AI 仅"提议" commit message 与文件列表，**必须由用户确认**后才执行
+> `git add` + `git commit`。`git push` **完全禁止**（用户手动执行）。
+>
+> 详见 `commands/verify.md` 的"提议 commit"流程 与 `commands/arch.md` 的归档 tag 流程。
 
 ## 完整输出示例
 

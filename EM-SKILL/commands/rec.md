@@ -9,25 +9,56 @@
 ```
 
 ## 无参数时
-检测当前目录是否有 .emv2/memory-log.md
+使用 `get_state_dir()` 检测当前目录的状态目录（`.em/` 优先，回退 `.emv2/`）
 
 ## 有参数时
 从全局索引查找并恢复项目
 
+## 状态目录检测（S10-B 通用化）
+
+EM 启动恢复流程时，调用统一的目录检测函数：
+
+```python
+def get_state_dir(project_root: str) -> str | None:
+    """优先读 .em/，缺失时回退 .emv2/。"""
+    em_dir   = os.path.join(project_root, '.em')
+    emv2_dir = os.path.join(project_root, '.emv2')
+    if os.path.isdir(em_dir):
+        return em_dir
+    elif os.path.isdir(emv2_dir):
+        return emv2_dir
+    return None
+```
+
+**检测结果输出示例**：
+
+```
+[EM] 检测到状态目录：.em/        # 新格式
+[EM] 检测到状态目录：.emv2/      # 旧格式回退（向后兼容）
+[EM] 未找到状态目录，请先运行 /em init   # 未初始化
+```
+
 ## 执行流程
 
-1. 检测当前目录是否有 .emv2/memory-log.md
-2. 或从全局索引查找项目信息
-3. 工作空间切换至项目路径
-4. 读取项目状态
-5. **检测旧版格式，提供迁移选项**（详见下方「旧版迁移」）
-6. 生成恢复摘要
-7. 提示用户选择操作
+1. **【状态目录检测】** 调用 `get_state_dir()` 确定 `<STATE_DIR>`
+   - `.em/` 优先 → 使用
+   - 回退 `.emv2/` → 使用并提示「建议运行 `/em migrate` 升级到 `.em/`」
+   - 都不存在 → 提示「请先运行 `/em init` 初始化项目」
+2. **读取 `<STATE_DIR>/project-spec.md` 与 `<STATE_DIR>/memory-log.md`**
+3. 或从全局索引查找项目信息
+4. 工作空间切换至项目路径
+5. 读取项目状态
+6. **检测旧版格式，提供迁移选项**（详见下方「旧版迁移」）
+7. 生成恢复摘要
+8. 提示用户选择操作
+
+> 📌 **目录兼容性说明**：所有读取路径用 `<STATE_DIR>/...` 表达，实际由 `get_state_dir()` 解析。
+> 新项目统一使用 `.em/`，旧 `.emv2/` 项目零配置兼容。
 
 ## 旧版迁移
 
 ### 检测标准
-如 `.emv2/project-spec.md` 包含以下内容，判定为旧版：
+如 `<STATE_DIR>/project-spec.md` 包含以下内容，判定为旧版：
 - `### S1:` 或 `### S2:` 等独立区段
 - `## 代码片段索引` 区段
 
@@ -60,3 +91,7 @@
 | memory: `## 当前状态` | 删除（project-spec Meta 已有） |
 | memory: `## 待办事项` | 删除 |
 | memory: `## 代码变更记录` | 删除 |
+
+## 相关文件
+- commands/init.md - 初始化命令（含动态检测逻辑）
+- S10-C（`em migrate`）- 旧版 `.emv2/` → `.em/` 完整迁移工具

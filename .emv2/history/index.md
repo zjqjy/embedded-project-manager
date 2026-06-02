@@ -9,6 +9,11 @@
 
 ## 按日期
 
+### 2026-06-02
+- project-spec.md - S10 标准化+通用化+Git集成 规划完成
+- memory-log.md - S10 讨论流程记录
+- 讨论目录: `.emv2/discussion/20260602-skill-standardize-universal-git/`
+
 ### 2026-04-19
 - memory-log.md - S5完成/G4归档
 - project-spec.md - S1-S6全部完成
@@ -30,6 +35,7 @@
 ### project-spec.md (项目规格单)
 | 日期 | 归档版本 | 归档位置 |
 |------|----------|----------|
+| 2026-06-02 | S10 规划完成 | (active) |
 | 2026-04-19 | S1-S6全部完成 | [.emv2/history/2026/04/19/project-spec.md#S1-S6] |
 | 2026-04-16 | S1-S9完整版 | [.emv2/history/2026/04/16/project-spec.md#S1-S9] |
 
