@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Test artifacts
+test-runs/*/.em/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# EM-SKILL logs (project-side, not skill source)
+.em/logs/*.log
+.emv2/logs/*.log

@@ -34,9 +34,9 @@
     "Edit(**/.emv2/**/*.md)",
     "Write(**/.emv2/**/*.md)",
     "Bash(python:*)",
-    "Bash(python */EM-SKILL/tools/build-keil/*.py)",
-    "Bash(python */EM-SKILL/tools/flash-openocd/*.py)",
-    "Bash(python */EM-SKILL/tools/serial-monitor/*.py)"
+    "Bash(python */EM-SKILL/plugins/embedded/tools/build-keil/*.py)",
+    "Bash(python */EM-SKILL/plugins/embedded/tools/flash-openocd/*.py)",
+    "Bash(python */EM-SKILL/plugins/embedded/tools/serial-monitor/*.py)"
   ],
   "ask": [
     "Write(**/.em/discussion/**/*.md)",
@@ -55,7 +55,7 @@
 ### 步骤 2: 探测工具路径
 
 ```bash
-python EM-SKILL/tools/shared/detect_tools.py
+python EM-SKILL/plugins/embedded/tools/shared/detect_tools.py
 ```
 
 找到的工具自动注册到 `%APPDATA%/em_skill/config.json`。

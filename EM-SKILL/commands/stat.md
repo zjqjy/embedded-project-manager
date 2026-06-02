@@ -1,51 +1,81 @@
-# 命令: /em stat (当前步骤)
+# 命令: /em stat (项目状态)
 
 ## 功能
-查看当前项目状态和下一步行动
+查看项目状态：默认极简（state.md），`-v` 详细（含步骤全表、最近会话、决策、问题）。
 
 ## 触发
 ```
-/em stat
+/em stat              # 默认：读 state.md，输出 ≤10 行
+/em stat -v           # 详细：加载 project-spec/最近会话/decisions/problem-log
+/em stat steps        # 只显示开发步骤状态表
+/em stat next         # 只显示下一步动作
 ```
+
+## 加载策略
+
+| 模式 | 加载文件 | 用途 |
+|------|---------|------|
+| 默认 | `state.md` + `project.json` | 快速看现在做啥 |
+| `-v` | + `project-spec.md` + 最新 `sessions/<id>.md` + `decisions.md` + `problem-log.md` | 全景 |
+| `steps` | `project-spec.md` 的步骤表区段 | 看进度 |
+| `next` | `state.md` 的「下一步动作」区段 | 极简 |
 
 ## 执行流程
 
-1. **【状态目录检测】** 调用 `get_state_dir()` 确定 `<STATE_DIR>`（S10-B 通用化）
-2. 读取 `<STATE_DIR>/memory-log.md`
-3. 读取 `<STATE_DIR>/project-spec.md`
-4. 解析「开发步骤状态」表，提取当前最大 S 编号
-5. 生成状态摘要（含当前步骤编号）
-
-> 📌 **目录通用化（S10-B）**：所有 `.emv2/` 引用替换为 `<STATE_DIR>/`，
-> 实际路径由 `get_state_dir()` 解析（`.em/` 优先，回退 `.emv2/`）。
+1. **【状态目录】** 调用 `get_state_dir()` → `<STATE_DIR>`
+2. **按模式加载**对应文件
+3. **输出对应格式**
 
 ## 输出格式
 
+### 默认模式
 ```
-📍 当前步骤
+📍 <项目名> — S<N> <状态>
+更新: YYYY-MM-DD   会话: sess-...
 
-项目: <项目名称>
-步骤: S<编号>-<描述>
-状态: <状态>
+下一步:
+1. <动作1>
+2. <动作2>
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-下一步行动:
-1. <下一步1>
-2. <下一步2>
-
-快捷命令:
-- /em verify s<N>   # 验证
-- /em disc          # 讨论
-━━━━━━━━━━━━━━━━━━━━━━━━━━
+详情: /em stat -v
 ```
 
-## 工作流推荐
+### `-v` 模式
+```
+📍 <项目名> (<type>) — S<N> <状态>
 
-根据当前步骤自动推荐命令：
+━━ 步骤状态 ━━
+| S1 | ✅ | ... |
+| ... |
 
-| 当前步骤 | 推荐命令 |
-|----------|----------|
-| 开发中 | `/em verify <步骤>` |
-| 待讨论 | `/em disc` |
-| 等待硬件验证 | `/em verify` |
-| 需要归档 | `/em arch` |
+━━ 最近会话 sess-... ━━
+<会话内容>
+
+━━ 最近决策 ━━
+<3-5 条>
+
+━━ 待解决问题 ━━
+<P0/P1 列表>
+
+下一步:
+- ...
+```
+
+### `steps` 模式
+仅输出 `project-spec.md` 的步骤状态表。
+
+### `next` 模式
+仅输出 state.md 的「下一步动作」区段。
+
+## 旧版兼容
+- 无 state.md → 默认模式回退读 memory-log 前 30 行
+- 无 sessions/ → `-v` 模式从 memory-log 提取会话
+
+## 设计原则
+- ❌ stat 默认不再灌入完整 memory-log/project-spec
+- ✅ 渐进式查询：默认极简 → 用户主动 `-v` 才详细
+
+## 相关文件
+- `commands/rec.md` — 启动恢复，加载同样的 state.md
+- `commands/sessions.md` — 单独浏览会话历史
+- `templates/state.md` — state.md 模板

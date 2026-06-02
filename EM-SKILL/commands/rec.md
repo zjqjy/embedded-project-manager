@@ -1,97 +1,68 @@
 # 命令: /em rec (恢复项目)
 
 ## 功能
-加载项目状态
+最小代价加载项目当前状态。**只读 `state.md`** 一个文件（≤50 行），按需查询详情。
 
 ## 触发
 ```
-/em rec [项目名称]
+/em rec [项目名称|路径]
 ```
 
-## 无参数时
-使用 `get_state_dir()` 检测当前目录的状态目录（`.em/` 优先，回退 `.emv2/`）
+## 加载策略（瘦身设计）
 
-## 有参数时
-从全局索引查找并恢复项目
+| 加载层 | 文件 | 何时读 |
+|--------|------|--------|
+| L0 默认 | `<STATE_DIR>/state.md` | 总是（≤50 行） |
+| L1 类型 | `<STATE_DIR>/project.json` | 总是（< 20 行） |
+| L2 详情 | `project-spec.md` / `memory-log.md` / `problem-log.md` / `sessions/<id>.md` | **按需**（用户问到才读） |
 
-## 状态目录检测（S10-B 通用化）
-
-EM 启动恢复流程时，调用统一的目录检测函数：
-
-```python
-def get_state_dir(project_root: str) -> str | None:
-    """优先读 .em/，缺失时回退 .emv2/。"""
-    em_dir   = os.path.join(project_root, '.em')
-    emv2_dir = os.path.join(project_root, '.emv2')
-    if os.path.isdir(em_dir):
-        return em_dir
-    elif os.path.isdir(emv2_dir):
-        return emv2_dir
-    return None
-```
-
-**检测结果输出示例**：
-
-```
-[EM] 检测到状态目录：.em/        # 新格式
-[EM] 检测到状态目录：.emv2/      # 旧格式回退（向后兼容）
-[EM] 未找到状态目录，请先运行 /em init   # 未初始化
-```
+> 旧版项目（无 state.md）→ 自动回退读 `memory-log.md`（兼容路径），并提示运行 `/em migrate-state` 一键生成 state.md。
 
 ## 执行流程
 
-1. **【状态目录检测】** 调用 `get_state_dir()` 确定 `<STATE_DIR>`
+1. **【状态目录】** 调用 `get_state_dir()` → `<STATE_DIR>`
    - `.em/` 优先 → 使用
    - 回退 `.emv2/` → 使用并提示「建议运行 `/em migrate` 升级到 `.em/`」
-   - 都不存在 → 提示「请先运行 `/em init` 初始化项目」
-2. **读取 `<STATE_DIR>/project-spec.md` 与 `<STATE_DIR>/memory-log.md`**
-3. 或从全局索引查找项目信息
-4. 工作空间切换至项目路径
-5. 读取项目状态
-6. **检测旧版格式，提供迁移选项**（详见下方「旧版迁移」）
-7. 生成恢复摘要
-8. 提示用户选择操作
+   - 都无 → 提示「请先 `/em init`」
+2. **【最小加载】** 读 `<STATE_DIR>/state.md`（若存在）+ `<STATE_DIR>/project.json`（若存在）
+3. **【旧版兼容】** state.md 不存在 → 读 `memory-log.md` 前 ~30 行（会话指纹+快速恢复信息+当前状态），跳过会话历史
+4. **【嵌入式插件】** 若 `project.json.type == "embedded"` 或检测到 `.emv2/embedded/` → 加载 `plugins/embedded/PLUGIN.md`（仅文件名提示，不展开内容）
+5. **【生成摘要】** 输出 5 行内的恢复摘要
+6. **【交互】** 提示下一步可选动作；用户问详情时再加载 L2
 
-> 📌 **目录兼容性说明**：所有读取路径用 `<STATE_DIR>/...` 表达，实际由 `get_state_dir()` 解析。
-> 新项目统一使用 `.em/`，旧 `.emv2/` 项目零配置兼容。
-
-## 旧版迁移
-
-### 检测标准
-如 `<STATE_DIR>/project-spec.md` 包含以下内容，判定为旧版：
-- `### S1:` 或 `### S2:` 等独立区段
-- `## 代码片段索引` 区段
-
-### 迁移步骤
-
-如果是旧版，在恢复摘要后询问用户是否迁移：
-
-**用户确认后**，AI 执行：
+## 摘要输出格式
 
 ```
-1. project-spec.md:
-   - 保留：Meta、问题追踪、参考文档
-   - 删除：代码片段索引、HVR记录、S1-S4独立区段
-   - 新增：开发步骤状态表（从S1-S4区段提取信息）
-
-2. memory-log.md:
-   - 保留：会话指纹、快速恢复信息、关键决策、会话历史
-   - 删除：当前状态（重复project-spec）、待办事项、代码变更记录、调试记录
-
-3. 迁移完成提示
+📂 项目恢复完成 — <项目名>
+状态目录: <STATE_DIR>  (general | embedded)
+当前步骤: S<N> — <状态>
+下一步:   <state.md 中第 1 条 next-action>
+详情命令: /em stat -v   /em sessions   /em pi
 ```
 
-### 迁移格式对照
+## 旧版项目迁移提示（一次性，不强制）
 
-| 旧版 | 新版 |
-|------|------|
-| `## 开发步骤` + `### S1:` 独立区段 | `## 开发步骤状态` + 表格 |
-| `## 人工验证记录` | 无（移至 checkpoints/） |
-| `## 代码片段索引` | 删除 |
-| memory: `## 当前状态` | 删除（project-spec Meta 已有） |
-| memory: `## 待办事项` | 删除 |
-| memory: `## 代码变更记录` | 删除 |
+如检测到旧版（无 state.md），输出：
+
+```
+ℹ️  检测到旧版结构（无 state.md，已回退读 memory-log.md）
+   建议运行  /em migrate-state   一键生成 state.md（瘦身后体感更快）
+   也可继续用旧文件，不影响任何命令。
+```
+
+## 旧版格式深度迁移（独立子命令）
+
+如 `project-spec.md` 含 `### S1:` 或 `## 代码片段索引` → 提示运行 `/em migrate`（已存在）。
+
+## 设计原则
+- ❌ rec 不再一次性灌入 memory-log/project-spec/problem-log 全部内容
+- ❌ rec 不再尝试解析会话历史（移到 `/em sessions`）
+- ✅ rec 只回答「我现在该做什么」，详情按需查
+- ✅ 旧项目零破坏，新项目立即体感
 
 ## 相关文件
-- commands/init.md - 初始化命令（含动态检测逻辑）
-- S10-C（`em migrate`）- 旧版 `.emv2/` → `.em/` 完整迁移工具
+- `templates/state.md` — state.md 模板
+- `commands/stat.md` — 详细状态查询（含 `-v` 详情模式）
+- `commands/sessions.md` — 会话历史浏览（新增）
+- `commands/migrate-state.md` — 一键生成 state.md（新增）
+- `commands/migrate.md` — 旧版深度迁移（已有）

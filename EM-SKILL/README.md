@@ -280,7 +280,7 @@ cp -r EM-SKILL ~/.claude/skills/
 ### 依赖安装（S5串口工具）
 
 ```bash
-cd EM-SKILL/tools/serial-mcp
+cd EM-SKILL/plugins/embedded/tools/serial-mcp
 pip install -r requirements.txt
 ```
 

@@ -1,0 +1,14 @@
+{
+  "_comment": "EM-SKILL 项目元数据；init/si 时自动生成，rec/new 时读取",
+  "type": "general",
+  "_type_enum": ["general", "embedded"],
+  "name": "<项目名>",
+  "created": "YYYY-MM-DD",
+  "embedded": {
+    "_enabled_when": "type == embedded",
+    "chip": null,
+    "toolchain": null,
+    "interface": null
+  },
+  "plugins": []
+}
