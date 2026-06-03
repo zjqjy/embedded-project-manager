@@ -33,50 +33,13 @@
    - 添加到 chips.json
    - 如芯片已存在 → 更新 lastUsed 时间戳
 
-4. **创建 .emv2/ 目录结构**
-5. **生成/更新 project-spec.md 和 memory-log.md**
-6. **创建/更新 CLAUDE.md**
-   - 如果项目没有 `CLAUDE.md`，创建并写入：
-     - 工具使用说明索引
-     - 角色模式配置
-     - Token 管理策略
-7. **更新全局索引:embedded-projects-index.md,一般在.claude里**
-8. **输出审计报告**
-
-## CLAUDE.md 模板（存量接入时）
-
-```markdown
----
-role: embedded-debugger
-context: fork
-max_tokens: 4000
-summarize_threshold: 0.8
-checkpoint_file: memory-log.md
----
-
-# 项目名称
-
-## 工具使用说明
-
-当提到以下关键词时，AI 自动查看对应命令文件：
-
-| 关键词 | 查看文件 |
-|--------|----------|
-| 编译/build/编译固件 | `EM-SKILL/commands/build.md` |
-| 烧录/下载/flash | `EM-SKILL/commands/flash.md` |
-| 串口/监控/debug | `EM-SKILL/commands/serial.md` |
-
-## Token 管理策略
-
-### 自动触发条件
-- 上下文使用 > 80% 时，自动建议 `/compact`
-- 对话轮数 > 20 时，提示生成 Memory Log
-
-### 智能摘要规则
-- **保留**：关键决策、已验证的配置、待解决事项
-- **压缩**：探索过程、重复的错误尝试、通用知识
-- **丢弃**：已解决的临时问题、过时代码片段
-```
+4. **创建 .em/ 目录结构**（S10-B 通用化：新存量项目统一使用 `.em/`，旧 `.emv2/` 项目保留）
+5. **生成/更新 `<STATE_DIR>/project-spec.md` 和 `<STATE_DIR>/memory-log.md`**
+   - `<STATE_DIR>` 由 `get_state_dir()` 解析
+   - 现有 `.emv2/` 项目 → 继续写到 `.emv2/`（保持兼容）
+   - 新存量项目 → 写到 `.em/`
+6. **更新全局索引:embedded-projects-index.md,一般在.claude里**
+7. **输出审计报告**
 
 ## 输出格式
 

@@ -1,0 +1,27 @@
+{
+  "discussion_id": "20260602-skill-standardize-universal-git",
+  "created_at": "2026-06-02",
+  "completed_at": "2026-06-02",
+  "current_phase": 5,
+  "phases": {
+    "split": "completed",
+    "requirements": "completed",
+    "hardware": "skipped",
+    "brainstorm": "completed",
+    "milestones": "completed"
+  },
+  "subsystems": [
+    "Skill 标准化",
+    "Skill 通用化",
+    "Git 工作流集成",
+    "嵌入式能力保留"
+  ],
+  "current_subsystem": 0,
+  "step_number": "S10",
+  "sub_steps": ["S10-A", "S10-B", "S10-C", "S10-D", "S10-E"],
+  "skip_reason": "本项目为元仓库改造，无硬件外设",
+  "renumbering": {
+    "原 problem-log.md S10 串口监控 + initem 优化": "S11",
+    "原因": "S10 已分配给本需求"
+  }
+}

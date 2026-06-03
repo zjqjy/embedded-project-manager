@@ -10,9 +10,13 @@
 
 ## 执行流程
 
-1. 读取 `.emv2/memory-log.md`
-2. 读取 `.emv2/project-spec.md`
-3. 生成结构化摘要
+1. **【状态目录检测】** 调用 `get_state_dir()` 确定 `<STATE_DIR>`（S10-B 通用化）
+2. 读取 `<STATE_DIR>/memory-log.md`
+3. 读取 `<STATE_DIR>/project-spec.md`
+4. 生成结构化摘要
+
+> 📌 **目录通用化（S10-B）**：所有 `.emv2/` 引用替换为 `<STATE_DIR>/`，
+> 实际路径由 `get_state_dir()` 解析（`.em/` 优先，回退 `.emv2/`）。
 
 ## 输出格式
 

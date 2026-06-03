@@ -212,9 +212,9 @@ B. **建议的排查方向**:
 ### 技能声明
 | 技能 | 工具 | 状态 |
 |------|------|------|
-| build-keil | `EM-SKILL/tools/build-keil/scripts/keil_builder.py` | ⬜ 待执行 |
-| flash-openocd | `EM-SKILL/tools/flash-openocd/scripts/openocd_flasher.py` | ⬜ 待执行 |
-| serial-monitor | `EM-SKILL/tools/serial-mcp/` + `EM-SKILL/tools/serial-monitor/` | ⬜ 待执行 |
+| build-keil | `EM-SKILL/plugins/embedded/tools/build-keil/scripts/keil_builder.py` | ⬜ 待执行 |
+| flash-openocd | `EM-SKILL/plugins/embedded/tools/flash-openocd/scripts/openocd_flasher.py` | ⬜ 待执行 |
+| serial-monitor | `EM-SKILL/plugins/embedded/tools/serial-mcp/` + `EM-SKILL/plugins/embedded/tools/serial-monitor/` | ⬜ 待执行 |
 
 ### AI 自动验证流程
 1. AI 调用 build-keil 编译固件
