@@ -5,8 +5,8 @@
 ## Meta
 - **创建日期**: 2026-02-25
 - **项目类型**: Claude Skill 元仓库
-- **当前步骤**: S11 ✅ EM-SKILL v3.0 重构完成（通用核解耦 + new 三档 + state 瘦身）
-- **整体状态**: S1-S6 全部完成 ✅ / S7 EM-SKILL GUI ⏸️ 暂停 / S8 模板优化 ✅ 完成 / S9 embed-ai-tool 整合 ✅ 完成 / S10 标准化+通用化+Git集成 ⏳ 子代理开发完成（L2 待用户）/ S11 v3.0 重构 ✅ 完成（双子代理 ACCEPT 通过）
+- **当前步骤**: S13 🚧 initem 注册全局 CLAUDE.md 触发器
+- **整体状态**: S1-S6 全部完成 ✅ / S7 EM-SKILL GUI ⏸️ 暂停 / S8 模板优化 ✅ 完成 / S9 embed-ai-tool 整合 ✅ 完成 / S10 标准化+通用化+Git集成 ⏳ 子代理开发完成（L2 待用户）/ S11 v3.0 重构 ✅ 完成（双子代理 ACCEPT 通过）/ S13 🚧 开发中
 - **项目路径**: D:\DeskTop\WorkSpace\Code\embedded-project-manager
 
 ## 全局检查点（Gates）
@@ -33,6 +33,8 @@
 | S10 | 标准化+通用化+Git集成 | ⏳ 子代理开发完成 | 2026-06-02 |
 | S11 | EM-SKILL v3.0 重构（通用核解耦 + new 三档 + state 瘦身）| ✅ 完成 | 2026-06-03 |
 | S12 | 串口监控+initem 优化（原 S11，被 v3.0 重构顺延）| 📋 待开发 | — |
+| S13 | initem 注册全局 CLAUDE.md 触发器（编译/烧录/串口动态加载）| 🚧 开发中 | 2026-07-09 |
+| S14 | 整合 S10 学习模式 v4.1 到元仓库（plugins/learning/ 物理解耦 + /em learn 子命令）| ✅ 完成 | 2026-07-13 |
 
 ---
 

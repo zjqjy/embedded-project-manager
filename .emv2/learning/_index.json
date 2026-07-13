@@ -1,0 +1,50 @@
+{
+  "version": "4.1",
+  "last_updated": "2026-07-13T23:50:00+08:00",
+  "topics": [
+    {
+      "slug": "iic",
+      "title": "I²C / IIC 协议实战",
+      "status": "active",
+      "lpr_stage": "L1-Learn",
+      "created_at": "2026-07-13T23:50:00+08:00",
+      "l1_progress": {
+        "knowledge_md_lines": 130,
+        "bib_json_entries": 6,
+        "bib_verified": true,
+        "verification_method": "WebSearch 命中官方 URL / kernel commit hash / 多文交叉验证",
+        "l1_complete_ready": true,
+        "last_verified_at": "2026-07-14"
+      },
+      "complexity": "medium",
+      "estimated_hours": 18,
+      "video_ready": false,
+      "ai_self_score": null,
+      "tags": ["i2c", "protocol", "bus", "embedded", "iic"],
+      "related_topics": [
+        { "slug": "spi-protocol", "relation": "sibling" },
+        { "slug": "uart-protocol", "relation": "sibling" },
+        { "slug": "i2c-deadlock-recovery", "relation": "deeper-dive" }
+      ],
+      "key_concepts": [
+        "开漏输出 + 上拉电阻",
+        "START/STOP/ACK/NACK 时序",
+        "7-bit/10-bit 寻址",
+        "Clock Stretching",
+        "多主机仲裁",
+        "总线死锁与恢复"
+      ],
+      "file_manifest": {
+        "README.md": "L5 占位卡",
+        "deep-dive.md": "L1 占位",
+        "cheatsheet.md": "L4 占位",
+        "knowledge.md": "L1 核心概念清单（130 行）",
+        "research/bib.json": "L1 引用索引（3 条）"
+      }
+    }
+  ],
+  "knowledge_graph": {
+    "nodes": 1,
+    "edges": 0
+  }
+}

@@ -6,7 +6,7 @@
 ## 调用方式
 
 ```bash
-python EM-SKILL/tools/build-keil/scripts/keil_builder.py \
+python EM-SKILL/plugins/embedded/tools/build-keil/scripts/keil_builder.py \
   --project <工程文件> \
   --target <目标名>
 ```
@@ -65,6 +65,6 @@ AI 按以下顺序连续执行：
 - ❌ 编译错误 → 显示错误行号和内容，分析原因
 
 ## 相关文件
-- `EM-SKILL/tools/build-keil/scripts/keil_builder.py` - 编译脚本
-- `EM-SKILL/commands/flash.md` - 烧录说明
-- `EM-SKILL/commands/serial.md` - 串口监控说明
+- `EM-SKILL/plugins/embedded/tools/build-keil/scripts/keil_builder.py` - 编译脚本
+- `EM-SKILL/plugins/embedded/commands/flash.md` - 烧录说明
+- `EM-SKILL/plugins/embedded/commands/serial.md` - 串口监控说明

@@ -1,7 +1,7 @@
 ---
 name: em-skill
-description: 项目开发管家 - 通用核（HVR 工作流 + state.md 瘦身 + new 三档分流）+ 可插拔嵌入式插件。支持通用软件项目（默认）与嵌入式项目（按需加载 plugins/embedded/）。
-version: 3.0.0
+description: 项目开发管家 - 通用核（HVR 工作流 + state.md 瘦身 + new 三档分流）+ 双插件架构（embedded 嵌入式 + learning 学习模式）。支持通用/嵌入式/学习三类项目。
+version: 3.1.0
 ---
 
 # EM-SKILL
@@ -84,11 +84,23 @@ version: 3.0.0
 |------|-----------|
 | `initem` | `plugins/embedded/commands/initem.md` |
 
+### 学习模式插件命令（按需加载）⭐ S14 新增
+
+如 `<STATE_DIR>/project.json.type == "learning"` 或检测到 `.em/learning/state.md`，路由表追加：
+
+| `$0` | 读取的文件 |
+|------|-----------|
+| `learn new` | `plugins/learning/commands/learn-new.md` |
+| `learn verify` | `plugins/learning/commands/learn-verify.md` |
+| `learn status` | `plugins/learning/commands/learn-status.md` |
+
+详见：[`plugins/learning/PLUGIN.md`](plugins/learning/PLUGIN.md)
+
 ---
 
 ## 项目类型
 
-EM-SKILL 提供两类项目支持：
+EM-SKILL 提供三类项目支持：
 
 ### 通用项目（默认）
 
@@ -112,6 +124,21 @@ EM-SKILL 提供两类项目支持：
 - `tools/` 含 `serial-mcp` / `serial-monitor` / `build-keil` / `flash-openocd`
 
 详见：[`plugins/embedded/PLUGIN.md`](plugins/embedded/PLUGIN.md)
+
+通用项目**不**加载此插件，零负担。
+
+### 学习模式项目（可拆插件）⭐ S14 新增
+
+`<STATE_DIR>/project.json.type == "learning"` 时自动加载 `plugins/learning/`：
+
+- `/em learn new <slug> [title]` — 创建新主题（LPR 闭环起点）
+- `/em learn verify [slug] [l<N>]` — 阶段验证 + 推进 L1→L5
+- `/em learn status [slug] [-v]` — 查看学习状态
+- **LPR 5 阶段**：Learn → Pack → Practice → Verify → Surface
+- **唯一硬交付物**：主题 README 卡片（5 段式：钩子 → 总结 → 概念图 → 架构 → 踩坑）
+- **多格式分发**：`tools/build-html.py` / `generate-script.py` / `generate-poster.py` / `package-skill.py`
+
+详见：[`plugins/learning/PLUGIN.md`](plugins/learning/PLUGIN.md)
 
 通用项目**不**加载此插件，零负担。
 

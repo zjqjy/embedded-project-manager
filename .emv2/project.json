@@ -1,0 +1,20 @@
+{
+  "_comment": "EM-SKILL 项目元数据；init/si 时自动生成，rec/new 时读取。type=learning 为本仓库试用 learning 插件临时切换（meta-skill 本质保留在 .is_meta 字段）。",
+  "type": "learning",
+  "_type_enum": ["general", "embedded", "learning"],
+  "name": "embedded-project-manager-v2",
+  "created": "2026-07-13",
+  "is_meta": true,
+  "trial_mode": {
+    "_comment": "S14 learning 插件试用标记；完成验证后可还原 type=general",
+    "since": "2026-07-13",
+    "restore_hint": "完成 learn new iic 流程验证后改回 type=general"
+  },
+  "embedded": {
+    "_enabled_when": "type == embedded",
+    "chip": null,
+    "toolchain": null,
+    "interface": null
+  },
+  "plugins": ["learning"]
+}

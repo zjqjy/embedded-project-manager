@@ -1,0 +1,19 @@
+{
+  "step": "S14",
+  "tier": "standard",
+  "discussion_id": "20260713-integrate-learning-v4",
+  "current_substep": "S14-A",
+  "completed_stages": ["brainstorm", "milestones"],
+  "selected_plan": "A",
+  "plan_name": "plugins/learning/ 物理解耦 + /em learn 子命令",
+  "substeps": [
+    {"id": "S14-A", "name": "学习模式插件骨架", "status": "in_progress", "estimate": "M"},
+    {"id": "S14-B", "name": "模板层迁入", "status": "pending", "estimate": "M", "depends_on": ["S14-A"]},
+    {"id": "S14-C", "name": "脚本层迁入", "status": "pending", "estimate": "M", "depends_on": ["S14-B"]},
+    {"id": "S14-D", "name": "注册与文档", "status": "pending", "estimate": "S", "depends_on": ["S14-A"]},
+    {"id": "S14-E", "name": "归档与收尾", "status": "pending", "estimate": "S", "depends_on": ["S14-D"]}
+  ],
+  "next_action": "/em verify s14-a",
+  "started_at": "2026-07-13T23:30:00+08:00",
+  "last_updated": "2026-07-13T23:40:00+08:00"
+}
