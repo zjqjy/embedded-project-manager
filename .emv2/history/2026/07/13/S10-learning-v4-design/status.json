@@ -1,0 +1,9 @@
+{
+  "stage": "milestones",
+  "current_milestone": "M1",
+  "total_milestones": 3,
+  "discussion_id": "20260713-em-skill-learning-v4",
+  "step": "S10",
+  "completed_stages": ["split", "req", "hardware", "brainstorm", "milestones"],
+  "next_action": "/em verify s10"
+}

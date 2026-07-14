@@ -5,6 +5,7 @@
 1. 更新 Claude 权限配置
 2. 探测并注册工具路径
 3. 自动下载 OpenOCD（如果未安装）
+4. 注册全局 CLAUDE.md 触发器（编译/烧录/串口关键词 → 命令文档指针）
 
 ## 触发
 ```
@@ -36,7 +37,8 @@
     "Bash(python:*)",
     "Bash(python */EM-SKILL/plugins/embedded/tools/build-keil/*.py)",
     "Bash(python */EM-SKILL/plugins/embedded/tools/flash-openocd/*.py)",
-    "Bash(python */EM-SKILL/plugins/embedded/tools/serial-monitor/*.py)"
+    "Bash(python */EM-SKILL/plugins/embedded/tools/serial-monitor/*.py)",
+    "Bash(python */EM-SKILL/plugins/embedded/tools/shared/register_claude_md.py)"
   ],
   "ask": [
     "Write(**/.em/discussion/**/*.md)",
@@ -85,6 +87,34 @@ https://github.com/xpack-dev-tools/openocd-xpack/releases
 # 解压到常用目录
 ```
 
+### 步骤 5: 注册全局 CLAUDE.md（嵌入式工具触发器，S13）
+
+把「编译/烧录/串口」三组关键词 → 命令文档的指针表幂等写入
+`~/.claude/CLAUDE.md`，实现「按需动态加载」机制——
+对话提到关键词时，Claude 再去 Read 对应命令文档了解用法，不灌全文。
+
+```bash
+python EM-SKILL/plugins/embedded/tools/shared/register_claude_md.py
+```
+
+| 文件状态 | 行为 |
+|----------|------|
+| `~/.claude/CLAUDE.md` 不存在 | 创建并写入模板 |
+| 已存在但缺少 `## EM-SKILL 嵌入式工具（动态加载）` section | 追加 |
+| 已存在且已有该 section | 跳过（幂等）|
+
+**模板**：`EM-SKILL/plugins/embedded/templates/claude-md-snippet.md`
+
+**仅检查**（不写入）：
+
+```bash
+python EM-SKILL/plugins/embedded/tools/shared/register_claude_md.py --check
+# 返回 0 = 已注册；1 = 未注册
+```
+
+> ⚠️ **原则**：CLAUDE.md 是高频读文件，只写指针（≤10 行）不灌用法；
+> Claude 按需 Read 命令文档，避免 prompt 膨胀。
+
 ## Git 权限配置
 
 EM-SKILL 集成 Git 工作流，需在 Claude Code settings.json 中添加以下白名单。
@@ -131,25 +161,31 @@ EM-SKILL 集成 Git 工作流，需在 Claude Code settings.json 中添加以下
 ```
 🔧 EM-SKILL 工具初始化
 
-[1/4] 更新权限配置...
+[1/5] 更新权限配置...
   ✅ permissions 已更新
 
-[2/4] 探测工具...
+[2/5] 探测工具...
   ✅ openocd: D:/OpenOCD/xpack-openocd-0.12.0-7/bin/openocd.exe
   ⚠️ uv4: 未找到（可选）
   ⚠️ jlink: 未找到（可选）
 
-[3/4] 注册工具路径...
+[3/5] 注册工具路径...
   ✅ openocd 已注册
 
-[4/4] 检查 OpenOCD...
+[4/5] 检查 OpenOCD...
   ✅ OpenOCD 可用
+
+[5/5] 注册全局 CLAUDE.md...
+  ✅ 已写入 ~/.claude/CLAUDE.md（关键词触发器）
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✅ 初始化完成！
 
 已注册工具：
   - openocd: D:/OpenOCD/xpack-openocd-0.12.0-7/bin/openocd.exe
+
+全局触发器：
+  - ~/.claude/CLAUDE.md（编译/烧录/串口 → 命令文档）
 ```
 
 ---

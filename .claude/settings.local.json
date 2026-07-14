@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git commit --amend --author=\"zjq <zjq@example.com>\" --no-edit)"
+      "Bash(git commit --amend --author=\"zjq <zjq@example.com>\" --no-edit)",
+      "Bash(ls -la \"/c/Users/zjq/.claude/CLAUDE.md\" 2>/dev/null && echo \"EXISTS\" || echo \"NOT_EXISTS\")",
+      "Read(//c/Users/zjq/.claude/**)",
+      "Bash(ls -la \"/c/Users/zjq/.claude/\" | head -20)",
+      "Read(//c/Users/zjq/.claude//**)",
+      "Bash(PYTHONIOENCODING=utf-8 bash -c ' *)"
     ]
   }
 }

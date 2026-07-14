@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "topic": "{{slug}}",
+  "last_updated": "{{date}}",
+  "references": [
+    {
+      "id": "ref1",
+      "type": "video",
+      "title": "{{视频标题}}",
+      "author": "{{作者}}",
+      "platform": "Bilibili/YouTube",
+      "url": "{{URL}}",
+      "duration": "{{时长}}",
+      "key_takeaways": ["{{收获1}}", "{{收获2}}"],
+      "cited_in": ["README.md#{{章节}}"],
+      "access_date": "{{日期}}",
+      "license": "CC-BY"
+    },
+    {
+      "id": "ref2",
+      "type": "datasheet",
+      "title": "{{手册标题}}",
+      "publisher": "{{厂商}}",
+      "doc_id": "{{文档编号}}",
+      "revision": "{{版本}}",
+      "url": "{{URL}}",
+      "key_sections": {
+        "{{章节名}}": "{{章节号}}"
+      },
+      "cited_in": ["README.md#{{章节}}"],
+      "access_date": "{{日期}}"
+    },
+    {
+      "id": "ref3",
+      "type": "article",
+      "title": "{{文章标题}}",
+      "author": "{{作者}}",
+      "site": "{{网站}}",
+      "url": "{{URL}}",
+      "key_takeaways": ["{{收获1}}", "{{收获2}}"],
+      "cited_in": ["deep-dive.md#{{章节}}"],
+      "access_date": "{{日期}}"
+    },
+    {
+      "id": "ref4",
+      "type": "website",
+      "title": "{{网页标题}}",
+      "author": "{{作者}}",
+      "url": "{{URL}}",
+      "key_takeaways": ["{{收获1}}"],
+      "cited_in": ["README.md#{{章节}}"],
+      "access_date": "{{日期}}"
+    }
+  ]
+}

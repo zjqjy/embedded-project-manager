@@ -186,9 +186,13 @@ AI + 人类 一起修改代码
 └── EM-SKILL/                   # 技能定义
     ├── SKILL.md                # 技能入口
     ├── README.md               # 本文件
-    ├── commands/               # 命令定义
+    ├── commands/               # 通用命令定义
     ├── workflows/              # 工作流细则
     ├── templates/              # 模板文件
+    ├── plugins/                # 插件目录（详见 ## 插件扩展）
+    │   ├── INDEX.md            # 插件索引
+    │   ├── embedded/           # 嵌入式插件（S5 串口/S9 工具链）
+    │   └── learning/           # 学习模式插件（S14 LPR 闭环）
     └── tools/                  # 工具集
         └── serial-mcp/         # S5串口工具
 ```
@@ -254,6 +258,41 @@ EM-SKILL自动识别项目使用的芯片型号，并建立知识库。
 | project-spec.md | S步骤完成 | 按里程碑归档 |
 | problem-log.md | > 300行 | 问题追踪记录 |
 | decision-log.md | > 300行 | 关键决策记录 |
+
+---
+
+## 插件扩展
+
+EM-SKILL 采用「通用核 + 插件」架构（v3.0）。通用核提供 16 个基础命令，插件提供场景化扩展，**物理解耦**：每个插件可独立卸载，通用核不依赖。
+
+### 已注册插件
+
+| 插件 | 路径 | 启用条件 | 提供能力 |
+|------|------|----------|----------|
+| **embedded** | `plugins/embedded/` | `project.json.type == "embedded"` 或检测 Keil/CubeMX/ESP-IDF/PlatformIO | `/em initem` + 串口/烧录/编译工具链 + 嵌入式 verify |
+| **learning** | `plugins/learning/` | `project.json.type == "learning"` 或检测 `.em/learning/` | `/em learn new/verify/status` + LPR 5 阶段 + 多格式构建 |
+
+完整索引：[`plugins/INDEX.md`](./plugins/INDEX.md)
+
+### 加载机制
+
+`<STATE_DIR>/project.json` 中设置 `"type"`：
+
+```json
+{
+  "type": "learning"
+}
+```
+
+或 `/em init` / `/em si` 时自动检测项目特征后询问启用。
+
+### 嵌入式插件核心
+
+嵌入式场景由 `plugins/embedded/` 提供完整支持：串口/烧录/编译/芯片学习/embed-ai-tool 整合。所有原 S5/S9 能力已迁移至此。
+
+### 学习模式插件
+
+学习场景由 `plugins/learning/` 提供 LPR（Learn-Practice-Retro）5 阶段闭环：每个主题走完 L1→L5，沉淀为主题 README 卡片（5 段式），支持 HTML/视频脚本/SVG 海报/.skill 多格式分发。
 
 ---
 

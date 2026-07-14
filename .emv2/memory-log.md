@@ -22,6 +22,10 @@
 
 ## 关键决策
 
+- [2026-07-13] S14 学习模式定位: `plugins/learning/` 物理解耦 + `/em learn` 子命令（与 v3.0 plugins/embedded/ 同构）
+- [2026-07-13] S14 学习状态归属: 用户项目内 `.em/learning/state.md`，插件只提供 schema（零业务数据污染通用核）
+- [2026-07-13] S14 通用核文档: README.md 新增 `## Plugins` 章节，声明 EM-SKILL 是插件宿主
+- [2026-07-13] S14 S10 归档: em-new-s10 重档产物归档到 `.emv2/history/2026/07/13/S10-learning-v4-design/`（设计档案可追溯）
 - [2026-02-25] 项目初始化，创建基本功能结构
 - [2026-03-27] 实用性修复方案讨论
 - [2026-04-15] SKILL.md 重构，命令前缀 `/em`

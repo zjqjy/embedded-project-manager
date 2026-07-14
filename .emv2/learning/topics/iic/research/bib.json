@@ -1,0 +1,86 @@
+[
+  {
+    "id": "nxp-um10204-rev7",
+    "title": "I2C-bus specification and user manual (UM10204 Rev. 7.0)",
+    "url": "https://www.nxp.com/docs/en/user-guide/UM10204.pdf",
+    "product_page": "https://www.nxp.com/products/interfaces/ic-bus-and-smbus-controllers/i2c-bus-specification:UM10204",
+    "type": "official-spec",
+    "vendor": "NXP Semiconductors",
+    "revision": "Rev. 7.0 (1 October 2021)",
+    "verified_at": "2026-07-14",
+    "verification_method": "WebSearch confirmed latest revision; previous was Rev. 6 (4 April 2014)",
+    "key_takeaway": "官方权威规范。Section 3.1.9 Clock Stretching；Rev. 7.0 改用 controller/target 术语（替代 master/slave）；章节编号相对 Rev. 6 有偏移（对齐 MIPI I3C）",
+    "sections_referenced": [
+      "3.1.1 SDA and SCL signals",
+      "3.1.6 ACK and NACK",
+      "3.1.9 Clock stretching",
+      "3.1.10 Slave/target address and R/W bit"
+    ],
+    "used_in": ["knowledge.md §2.4-§2.9", "knowledge-pack.md"]
+  },
+  {
+    "id": "linux-i2c-tools",
+    "title": "i2c-tools (kernel.org utils)",
+    "url": "https://git.kernel.org/pub/scm/utils/i2c-tools/i2c-tools.git",
+    "github_mirror": "https://github.com/hadess/i2c-tools",
+    "type": "source-code",
+    "vendor": "kernel.org (maintained by Jean Delvare 等)",
+    "verified_at": "2026-07-14",
+    "verification_method": "WebSearch 确认 git.kernel.org 是权威源；GitHub 是镜像",
+    "key_takeaway": "Linux 用户态工具集源码（i2cdetect/i2cdump/i2cget/i2cset）；理解 user-space ↔ kernel SMBus 协议栈边界",
+    "used_in": ["knowledge.md §4.1-§4.3", "L3 demo"]
+  },
+  {
+    "id": "linux-i2c-docs",
+    "title": "Linux Kernel I2C Subsystem Documentation",
+    "url": "https://www.kernel.org/doc/html/latest/i2c/",
+    "type": "official-docs",
+    "vendor": "kernel.org",
+    "verified_at": "2026-07-14",
+    "verification_method": "WebSearch 确认路径与子文档列表",
+    "key_takeaway": "内核官方 i2c 子系统文档集合；含 summary.rst / i2c-protocol.rst / i2c-dev.rst / ten-bit-addresses.rst 等",
+    "sub_docs": [
+      "summary.rst",
+      "i2c-protocol.rst",
+      "i2c-dev.rst",
+      "ten-bit-addresses.rst",
+      "fault-codes.rst"
+    ],
+    "used_in": ["knowledge.md §2 协议层", "L4 verify-report.md"]
+  },
+  {
+    "id": "linux-i2c-bus-recovery",
+    "title": "Linux kernel commit: i2c: Add bus recovery infrastructure",
+    "url": "https://github.com/XECDesign/linux/commit/5f9296ba21b3c395e53dd84e7ff9578f97f24295",
+    "spec_reference": "UM10204 Rev. 03, §3.1.16 Bus clear",
+    "type": "kernel-commit",
+    "vendor": "Linux kernel",
+    "verified_at": "2026-07-14",
+    "verification_method": "WebSearch 命中 commit hash 与 spec section",
+    "key_takeaway": "官方总线恢复机制：要么用 controller 产生 dummy clocks，要么 GPIO 模拟 9 个 SCL 脉冲；规范中称 'Bus clear'",
+    "used_in": ["knowledge.md §5.1 总线死锁"]
+  },
+  {
+    "id": "zhihu-i2c-deadlock",
+    "title": "I2C 死锁及恢复方法",
+    "url": "https://zhuanlan.zhihu.com/p/218202643",
+    "type": "blog",
+    "author": "知乎嵌入式作者",
+    "language": "zh-CN",
+    "verified_at": "2026-07-14",
+    "verification_method": "WebSearch 多文交叉验证 '9 个 SCL 脉冲' 流程",
+    "key_takeaway": "中文实战：MCU 推 9 个 SCL 把从机 ACK 位拿走，使从机释放 SDA；之后发 STOP 复位总线",
+    "used_in": ["knowledge.md §5.1", "L3 Practice demo"]
+  },
+  {
+    "id": "zhihu-i2c-linux-recovery",
+    "title": "linux 内核：i2c lock-up 恢复机制",
+    "url": "https://zhuanlan.zhihu.com/p/493161798",
+    "type": "blog",
+    "language": "zh-CN",
+    "verified_at": "2026-07-14",
+    "verification_method": "WebSearch 命中",
+    "key_takeaway": "Linux 内核视角的总线死锁分析 + 恢复代码路径",
+    "used_in": ["L4 verify-report.md"]
+  }
+]
