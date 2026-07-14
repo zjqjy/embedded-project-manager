@@ -1,6 +1,7 @@
 ---
 plugin: learning
 description: 学习模式插件 — LPR 闭环、主题 README 卡片、知识图谱、调研管理、多格式构建
+prefix: learn  # S15-A: user-facing prefix; /em learn new 等
 provides:
   commands:
     - learn-new        # /em learn new <topic>

@@ -3,23 +3,35 @@
 ## Meta
 - **项目**: embedded-project-manager-v2 (EM-SKILL 元仓库)
 - **类型**: learning ⚠️ 试用模式（meta-skill 本质保留在 project.json.is_meta）
-- **当前步骤**: S14 ✅ 完成 + learning 插件试用（主题 `iic` 已启动）
-- **更新时间**: 2026-07-13
-- **会话**: sess-20260713-001
+- **当前步骤**: S16-A 🚧 改写 `workflows/new-standard.md` 为 R1/R2/R3 渐进
+- **更新时间**: 2026-07-14
+- **会话**: sess-20260714-001
+- **分支**: `feature/s16-new-flow-optimization`
 
 ## 下一步动作
-1. /em learn status — 查看 iic 主题进度
-2. /em learn verify iic l2 — 进入 L2 Pack 阶段（需先完成 L1 调研：bib.json ≥ 3 条 + knowledge.md ≥ 50 行）
-3. （试用完成后）还原 project.json.type = "general"
+1. 改写 `workflows/new-standard.md`（brainstorm/milestones 阶段拆 R1/R2/R3；阶段 3 拆 3 个落盘点）
+2. 完成后 `/em verify s16-a` 验证 + HVR 提议 commit
+3. S15-A 已编码完成（待 verify + commit），与 S16 并行推进
 
 ## 最近 3 条关键决策
-- [2026-07-13] S14: 学习模式作为 plugins/learning/ 物理解耦，遵循 v3.0 通用核零业务原则
-- [2026-07-13] S14: 学习状态目录归用户项目（.em/learning/state.md），插件只提供 schema
-- [2026-06-03] EM-SKILL v3.0：通用核 + plugins/embedded/ 物理解耦
+- [2026-07-14] S16: 中档流程改为 R1/R2/R3 渐进对话流，**落盘前必须确认**
+- [2026-07-14] S16: 阶段 3「同步状态」拆 3 个落盘点（brainstorm.md / milestones.md / state+spec+decisions）
+- [2026-07-14] S16: 新分支 `feature/s16-new-flow-optimization` 隔离 EM-SKILL 元仓库改动
 
 ## 阻塞项 / 待办
+- [ ] S16-A: 改写 `workflows/new-standard.md`（**当前**）
+- [ ] S16-B: 用 S16 当样本回归验证
+- [ ] S15-A: ✅ 编码完成（待 verify + commit）
+- [ ] S15-B: SKILL.md 路由表指针化
+- [ ] S15-C: `project.json.type` 降级 + 元仓库 `trial_mode` 清理
+- [ ] S15-D: 嵌入式 `enabled_when` 多文件探测移除
+- [ ] S15-E: 端到端验证 + 性能对比
 - [ ] S10-E L2 用户端到端验证（沿用 S10）
 - [ ] S12: 串口监控+initem 优化（原 S11，被本轮重构顺延）
+
+## S16 计划文件
+- `discussion/20260714-s16-new-flow-optimize/brainstorm.md`
+- `discussion/20260714-s16-new-flow-optimize/milestones.md`
 
 ## S14 计划文件
 - `discussion/20260713-integrate-learning-v4/brainstorm.md`

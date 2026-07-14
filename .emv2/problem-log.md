@@ -2,6 +2,31 @@
 
 ## 当前问题
 
+### [2026-07-14] S14-失败-1：插件加载机制需从「类型驱动」改为「命令驱动」
+
+- **状态**: open
+- **触发场景**: 用户试用 `/em learn` 系列命令时发现插件加载慢；并质疑当前架构「为什么要先在 `project.json.type` 标 `learning` 才加载插件」
+- **根因分析**:
+  1. **eager + 全局扫描模式**：当前 `rec.md` / SKILL.md 在每次 `/em *` 命令时都执行：
+     - 读 `state.md` + `project.json`
+     - 检查 `type == "embedded" | "learning" | "general"`
+     - 嵌入式插件还多文件扫描（`*.uvprojx` `*.uvproj` `*.ioc` `sdkconfig` `platformio.ini` 共 5 类文件探测）
+     - 学习插件多文件扫描（`.em/learning/state.md` `_index.json` 存在性）
+     - 即使用户本轮命令**完全用不到**插件，也要读完这些文件
+  2. **类型污染**：要让 learning 插件可用，必须先改 `project.json.type = "learning"`；试用完又要改回 `general` → 元仓库 `trial_mode` 字段就是为这个来回切换而存在（设计妥协痕迹）
+  3. **命令路由先于插件加载**：用户敲 `/em learn new` 时，其实只需要读 `plugins/learning/commands/learn-new.md` 一个文件；现在却把整个 learning 插件（PLUGIN.md + 4 commands + 4 tools + N templates）都摸一遍
+  4. **哲学不一致**：Linux `modprobe` / VS Code extension activation 都是**按命令/事件触发**的 lazy load，不是「开机全扫描」
+- **修复方向（S15 候选）**:
+  1. **改用命令前缀路由**：SKILL.md 路由表**预声明**所有可能的插件命令前缀（`learn` / `initem` / `embedded-flash` 等），不依赖 type 字段
+  2. **延迟到命令执行时加载**：`/em learn *` 实际触发时，**只读**对应命令文件（`plugins/<plugin>/commands/<cmd>.md`），其他文件按需加载
+  3. **保留 type 字段但降级**：从「加载开关」降级为「默认偏好 / UI 提示」，不再控制加载行为
+  4. **废弃 eager 扫描**：移除 `enabled_when` 里 `*.uvprojx` `*.ioc` 等文件探测项；改用 `init` / `si` 时一次性识别 + 缓存
+  5. **元仓库试用**：去掉 `trial_mode.since` 字段；learning 插件按命令触发加载，无需切 type
+- **相关**: 用户原话——"插件读取文件多，速度慢" / "为什么要时 learn 标志才加载插件，不应该用户触发指令了就去加载吗"
+- **下一步**: 用户决定是否要把这个作为新步骤（建议 **S15 插件 lazy-load 重构**）正式修复；或仅作为 reference 留待后续
+
+---
+
 ### [2026-06-03] EM new 中档流程的过度设计倾向
 
 - **状态**: open

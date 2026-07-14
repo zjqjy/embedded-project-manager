@@ -1,0 +1,32 @@
+{
+  "step": "S15",
+  "slug": "plugin-lazy-load",
+  "tier": "standard",
+  "discussion_id": "20260714-plugin-lazy-load",
+  "created": "2026-07-14",
+  "phases": {
+    "brainstorm": {
+      "status": "completed",
+      "file": "brainstorm.md",
+      "selected_option": "B",
+      "completed_at": "2026-07-14"
+    },
+    "milestones": {
+      "status": "completed",
+      "file": "milestones.md",
+      "substep_count": 5,
+      "completed_at": "2026-07-14"
+    },
+    "execute": {
+      "status": "in_progress",
+      "current_substep": "S15-A",
+      "substeps": [
+        {"id": "S15-A", "name": "_loader.py + 缓存机制", "status": "completed", "verified": true, "test_count": 16, "test_pass": 16},
+        {"id": "S15-B", "name": "SKILL.md 路由表指针化", "status": "pending", "depends_on": "S15-A"},
+        {"id": "S15-C", "name": "type 降级 + trial_mode 清理", "status": "pending", "depends_on": "S15-B"},
+        {"id": "S15-D", "name": "嵌入式 enabled_when 移除", "status": "pending", "depends_on": "S15-A"},
+        {"id": "S15-E", "name": "端到端验证 + 性能对比", "status": "pending", "depends_on": "S15-A,S15-B,S15-C,S15-D"}
+      ]
+    }
+  }
+}

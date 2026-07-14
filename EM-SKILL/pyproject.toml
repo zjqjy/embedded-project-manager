@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "em-skill-loader"
+version = "0.1.0"
+description = "EM-SKILL plugin lazy-load registry builder & query CLI (S15-A)"
+requires-python = ">=3.8"
+dependencies = [
+    "pyyaml>=5.1",
+]
+
+[project.scripts]
+em-loader = "plugins._loader:main"
+
+[tool.setuptools]
+# 只打包 plugins 包（其中只有 _loader 是真正的 Python 模块）
+packages = ["plugins"]
+
+[tool.setuptools.package-data]
+# 缓存文件应被排除（运行时产物）
+plugins = ["*.md"]
