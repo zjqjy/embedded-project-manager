@@ -21,11 +21,11 @@
 ## 阻塞项 / 待办
 - [ ] S16-A: 改写 `workflows/new-standard.md`（**当前**）
 - [ ] S16-B: 用 S16 当样本回归验证
-- [ ] S15-A: ✅ 编码完成（待 verify + commit）
-- [ ] S15-B: SKILL.md 路由表指针化
-- [ ] S15-C: `project.json.type` 降级 + 元仓库 `trial_mode` 清理
-- [ ] S15-D: 嵌入式 `enabled_when` 多文件探测移除
-- [ ] S15-E: 端到端验证 + 性能对比
+- [x] S15-A: ✅ 编码 + verify + commit (183e7c3)
+- [x] S15-B: ✅ SKILL.md 路由表指针化 (9b5b70c)
+- [x] S15-C: ✅ `project.json.type` 降级 + trial_mode 清理 (9b5b70c)
+- [x] S15-D: ✅ 嵌入式 `enabled_when` 多文件探测移除 (9b5b70c)
+- [x] S15-E: ✅ 端到端验证 + 性能对比 (9b5b70c)
 - [ ] S10-E L2 用户端到端验证（沿用 S10）
 - [ ] S12: 串口监控+initem 优化（原 S11，被本轮重构顺延）
 
