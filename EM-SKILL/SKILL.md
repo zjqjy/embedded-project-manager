@@ -54,47 +54,25 @@ version: 3.1.0
 | `/em migrate` | `.emv2/` → `.em/` 深度迁移 |
 | `/em migrate-state` | 一键生成 state.md（瘦身） |
 
-### 子命令路由（执行前必须先读取对应命令文件）
+> **子命令路由约定**：AI 执行任一通用命令时，读取 `commands/<cmd>.md`。
+> 通用核不维护命令-文件路由表，约定即可（统一前缀 `commands/`）。
 
-| `$0` | 读取的文件 | 说明 |
-|------|-----------|------|
-| `si` | `commands/si.md` | 路径 `$1`（空则当前目录） |
-| `init` | `commands/init.md` | 名称 `$1` |
-| `new` | `commands/new.md` | 功能描述 `$1` |
-| `disc` | `commands/disc.md` | — |
-| `verify` | `commands/verify.md` | 步骤 `$1`（如 s7） |
-| `result` | `commands/result.md` | 结果 `$1` |
-| `stat` | `commands/stat.md` | 可选 `-v` / `steps` / `next` |
-| `rec` | `commands/rec.md` | 可选 `$1` |
-| `sessions` | `commands/sessions.md` | 可选 ID 或 `latest` / `search <kw>` |
-| `sw` | `commands/sw.md` | 名称/路径 `$1` |
-| `arch` | `commands/arch.md` | — |
-| `sum` | `commands/sum.md` | — |
-| `pi` | `commands/pi.md` | — |
-| `gi` | `commands/gi.md` | — |
-| `help` | `commands/help.md` | 可选命令名 `$1` |
-| `migrate` | `commands/migrate.md` | — |
-| `migrate-state` | `commands/migrate-state.md` | — |
+### 插件命令（lazy load — S15）
 
-### 嵌入式插件命令（按需加载）
+> 插件命令**不**走 `project.json.type` 检测；用户敲命令时按需加载。
+> 路由由 `plugins/_loader.py` 启动时一次性构建 + mtime 缓存（O(1) 查表）。
+> 通用核不维护插件命令清单；**新增插件无需改 SKILL.md**，只需在 `plugins/<name>/PLUGIN.md` 声明 `provides.commands` 即可。
 
-如 `<STATE_DIR>/project.json.type == "embedded"`，路由表追加：
+| 插件 | 用户前缀 | Manifest |
+|------|----------|----------|
+| embedded | (空，顶层命令) | [`plugins/embedded/PLUGIN.md`](plugins/embedded/PLUGIN.md) |
+| learning | `learn` | [`plugins/learning/PLUGIN.md`](plugins/learning/PLUGIN.md) |
 
-| `$0` | 读取的文件 |
-|------|-----------|
-| `initem` | `plugins/embedded/commands/initem.md` |
+**解析规则**（`em-loader --resolve <inv>`）：
+- 直接匹配：`hello` 命中命令名 → 加载
+- 前缀拼接：`learn new` 命中 `learn-new` → 加载
 
-### 学习模式插件命令（按需加载）⭐ S14 新增
-
-如 `<STATE_DIR>/project.json.type == "learning"` 或检测到 `.em/learning/state.md`，路由表追加：
-
-| `$0` | 读取的文件 |
-|------|-----------|
-| `learn new` | `plugins/learning/commands/learn-new.md` |
-| `learn verify` | `plugins/learning/commands/learn-verify.md` |
-| `learn status` | `plugins/learning/commands/learn-status.md` |
-
-详见：[`plugins/learning/PLUGIN.md`](plugins/learning/PLUGIN.md)
+详见 [`plugins/_loader.py`](plugins/_loader.py) 与 [`plugins/INDEX.md`](plugins/INDEX.md)。
 
 ---
 
@@ -114,23 +92,20 @@ EM-SKILL 提供三类项目支持：
   - 重档 → 5 阶段 disc（45 min）
 - **Git 集成**：verify 时提议 commit；归档时打 tag
 
-### 嵌入式项目（可拆插件）
+### 嵌入式项目（按需加载插件）
 
-`<STATE_DIR>/project.json.type == "embedded"` 时自动加载 `plugins/embedded/`：
-
-- `/em initem` — 工具初始化（OpenOCD/Keil/串口工具路径注册）
+触发方式：用户敲 `/em initem` 或 `/em build/flash/serial` 时 lazy-load，无需 `type=embedded`。
+- `tools/` 含 `serial-mcp` / `serial-monitor` / `build-keil` / `flash-openocd`
 - `/em verify` 注入编译→烧录→串口三连子流程
 - `/em init` / `/em si` 注入芯片选择 + 学习
-- `tools/` 含 `serial-mcp` / `serial-monitor` / `build-keil` / `flash-openocd`
 
 详见：[`plugins/embedded/PLUGIN.md`](plugins/embedded/PLUGIN.md)
 
 通用项目**不**加载此插件，零负担。
 
-### 学习模式项目（可拆插件）⭐ S14 新增
+### 学习模式项目（按需加载插件）⭐ S14 + S15
 
-`<STATE_DIR>/project.json.type == "learning"` 时自动加载 `plugins/learning/`：
-
+触发方式：用户敲 `/em learn new/verify/status` 时 lazy-load，无需 `type=learning`。
 - `/em learn new <slug> [title]` — 创建新主题（LPR 闭环起点）
 - `/em learn verify [slug] [l<N>]` — 阶段验证 + 推进 L1→L5
 - `/em learn status [slug] [-v]` — 查看学习状态

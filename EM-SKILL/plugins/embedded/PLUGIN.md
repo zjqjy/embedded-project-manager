@@ -7,14 +7,12 @@ author: zjq <2339311136@qq.com>
 license: MIT
 prefix: ""  # S15-A: user-facing prefix; empty = 顶层命令（/em initem 等）
 
-# 启用条件（OR 语义）
+# S15-D: 移除 5 类文件探测项（*.uvprojx / *.uvproj / *.ioc / sdkconfig / platformio.ini）
+# 加载策略改为 lazy-load + 命令前缀触发；不再做文件系统 stat 探测
+# 一次性项目类型识别由 /em init / /em si 完成，结果缓存到 <STATE_DIR>/cache/project-profile.json
+# 兼容性保留 type==embedded 检测作为 legacy hint（不影响加载）
 enabled_when:
-  - project.json.type == "embedded"
-  - "*.uvprojx"
-  - "*.uvproj"
-  - "*.ioc"
-  - "sdkconfig"
-  - "platformio.ini"
+  - project.json.type == "embedded"  # legacy: 仅作 default-plugin-hint，不控制加载
 
 # 提供能力清单
 provides:
