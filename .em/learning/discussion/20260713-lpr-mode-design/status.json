@@ -1,0 +1,20 @@
+{
+  "discussion_id": "20260713-lpr-mode-design",
+  "title": "EM-SKILL 学习模式 (LPR) 设计",
+  "scope": "只设计学习模式，不含 OTA 升级示范实现",
+  "tier": "中档 (brainstorm + milestones)",
+  "created_at": "2026-07-13",
+  "completed_at": "2026-07-13",
+  "artifacts": [
+    ".em/learning/discussion/20260713-lpr-mode-design/brainstorm.md",
+    ".em/learning/discussion/20260713-lpr-mode-design/milestones.md"
+  ],
+  "decisions": {
+    "state_dir": ".em/learning/ (独立)",
+    "workflow": "LPR (Learn-Practice-Retro)，与 HVR 平行",
+    "scope_this_round": "只设计学习模式",
+    "new_commands": ["/em learn", "/em kp", "/em retro", "/em publish"],
+    "new_templates": ["knowledge.md", "video-script.md"],
+    "reuse_from_hvr": ["/em new (三档) for L3", "/em verify + /em result for L4"]
+  }
+}

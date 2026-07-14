@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "built_at": "2026-07-14T19:23:47.332662",
+  "plugins_dir": "D:\\DeskTop\\WorkSpace\\Code\\embedded-project-manager\\EM-SKILL\\plugins",
+  "plugins": [
+    {
+      "name": "embedded",
+      "version": "1.0.0",
+      "description": "嵌入式开发场景插件 — 串口、烧录、编译、芯片学习、嵌入式 verify 流程",
+      "mtime": 1784028120.59209,
+      "manifest": "D:\\DeskTop\\WorkSpace\\Code\\embedded-project-manager\\EM-SKILL\\plugins\\embedded\\PLUGIN.md"
+    },
+    {
+      "name": "learning",
+      "version": "",
+      "description": "学习模式插件 — LPR 闭环、主题 README 卡片、知识图谱、调研管理、多格式构建",
+      "mtime": 1784024370.6986043,
+      "manifest": "D:\\DeskTop\\WorkSpace\\Code\\embedded-project-manager\\EM-SKILL\\plugins\\learning\\PLUGIN.md"
+    }
+  ],
+  "registry": {
+    "embedded": {
+      "prefix": "",
+      "commands": {
+        "initem": "D:\\DeskTop\\WorkSpace\\Code\\embedded-project-manager\\EM-SKILL\\plugins\\embedded\\commands\\initem.md",
+        "build": "D:\\DeskTop\\WorkSpace\\Code\\embedded-project-manager\\EM-SKILL\\plugins\\embedded\\commands\\build.md",
+        "flash": "D:\\DeskTop\\WorkSpace\\Code\\embedded-project-manager\\EM-SKILL\\plugins\\embedded\\commands\\flash.md",
+        "serial": "D:\\DeskTop\\WorkSpace\\Code\\embedded-project-manager\\EM-SKILL\\plugins\\embedded\\commands\\serial.md"
+      }
+    },
+    "learning": {
+      "prefix": "learn",
+      "commands": {
+        "learn-new": "D:\\DeskTop\\WorkSpace\\Code\\embedded-project-manager\\EM-SKILL\\plugins\\learning\\commands\\learn-new.md",
+        "learn-verify": "D:\\DeskTop\\WorkSpace\\Code\\embedded-project-manager\\EM-SKILL\\plugins\\learning\\commands\\learn-verify.md",
+        "learn-status": "D:\\DeskTop\\WorkSpace\\Code\\embedded-project-manager\\EM-SKILL\\plugins\\learning\\commands\\learn-status.md"
+      }
+    }
+  }
+}

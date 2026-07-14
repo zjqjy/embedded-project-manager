@@ -22,6 +22,10 @@
 
 ## 关键决策
 
+- [2026-07-14] S16: 中档流程改为 R1/R2/R3 渐进对话流，**落盘前必须确认**
+- [2026-07-14] S16: 阶段 3「同步状态」拆 3 个落盘点（brainstorm.md / milestones.md / state+spec+decisions）
+- [2026-07-14] S16: brainstorm R2 候选方案每条限 1 句思路 + 1 句优劣，控制注意力负载
+- [2026-07-14] S16: 新分支 `feature/s16-new-flow-optimization` 隔离 EM-SKILL 元仓库改动
 - [2026-07-13] S14 学习模式定位: `plugins/learning/` 物理解耦 + `/em learn` 子命令（与 v3.0 plugins/embedded/ 同构）
 - [2026-07-13] S14 学习状态归属: 用户项目内 `.em/learning/state.md`，插件只提供 schema（零业务数据污染通用核）
 - [2026-07-13] S14 通用核文档: README.md 新增 `## Plugins` 章节，声明 EM-SKILL 是插件宿主
