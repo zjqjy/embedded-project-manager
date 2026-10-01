@@ -3,34 +3,32 @@
 ## Meta
 - **项目**: embedded-project-manager-v2 (EM-SKILL 元仓库)
 - **类型**: learning ⚠️ 试用模式（meta-skill 本质保留在 project.json.is_meta）
-- **当前步骤**: S17 ✅ A/B/C/D 开发完成（L1 全绿）— L2 实机验收待做
+- **当前步骤**: S17 ✅ 开发完成 + L2 收口（v4 演练进行中，分支 feature/s17-v4）
 - **更新时间**: 2026-10-01
 - **会话**: sess-20261001-001
-- **分支**: master（含大量删除的变更集，commit 前请 review；v4 演练时切 feature/s17-v4）
+- **分支**: feature/s17-v4（v4 演练）；master 停在 v3.2 + S17 全量提交
 
 ## 下一步动作
-1. ~~review + commit~~ ✅ 已分 4 批提交（fb79970/84782ae/c82b3e5/c007395），**未 push**（手动 `git push origin master`）
-2. L2 余项：CCS 机器上跑 slack_app build/flash（命令在 HVR-S17-001 L2 表）；管家 .emv2/logs 演练 logs-clean
-3. v4 演练：feature/s17-v4 分支跑 migrate v4 段（映射预览逐项确认，需用户在场）
-4. install 副本同步：dev 领先，跑 sync-to-install.cmd /y（交互确认有 cmd 延迟展开 bug，用 /y 绕过；修复该 bug 可开轻档）
+1. v4 演练 Phase 4：命令文档切 v4 路径（new/verify/result/init/SKILL 布局）+ 版本 4.0.0
+2. 用户 review 本分支 → merge master → 手动 `git push`（EM 规则禁自动 push）
+3. L2 余项（CCS 机器）：slack_app `/em build` → `/em flash`（命令见 features/S17-slim-tools-registry/hvr.md L2 表）
+4. install 副本同步（sync-to-install.cmd /y，交互 bug 已修）
 
 ## 最近 3 条关键决策
-- [2026-10-01] S17-两步走落地: v3.2 止血包（生命周期规则+生成减量，零破坏，SKILL 3.2.0）+ v4.0 换骨能力已交付（LIFECYCLE + migrate v4 段 + journal/feature 模板）；命令层暂保持 v3 兼容，管家项目演练后才切换
-- [2026-10-01] S17-工具组织: `tools/adapters/{build,flash,observe}/` + `registry.json`（st/gd/ti 三厂商收录）；initem 锁定组合写 project.json.embedded，verify 三连数据驱动；外部工具裁决不集成（research.md 后备清单）
-- [2026-10-01] S17-工程修复: _loader import 副作用 / find_state_dir 状态标记 / 测试 F:\ 硬编码 / 仓库垃圾（egg-info、嵌套 .emv2 日志、.em 缓存）全清，67/67 全绿
+- [2026-10-01] v4 迁移演练执行（本分支三段式 commit：move artifacts 28edd20 → consolidate journal a85dc26 → slim state）；15 个 feature 目录 + journal.md 生成，原件入 history/2026/10/01/
+- [2026-10-01] S17-两步走落地: v3.2 止血包（SKILL 3.2.0）+ v4 能力交付（LIFECYCLE/migrate/journal/feature 模板）
+- [2026-10-01] S17-工具组织: adapters/{build,flash,observe} + registry.json（st/gd/ti）；initem 锁定组合、verify 数据驱动；外部工具不集成
 
 ## 阻塞项 / 待办
-- [ ] S17-L2: slack_app 实机验收（ccs/dslite + rec 闸门 + logs-clean）
-- [ ] S17-v4: 管家项目 migrate v4 演练 → 命令切换发版
-- [ ] install 同步（sync 脚本确认 bug 修复后再跑）
-- [x] S17-A/B/C/D: ✅ 开发完成（HVR: checkpoints/HVR-S17-001.md）
+- [ ] v4 Phase 4 命令切换（**当前**）
+- [ ] 用户 review/merge feature/s17-v4；push 手动
+- [ ] S17-L2 余项：CCS 机器 slack_app build/flash 实测
+- [x] v4 Phase 1-3: ✅ 搬移/合并/瘦身完成（28edd20 / a85dc26）
 
-## 详细资料指针
+## 详细资料指针（v4）
 | 内容 | 文件 |
 |------|------|
-| S17 讨论与调研 | `discussion/20261001-s17-slim-tools-registry/` |
-| S17 验证记录 | `checkpoints/HVR-S17-001.md` |
-| 生命周期总表（新） | `EM-SKILL/docs/LIFECYCLE.md` |
-| 工具能力矩阵（新） | `EM-SKILL/plugins/embedded/tools/registry.json` |
-| 步骤全表 | `project-spec.md` |
-| 问题追踪 | `problem-log.md`（臃肿条目已 closed-by-S17）|
+| 步骤索引 | `features/README.md`（原 project-spec.md） |
+| 时间线/决策 | `journal.md`（原 memory-log.md / decisions） |
+| 问题追踪 | `problem-log.md`（臃肿条目 closed-by-S17） |
+| S17 全套 | `features/S17-slim-tools-registry/`（plan/research/hvr） |
