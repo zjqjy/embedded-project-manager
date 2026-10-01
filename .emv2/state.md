@@ -3,59 +3,34 @@
 ## Meta
 - **项目**: embedded-project-manager-v2 (EM-SKILL 元仓库)
 - **类型**: learning ⚠️ 试用模式（meta-skill 本质保留在 project.json.is_meta）
-- **当前步骤**: S16-A 🚧 改写 `workflows/new-standard.md` 为 R1/R2/R3 渐进
-- **更新时间**: 2026-07-14
-- **会话**: sess-20260714-001
-- **分支**: `feature/s16-new-flow-optimization`
+- **当前步骤**: S17 ✅ A/B/C/D 开发完成（L1 全绿）— L2 实机验收待做
+- **更新时间**: 2026-10-01
+- **会话**: sess-20261001-001
+- **分支**: master（含大量删除的变更集，commit 前请 review；v4 演练时切 feature/s17-v4）
 
 ## 下一步动作
-1. 改写 `workflows/new-standard.md`（brainstorm/milestones 阶段拆 R1/R2/R3；阶段 3 拆 3 个落盘点）
-2. 完成后 `/em verify s16-a` 验证 + HVR 提议 commit
-3. S15-A 已编码完成（待 verify + commit），与 S16 并行推进
+1. **review + commit**：70 个文件变更（S17 + 此前 pro/sync-to-install 未提交项），建议按 HVR-S17-001 提议分批 commit
+2. L2 验收（slack_app）：/em initem 锁 TI 组合 → /em build → /em flash（ccs/dslite 首战）+ rec 硬闸门体感 + logs-clean
+3. v4 演练：本仓库 feature 分支跑 migrate v4 段 → 通过后统一切命令路径发 v4.0
+4. install 副本同步：dev 领先（S17 + humanize 回流），跑 sync-to-install.cmd /y（注意其交互确认有 cmd 延迟展开 bug，review 遗留未修）
 
 ## 最近 3 条关键决策
-- [2026-07-14] S16: 中档流程改为 R1/R2/R3 渐进对话流，**落盘前必须确认**
-- [2026-07-14] S16: 阶段 3「同步状态」拆 3 个落盘点（brainstorm.md / milestones.md / state+spec+decisions）
-- [2026-07-14] S16: 新分支 `feature/s16-new-flow-optimization` 隔离 EM-SKILL 元仓库改动
+- [2026-10-01] S17-两步走落地: v3.2 止血包（生命周期规则+生成减量，零破坏，SKILL 3.2.0）+ v4.0 换骨能力已交付（LIFECYCLE + migrate v4 段 + journal/feature 模板）；命令层暂保持 v3 兼容，管家项目演练后才切换
+- [2026-10-01] S17-工具组织: `tools/adapters/{build,flash,observe}/` + `registry.json`（st/gd/ti 三厂商收录）；initem 锁定组合写 project.json.embedded，verify 三连数据驱动；外部工具裁决不集成（research.md 后备清单）
+- [2026-10-01] S17-工程修复: _loader import 副作用 / find_state_dir 状态标记 / 测试 F:\ 硬编码 / 仓库垃圾（egg-info、嵌套 .emv2 日志、.em 缓存）全清，67/67 全绿
 
 ## 阻塞项 / 待办
-- [ ] S16-A: 改写 `workflows/new-standard.md`（**当前**）
-- [ ] S16-B: 用 S16 当样本回归验证
-- [x] S15-A: ✅ 编码 + verify + commit (183e7c3)
-- [x] S15-B: ✅ SKILL.md 路由表指针化 (9b5b70c)
-- [x] S15-C: ✅ `project.json.type` 降级 + trial_mode 清理 (9b5b70c)
-- [x] S15-D: ✅ 嵌入式 `enabled_when` 多文件探测移除 (9b5b70c)
-- [x] S15-E: ✅ 端到端验证 + 性能对比 (9b5b70c)
-- [ ] S10-E L2 用户端到端验证（沿用 S10）
-- [ ] S12: 串口监控+initem 优化（原 S11，被本轮重构顺延）
-
-## S16 计划文件
-- `discussion/20260714-s16-new-flow-optimize/brainstorm.md`
-- `discussion/20260714-s16-new-flow-optimize/milestones.md`
-
-## S14 计划文件
-- `discussion/20260713-integrate-learning-v4/brainstorm.md`
-- `discussion/20260713-integrate-learning-v4/milestones.md`
-
-## 已完成步骤（S14）
-- [x] S14-A：学习模式插件骨架
-- [x] S14-B：模板层迁入
-- [x] S14-C：脚本层迁入
-- [x] S14-D：插件注册与通用核文档
-- [x] S14-E：S10 设计产物归档与状态收尾
-
-## S13 计划文件
-- `discussion/20260709-claude-md-initem-register/quick-plan.md`
+- [ ] S17-L2: slack_app 实机验收（ccs/dslite + rec 闸门 + logs-clean）
+- [ ] S17-v4: 管家项目 migrate v4 演练 → 命令切换发版
+- [ ] install 同步（sync 脚本确认 bug 修复后再跑）
+- [x] S17-A/B/C/D: ✅ 开发完成（HVR: checkpoints/HVR-S17-001.md）
 
 ## 详细资料指针
 | 内容 | 文件 |
 |------|------|
+| S17 讨论与调研 | `discussion/20261001-s17-slim-tools-registry/` |
+| S17 验证记录 | `checkpoints/HVR-S17-001.md` |
+| 生命周期总表（新） | `EM-SKILL/docs/LIFECYCLE.md` |
+| 工具能力矩阵（新） | `EM-SKILL/plugins/embedded/tools/registry.json` |
 | 步骤全表 | `project-spec.md` |
-| 会话历史 | `memory-log.md`（旧版兼容；建议 /em migrate-state 升级到 sessions/）|
-| 决策全集 | `memory-log.md` 关键决策段 |
-| 问题追踪 | `problem-log.md` |
-| HVR 记录 | `checkpoints/` |
-| S11 HVR | `checkpoints/HVR-S11-001.md` |
-| 双场景验收 | `../test-runs/{general-cli,embedded-blink}/ACCEPT-*.md` |
-| S10 学习模式 v4.1 设计档案 | `history/2026/07/13/S10-learning-v4-design/` |
-| S10 学习模式 v4.1 原型 | `../em-skill-v4.1/.em/learning/`（S14-B/C 时迁入）|
+| 问题追踪 | `problem-log.md`（臃肿条目已 closed-by-S17）|

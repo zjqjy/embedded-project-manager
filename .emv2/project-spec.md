@@ -5,8 +5,8 @@
 ## Meta
 - **创建日期**: 2026-02-25
 - **项目类型**: Claude Skill 元仓库
-- **当前步骤**: S15-A 🚧 插件 lazy-load 重构 — `_loader.py` + 缓存机制
-- **整体状态**: S1-S6 全部完成 ✅ / S7 EM-SKILL GUI ⏸️ 暂停 / S8 模板优化 ✅ 完成 / S9 embed-ai-tool 整合 ✅ 完成 / S10 标准化+通用化+Git集成 ⏳ 子代理开发完成（L2 待用户）/ S11 v3.0 重构 ✅ 完成（双子代理 ACCEPT 通过）/ S13 🚧 开发中
+- **当前步骤**: S17-A 🚧 止血包 v3.2（init 减量 / rec 硬检查 / logs-clean）
+- **整体状态**: S1-S6 全部完成 ✅ / S7 EM-SKILL GUI ⏸️ 暂停 / S8 ✅ / S9 ✅ / S10 ✅ / S11 v3.0 重构 ✅ / S13 ⏸️ / S14 ✅ / S15 ✅ / S16 ⏸️ 并入 S17 / S17 🚧 瘦身+工具注册表
 - **项目路径**: D:\DeskTop\WorkSpace\Code\embedded-project-manager
 
 ## 全局检查点（Gates）
@@ -35,8 +35,23 @@
 | S12 | 串口监控+initem 优化（原 S11，被 v3.0 重构顺延）| 📋 待开发 | — |
 | S13 | initem 注册全局 CLAUDE.md 触发器（编译/烧录/串口动态加载）| 🚧 开发中 | 2026-07-09 |
 | S14 | 整合 S10 学习模式 v4.1 到元仓库（plugins/learning/ 物理解耦 + /em learn 子命令）| ✅ 完成（有 P3-1 失败）| 2026-07-13 |
-| S15 | 插件 lazy-load 重构（命令驱动替代 type 驱动，解决 P3-1）| 🚧 开发中 | 2026-07-14 |
-| S16 | 新流程优化（中档 R1/R2/R3 渐进 + 落盘前确认闸门）| 🚧 开发中 | 2026-07-14 |
+| S15 | 插件 lazy-load 重构（命令驱动替代 type 驱动，解决 P3-1）| ✅ 完成 | 2026-07-14 |
+| S16 | 新流程优化（中档 R1/R2/R3 渐进 + 落盘前确认闸门）| ⏸️ 并入 S17-A | 2026-07-14 |
+| S17 | EM-SKILL 瘦身 + 工具注册表（v3.2 止血 + v4.0 换骨两步走）| ✅ 开发完成（L2 待验收）| 2026-10-01 |
+
+---
+
+## S17 EM-SKILL 瘦身 + 工具注册表（中档，方案 A 两步走）
+
+> 讨论目录: `discussion/20261001-s17-slim-tools-registry/`（brainstorm / milestones / research）
+> 背景: problem-log 2026-09-12 open 条目（文件臃肿/无废弃机制/职责不清）+ 工具扩展需求（slack_app TI CCS 无法套用 Keil+OpenOCD）
+
+| 子步骤 | 名称 | 状态 | 优先级 | 说明 |
+|--------|------|------|--------|------|
+| S17-A | 止血包 v3.2 | ✅ 开发完成 | P0 | init 只建 2 文件 / 轻档不落盘 / rec 硬检查 ≤50 行 / `/em logs-clean` / problem-log 归档（收编 S16-A 落盘确认） |
+| S17-B | 工具 adapter 化 P0 | ✅ 开发完成 | P0 | `adapters/{build,flash,observe}/` + `registry.json` + initem 锁定组合 + verify 数据驱动；测试修复 67/67 全绿 |
+| S17-C | TI 支持（ccs.py + dslite.py） | ✅ 开发完成（L2 待 slack_app 实测） | P1 | registry ti.c2000 收录；TMS320F280033 + XDS100v2 首战待做 |
+| S17-D | v4.0 结构收敛 | ✅ 能力交付（切换待演练） | P0 | LIFECYCLE.md + journal/feature 模板 + migrate v4 段；命令层保持 v3 兼容，管家项目演练后统一切换 |
 
 ---
 
@@ -228,6 +243,7 @@ EM-SKILL 走向通用工程类项目管理 skill，同时保留嵌入式场景�
 | S14 学习模式整合讨论 | `.emv2/discussion/20260713-integrate-learning-v4/` |
 | S15 插件 lazy-load 重构讨论 | `.emv2/discussion/20260714-plugin-lazy-load/` |
 | S16 新流程优化讨论 | `.emv2/discussion/20260714-s16-new-flow-optimize/` |
+| S17 瘦身+工具注册表讨论 | `.emv2/discussion/20261001-s17-slim-tools-registry/` |
 
 ---
 

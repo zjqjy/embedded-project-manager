@@ -177,3 +177,107 @@
 ## 历史归档
 <!-- 已闭环问题归档索引 -->
 
+---
+
+## 跨项目问题记录 (EM-SKILL)
+
+> 由 `/em pro` 跨项目自动追加。用户反馈集中存放，便于统一处理。
+
+---
+
+### [2026-09-07] EM-SKILL 问题 — 命令显示名不一致（用户视角）
+
+- **状态**: ✅ closed (2026-09-07)
+- **关闭方式**: SKILL.md frontmatter `name: em-skill` → `name: em`，Claude Code 现在以 `/em` 显示和触发
+
+---
+
+### [2026-09-07] EM-SKILL 问题 — 状态目录不要 `.emv2/`，统一只用 `.em/`
+
+- **状态**: ✅ closed (2026-09-07)
+- **关闭方式**: init.md / si.md / rec.md 不再生成或回退 `.emv2/`；旧 `.emv2/` 项目用 `/em migrate` 一次性升级
+
+---
+
+### [2026-09-07] EM-SKILL 问题 — `/em pro` 强制新建管家目录，门槛过高
+
+- **状态**: ✅ closed (2026-09-07)
+- **关闭方式**: pro.md 改为直接问具体路径，不再给 3 个预设选项；只接受已存在 + 已 init 的目录
+
+---
+
+### [2026-09-12 19:00] EM-SKILL 问题 — 长期使用后项目文件臃肿、自动维护机制缺失、文件职责不清
+
+- **状态**: 🟡 closed-by-S17（2026-10-01 开发完成，L2 验收待 slack_app 实测）
+- **关闭方式**: S17 四子步交付 — A 止血包（rec >50 行硬闸门 / `/em logs-clean` / problem-log closed 归档 / init 只建 2 文件 / 轻中档落盘确认门）+ B/C 工具 registry 化 + D `docs/LIFECYCLE.md` 生命周期总表（12 项生死规则）+ v4 迁移路径（features/ 目录制收敛 11→6 类，HVR-S17-001 有完整证据）
+- **问题类别**: 缺失功能
+- **触发命令**: 无具体命令（用户描述 EM 整体维护机制薄弱）
+- **源项目**: `d:/DeskTop/WorkSpace/Code/slack/slack_app` (slack_app, embedded, TI TMS320F280033)
+- **EM-SKILL 版本**: unknown（`~/.claude/skills/EM-SKILL` 非 git 仓库，CHANGELOG 当前为 `[Unreleased]`）
+- **管家项目**: `D:\DeskTop\WorkSpace\Code\embedded-project-manager`
+
+**问题描述**:
+用户原话："项目文件臃肿，自动维护功能缺失，随长时间后维护困难，2：各文件承接功能不清晰"
+
+主要痛点：
+1. **`state.md` / `project-spec.md` 持续膨胀** — slack_app 项目 `state.md` 当前已达 53 行（超出 rec 默认 ≤50 行承诺），`project-spec.md` 持续追加无清理节奏
+2. **`logs/` 长期累积无清理** — 嵌入式项目编译/串口日志自动堆积，无滚动归档机制
+3. **文件职责边界模糊** — state.md / project-spec.md / decisions.md / memory-log.md / problem-log.md 各自承接的功能在 docs 中缺少明确分工说明；用户视角"各文件承接功能不清晰"
+
+**复现步骤**:
+嵌入式项目持续使用 EM-SKILL 数月后 → `state.md` 超过 50 行边界（rec 应强制但未强制）→ `project-spec.md` 持续追加已闭环步骤不清理 → `logs/` 自动累积编译产物 → 用户体感维护困难
+
+**期望行为**:
+EM-SKILL 应提供**自动维护/瘦身闭环**：
+- `rec` 加载时若 `state.md` 超过 50 行，**强制提示并阻止**（不是建议）
+- `project-spec.md` 已闭环步骤自动迁移到 `history/`
+- `logs/` 提供 `/em logs-clean` 自动滚动归档命令
+- docs/ 补充「各文件职责分工」对照表（哪些写什么 / 何时归档）
+
+**实际行为**:
+- `/em migrate-state` 命令已存在但需手动触发
+- 无 `state.md` 长度硬性检查
+- 无 `project-spec.md` 自动归档
+- 无 `logs/` 自动清理命令
+- docs/ 缺少「长期维护 / 长期使用下的瘦身节奏」专门章节
+
+**现场快照** (`d:/DeskTop/WorkSpace/Code/slack/slack_app/.em/state.md` 前 30 行):
+```yaml
+project.name:     slack_app (开环松线/换步进板)
+project.type:     embedded
+chip:             TMS320F280033 (TI C2000, CCS 12.5.0)
+ide:              Code Composer Studio 12.5.0
+compiler:         TI CGT 22.6.1.LTS
+debugger:         XDS100v2
+current_step:     S2-B (slack.c 重写风扇故障检测为状态机) ← 进行中
+session_id:       state.md 无 ## Meta > 会话 段，未显式记录
+```
+
+**现场快照** (`d:/DeskTop/WorkSpace/Code/slack/slack_app/.em/problem-log.md` 前 30 行):
+```yaml
+(空 — 项目本地无问题记录)
+```
+
+**git 状态** (cwd `d:/DeskTop/WorkSpace/Code/slack/slack_app`):
+```
+分支: master
+最近 5 条:
+90c7676 0x01110817 1新增风扇类型上电识别 2.提高电平类型风扇报报警阈值
+c662995 暂存
+46e09b6 0x01110715 1.增加风扇自检重试逻辑，但发现仓库剪线风扇硬件不匹配。
+420c8a7 提交初始版本
+工作树 (git status --short):
+ M prj/Release/ccsObjs.opt
+ M prj/Release/slack_app.bin
+ M prj/Release/slack_app_linkInfo.xml
+```
+
+**修复方向（建议）**:
+1. **`/em rec` 增加硬性检查**：`state.md > 50 行` 时强制提示并调用 `/em migrate-state`
+2. **新增 `/em logs-clean` 命令**：按 N 天滚动归档 `logs/`（保留 N 份最新）
+3. **新增 `/em spec-archive` 命令**：把 `project-spec.md` 已闭环的步骤自动迁移到 `history/spec-archive-<date>.md`
+4. **docs/ 补充「长期维护节奏」章节**：明确 state.md / project-spec.md / logs/ 各自的生命周期
+5. **补充「文件职责分工」对照表**：哪些内容写到哪个文件、何时迁移/归档
+
+---
+

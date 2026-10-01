@@ -1,0 +1,32 @@
+{
+  "step": "S17",
+  "slug": "slim-tools-registry",
+  "tier": "standard",
+  "discussion_id": "20261001-s17-slim-tools-registry",
+  "created": "2026-10-01",
+  "phases": {
+    "brainstorm": {
+      "status": "completed",
+      "file": "brainstorm.md",
+      "selected_option": "A",
+      "completed_at": "2026-10-01"
+    },
+    "milestones": {
+      "status": "completed",
+      "file": "milestones.md",
+      "substep_count": 4,
+      "completed_at": "2026-10-01"
+    },
+    "execute": {
+      "status": "in_progress",
+      "current_substep": "S17-A",
+      "substeps": [
+        {"id": "S17-A", "name": "止血包 v3.2（init 减量/落盘确认/rec 硬检查/logs-clean）", "status": "pending"},
+        {"id": "S17-B", "name": "工具 adapter 化 P0（adapters 目录 + registry + verify 数据驱动）", "status": "pending"},
+        {"id": "S17-C", "name": "TI ccs.py + dslite.py adapter（slack_app 实测；外部工具不集成）", "status": "pending", "depends_on": "S17-B"},
+        {"id": "S17-D", "name": "v4.0 结构收敛（features/ + journal.md + migrate，breaking）", "status": "pending", "depends_on": "S17-A,S17-B"}
+      ]
+    }
+  },
+  "extra_files": ["research.md"]
+}

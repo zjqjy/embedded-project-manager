@@ -316,8 +316,72 @@ def em_migrate(args: list[str]) -> None:
 | `/em si` | 迁移不涉及 si；si 用于存量项目审计并建 `.em/` 或 `.emv2/` |
 | `/em stat` | 迁移后可执行，确认新状态目录生效 |
 
+---
+
+## v4 结构收敛迁移（S17-D）
+
+> 以上流程是 **v2→v3**（目录改名）。本节是 **v3→v4**（结构收敛），
+> 一次 breaking 变更：11 类 → 6 类，活文件收敛到 state.md + journal.md 两个。
+> 目标结构见 [`docs/LIFECYCLE.md §三`](../docs/LIFECYCLE.md)。
+
+### 执行条件（缺一不可）
+
+1. 已是 v3（`.em/`，或先按上文完成 v2→v3）
+2. git 工作区干净（迁移前提议 commit 一次基线；迁移 diff 巨大，必须可整体回滚）
+3. 用户对**迁移映射预览**逐项确认（同 S17-A 落盘确认门精神）
+
+### 迁移映射
+
+| v3 | v4 | 动作 |
+|----|----|------|
+| `state.md` | `state.md` | 重写瘦身至 ≤50 行（复用 migrate-state 逻辑），详细资料指针改指 journal/features |
+| `sessions/sess-*.md` | `journal.md` | 每会话压成一条 `## [日期 时间] 会话: …` 追加；原文件移 history/sessions-archive/ |
+| `decisions.md` | `journal.md` | 每条决策压成一条 `决策:` 条目追加 |
+| `memory-log.md`（旧版残留） | `journal.md` | 会话历史段 + 决策段各压条目；整个文件移 history |
+| `discussion/<date>-<slug>/` | `features/S<N>-<slug>/` | 目录改名搬入；brainstorm+milestones 合并为 `plan.md`（原文附录保留在 plan.md 尾部）；README 用 templates/feature-README.md 生成状态卡 |
+| `checkpoints/HVR-<step>-*.md` | `features/S<N>-<slug>/hvr.md` | 按步骤号归并（同步骤多份 → hvr.md + hvr-2.md） |
+| `project-spec.md` | `features/README.md` | 步骤表转为目录索引表（每个 feature 一行，读各 README 状态卡）；原文件移 history |
+| `problem-log.md` | `problem-log.md` | closed 条目按 LIFECYCLE #5 先归档，只留 open |
+| `logs/` `history/` | 不变 | — |
+
+### 执行流程
+
+```
+1. 预检（v3 + 干净工作区 + git 可用）
+2. 生成映射预览（每个源目录 → 目标路径，一行一条）→ 用户逐项确认
+3. 先做纯搬移（discussion→features、checkpoints 归并）→ 提议 commit「v4: move artifacts」
+4. 再做合并改写（sessions/decisions/memory-log→journal.md；project-spec→features/README.md）
+   → 提议 commit「v4: consolidate journal」
+5. 重写 state.md（≤50 行）→ 提议 commit「v4: slim state」
+6. 输出迁移报告 + 提示 /em rec 验证 + 旧目录残留清单（.emv2/ 留作回退，观察一个版本后手动删）
+```
+
+### 错误处理
+
+| 场景 | 行为 |
+|------|------|
+| discussion 目录名无 S<N> 前缀（早期项目） | 按 README/brainstorm 首行提取步骤号；提取不到 → 列出问用户 |
+| 同一 S<N> 多个 discussion 目录 | 全部搬入 `features/S<N>-<slug>-a/`、`-b/` 后缀区分 |
+| HVR 步骤号无对应 feature | 建 `features/_orphan/HVR-*.md` 收容，报告提示 |
+| 任一步 git commit 被拒 | 停在该步，不继续后续改写（保证可回滚边界清晰） |
+
+### 与其他命令的关系（v4 补充）
+
+| 命令 | v4 后行为 |
+|------|-----------|
+| `/em rec` | 不变（仍只读 state.md），另顺带检查 journal.md > 500 行则提示 arch |
+| `/em new` 中/重档 | 产物写 `features/S<N>-<slug>/plan.md`（不再建 discussion/） |
+| `/em verify` | HVR 写 `features/S<N>-<slug>/hvr.md`（不再建 checkpoints/） |
+| `/em result s<N>-通过` | 主步骤完成 → 提示整目录 mv `history/features/S<N>-<slug>/` |
+
+> ⚠️ **命令文档的 v4 路径切换**与迁移能力**分两步走**：本节先交付迁移能力；
+> 待管家项目（embedded-project-manager）在 feature 分支演练一次真实迁移后，
+> 各命令文档统一切 v4 路径并发版 v4.0。在那之前，命令层保持 v3 兼容。
+
 ## 相关文件
 - commands/init.md - 智能识别 + `get_state_dir()` 函数
 - commands/rec.md - 状态目录检测逻辑（含迁移提示）
+- docs/LIFECYCLE.md - **文件生命周期总表（S17-D，v4 目标结构）**
 - templates/em-migration.md - 嵌入式迁移使用场景文档
+- templates/journal.md / templates/feature-README.md - v4 新模板
 - SKILL.md - 主入口（含工具索引章节）
