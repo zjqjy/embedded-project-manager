@@ -33,11 +33,11 @@
    - 添加到 chips.json
    - 如芯片已存在 → 更新 lastUsed 时间戳
 
-4. **创建 .em/ 目录结构**（S10-B 通用化：新存量项目统一使用 `.em/`，旧 `.emv2/` 项目保留）
+4. **创建 `.em/` 目录结构**（v3.1+ 统一使用 `.em/`，不再生成 `.emv2/）
 5. **生成/更新 `<STATE_DIR>/project-spec.md` 和 `<STATE_DIR>/memory-log.md`**
    - `<STATE_DIR>` 由 `get_state_dir()` 解析
-   - 现有 `.emv2/` 项目 → 继续写到 `.emv2/`（保持兼容）
-   - 新存量项目 → 写到 `.em/`
+   - 新存量项目 → 全部写到 `.em/`
+   - 旧 `.emv2/` 项目 → 提示用户先 `/em migrate` 升级（不要在 `.emv2/` 基础上叠加 `.em/`）
 6. **更新全局索引:embedded-projects-index.md,一般在.claude里**
 7. **输出审计报告**
 

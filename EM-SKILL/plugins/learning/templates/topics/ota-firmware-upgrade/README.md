@@ -111,5 +111,5 @@ void switch_active_bank(void) {
 
 ---
 
-*LPR Stage: L5-Surfaced | AI Self-Score: 4.2/5 | 2026-07-13*
+*LPR Stage: L5-Surfaced | 2026-07-13*
 *📚 完整调研资料索引见 [research/](research/)*

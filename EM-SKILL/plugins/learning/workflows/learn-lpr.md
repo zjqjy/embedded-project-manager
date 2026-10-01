@@ -113,8 +113,10 @@ flowchart TB
   3. 概念图（Mermaid）
   4. 核心架构（Mermaid）
   5. 踩坑 + Related Topics
+- **成稿必过 humanize 工序**：按 `../HUMANIZE.md` 清单逐节检查（或 `/em learn humanize <slug>`）
+- **全文必须遵守 `../STYLE.md`**：行业术语当主语、禁自造拟人名词、类比 ≤1 个/篇、结论先行、标题即结论、无 AI 元数据
 - `topics/<slug>/deep-dive.md` — 完整架构详解
-- 更新 `_index.json`：`lpr_stage = "L5-Surfaced"`, `video_ready`, `ai_self_score`
+- 更新 `_index.json`：`lpr_stage = "L5-Surfaced"`, `video_ready`
 - `state.md`「最近完成」追加
 
 **可选产物**（多渠道分发）：
@@ -137,7 +139,7 @@ flowchart TB
 | L2 → L3 | `/em learn verify <slug> l3` | knowledge-pack.md + 概念图 |
 | L3 → L4 | `/em learn verify <slug> l4` | code/ + demo + README 运行说明 |
 | L4 → L5 | `/em learn verify <slug> l5` | verify-report.md + 踩坑 ≥ 3 条 |
-| L5 完成 | `/em learn verify <slug>` | README ≤ 200 行 + _index.json 更新 |
+| L5 完成 | `/em learn verify <slug>` | README ≤ 200 行 + humanize 通过 + _index.json 更新 |
 
 ## 反模式（应避免）
 
@@ -147,10 +149,14 @@ flowchart TB
 | L3 demo 复用生产代码 | 难复现 | 最小 demo 独立 |
 | L5 README 直接复制 deep-dive | 冗长 | 5 段式精简版 |
 | 主题粒度过大 | 3 个月做不完 | 单核心概念拆分 |
+| 拟人代号/自造名词贯穿全文（画家/翻译官/管家/喂料台…） | 读者记不住真正的术语，看完更晕 | 用术语本身，类比 ≤1 个/篇（STYLE.md） |
+| 比喻叠比喻、多角色剧情 | 逻辑混乱无重点 | 每节标题=结论，参数进表格 |
+| 尾部挂 AI 元数据（AI Self-Score 等） | AI 腔，读者反感 | 只留 LPR 阶段 + 日期 |
 
 ## 相关文件
 
 - `../PLUGIN.md` — 插件入口
+- `../STYLE.md` — 风格规范（所有讲解产物硬约束）
 - `../commands/learn-new.md` — 创建主题
 - `../commands/learn-verify.md` — 阶段验证
 - `../commands/learn-status.md` — 状态查看
