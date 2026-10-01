@@ -1,7 +1,7 @@
 # 工作流: new 中档（standard）— R1/R2/R3 渐进确认流
 
 > 适用：跨模块特性、需设计但非系统级（默认档位）
-> 产出：`brainstorm.md` + `milestones.md`（2 个文件，**每个都经用户确认后才落盘**）
+> 产出：`features/S<N>-<slug>/plan.md`（1 个文件，「方案」与「拆分」两章，**每章经用户确认后才落盘**）
 > S17-A 起收编 S16-A 设计：**落盘前必须确认**——AI 不得未经确认把任何草稿写进状态目录。
 
 ## 核心理念（借鉴 superpower）
@@ -45,8 +45,7 @@ R3 同步状态（3 个落盘点逐一确认）→ 提示 verify
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-**【落盘点 1/3】** 用户确认后，把完整 brainstorm（需求理解 + 全部候选方案 + 选定理由 + 关键技术点）写入：
-`<STATE_DIR>/discussion/<YYYYMMDD>-<slug>/brainstorm.md`（目录不存在则创建）
+**【落盘点 1/3】** 用户确认后，创建 `<STATE_DIR>/features/S<N>-<slug>/`（README 状态卡用 templates/feature-README.md），写入 `plan.md` 的「# plan: S<N>-<slug>」+「## 方案」章（需求理解 + 全部候选 + 选定理由 + 关键技术点）
 
 ## R2: milestones（收敛）
 
@@ -70,7 +69,7 @@ R3 同步状态（3 个落盘点逐一确认）→ 提示 verify
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-**【落盘点 2/3】** 用户确认后写入：`<STATE_DIR>/discussion/<YYYYMMDD>-<slug>/milestones.md`（含选定方案复述 + 子步骤表 + 关键决策）+ `status.json`
+**【落盘点 2/3】** 用户确认后向 `plan.md` 追加「## 拆分」章（选定方案复述 + 子步骤表 + 关键决策）+ `status.json`
 
 ## R3: 同步状态（3 个落盘点逐一确认）
 
@@ -89,8 +88,7 @@ R3 同步状态（3 个落盘点逐一确认）→ 提示 verify
 ```
 🎉 S<N> 计划完成（中档，R1/R2/R3 全部落盘均已确认）
 
-📄 brainstorm: <STATE_DIR>/discussion/<...>/brainstorm.md
-📄 milestones: <STATE_DIR>/discussion/<...>/milestones.md
+📄 plan: <STATE_DIR>/features/S<N>-<slug>/plan.md（方案 + 拆分两章）
 🎯 选定方案: <名字>
 📦 子步骤数: <N>
 

@@ -12,6 +12,9 @@
 
 ## [Unreleased]
 
+### Changed
+- **【breaking·v4.0】状态目录 v4 结构**（feature/s17-v4 分支演练通过后生效）: `discussion/`+`checkpoints/` 收敛为 `features/S<N>-<slug>/`（plan.md + hvr.md + README 状态卡）；`sessions/`+`decisions.md`+`memory-log.md` 合并为 append-only `journal.md`；`project-spec.md` 转为 `features/README.md` 索引。活文件 11 类 → 2 个（state.md + journal.md）。命令文档（new/verify/result/init/stat/rec/arch）与 SKILL.md 布局已切 v4 路径；v3 项目由 `/em migrate` §v4 一键迁移。管家项目迁移映射三段式提交：28edd20（move）/ a85dc26（consolidate）/ ce26da1（slim）。
+
 ### Added
 - **命令**: 新增 `/em pro` 插件问题上报命令 — 在任意项目使用 EM-SKILL 遇到 bug / 输出异常 / 缺失功能 / 文档不清时执行，把问题详情 + 源项目现场快照（state.md / problem-log.md / git 状态 / EM-SKILL 版本）追加到管家项目 `problem-log.md > 跨项目问题记录 (EM-SKILL)` 段，集中处理。**只用于 EM-SKILL 自身问题**，通用项目状态用 `/em stat` / `/em rec`。管家路径解析顺序 `$EM_PROJECT_MANAGER_HOME` → `~/.em-skill/manager-home` → 首次直接问路径（不强制新建目录）。
 - **脚本**: 新增 `tools/sync-to-install.cmd` — EM-SKILL dev → install 同步脚本，使用 robocopy `/E`「只补不删」语义（不执行 rm），避免误删 install 中本地新增文件。多设备兼容：路径用 `<PROJECT_ROOT>` / `<INSTALL_ROOT>` 占位符，支持 `EM_INSTALL_PATH` 环境变量覆盖。

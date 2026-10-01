@@ -1,7 +1,7 @@
 ---
 name: em
 description: 项目开发管家 - 通用核（HVR 工作流 + state.md 瘦身 + new 三档分流）+ 双插件架构（embedded 嵌入式 + learning 学习模式）。支持通用/嵌入式/学习三类项目。
-version: 3.2.0
+version: 4.0.0
 ---
 
 # EM-SKILL
@@ -88,9 +88,9 @@ EM-SKILL 提供三类项目支持：
 
 - **HVR 工作流**：需求 → 设计 → 验证 → 归档
 - **状态文件瘦身**：`state.md` ≤ 50 行作单一恢复源；会话独立成文件
-- **new 三档分流**（superpower 风格，S17-A 起落盘前必须确认）：
+- **new 三档分流**（superpower 风格，落盘前必须确认）：
   - 轻档 → 对话内 quick-plan，**不落盘**（5 min）
-  - 中档（默认） → R1/R2/R3 渐进确认 → `brainstorm.md` + `milestones.md`（15 min）
+  - 中档（默认） → R1/R2/R3 渐进确认 → `features/S<N>-<slug>/plan.md`（15 min）
   - 重档 → 5 阶段 disc（45 min）
 - **Git 集成**：verify 时提议 commit；归档时打 tag
 
@@ -123,28 +123,22 @@ EM-SKILL 提供三类项目支持：
 
 ---
 
-## 状态目录布局
+## 状态目录布局（v4，S17-D 收敛：11 类 → 6 类，活文件 2 个）
 
 ```
-<STATE_DIR>/   ← .em/ (优先) 或 .emv2/ (兼容)
-├── state.md           # ⭐ 最小状态（≤50 行，rec 默认只读）
-├── project.json       # { type, name, plugins, ... }
-├── project-spec.md    # 项目规格单（步骤表）
-├── decisions.md       # 决策日志
-├── problem-log.md     # 问题追踪
-├── sessions/          # 每会话一文件
-│   └── sess-<id>.md
-├── discussion/        # 讨论目录
-│   └── <YYYYMMDD>-<slug>/
-│       ├── quick-plan.md   (轻档)
-│       ├── brainstorm.md   (中档/重档)
-│       ├── milestones.md   (中档/重档)
-│       ├── split.md / requirements.md / hardware.md  (重档)
-│       └── status.json
-├── checkpoints/       # HVR 文件
-├── history/           # 归档
-└── logs/              # 日志（嵌入式串口/编译日志等）
+<STATE_DIR>/   ← .em/
+├── state.md           # ⭐ 唯一活状态（≤50 行，rec 硬闸门）
+├── project.json       # { type, name, embedded?, plugins, ... }
+├── journal.md         # append-only 时间线（会话/决策/问题闭环/维护）
+├── problem-log.md     # 只留 open 问题（closed > 30 天归档）
+├── features/          # ⭐ 每主步骤一目录：README 状态卡 + plan.md + hvr.md
+│   ├── README.md      # 步骤索引总表
+│   └── S<N>-<slug>/
+├── history/           # 完成步骤整目录 + 各类归档（最终归宿）
+└── logs/              # 日志（/em logs-clean 滚动保留 N 份）
 ```
+
+> 生命周期规则见 [`docs/LIFECYCLE.md`](docs/LIFECYCLE.md)；v3 结构迁移见 `commands/migrate.md` §v4。
 
 ## 详细文档
 

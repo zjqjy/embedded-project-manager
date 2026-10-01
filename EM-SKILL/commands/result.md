@@ -22,8 +22,8 @@
    - state.md 当前步骤 = 下一子步骤(开发中)
    - 无下一子 → 主步骤完成 → 提示 /em result s<N>-通过 收尾
 5. 同步 project-spec.md 步骤表
-6. 追加本次会话日志：<STATE_DIR>/sessions/sess-<id>.md
-   - 主要内容 / 产出 / 下一步
+6. 追加本次会话条目到 <STATE_DIR>/journal.md（templates/journal.md 格式，v4 取代 sessions/）
+   - `## [日期 时间] 会话: <一句话>` + 产出/下一步 ≤3 行
 7. 如有闭环问题 → 更新 problem-log.md 闭环
 8. 如触发归档阈值（见 commands/arch.md） → 提示 /em arch
 9. 更新全局索引
@@ -39,7 +39,7 @@
 4. 更新 HVR 文件
    - 验证结果区段 → 失败 + 日志摘要 + 物理/可观察现象
 5. 创建 problem-log.md 条目（错误分析 + 引用 HVR 文件）
-6. 追加会话日志：sess-<id>.md
+6. 追加 journal.md 条目
    - 主要内容 / 失败现象 / 下一步排查方向
 7. 进入问题讨论模式（可选 /em disc）
 8. 分析问题根因（结合日志内容）
@@ -52,14 +52,14 @@
 |--------|------|
 | `<STATE_DIR>` | `.em/` 优先，回退 `.emv2/`，由 `get_state_dir()` 解析 |
 | `<STATE_DIR>/logs/` | 日志目录（嵌入式串口/编译；通用测试输出） |
-| `<STATE_DIR>/sessions/sess-<id>.md` | 单会话日志（v3.0 替代旧 memory-log.md 的会话历史段） |
+| `<STATE_DIR>/journal.md` | append-only 时间线（v4 合并 sessions/ + decisions.md） |
 | `<STATE_DIR>/state.md` | 最小状态文件（v3.0 替代旧 memory-log.md 的当前状态段） |
 | `<STATE_DIR>/decisions.md` | 决策日志（v3.0 替代旧 memory-log.md 的关键决策段） |
 
 ## 旧版兼容（无 state.md / sessions/ 时）
 
 - 无 `state.md` → 直接读写 `memory-log.md` 的「当前状态」与「会话历史」段
-- 无 `sessions/` → 追加到 `memory-log.md` 的「会话历史」段
+- v4 起写 `journal.md`；v3 旧项目维持 sessions/ 或 memory-log 行为，`/em migrate` 后统一
 - 行为兼容，不破坏旧项目；建议老项目运行 `/em migrate-state` 升级
 
 ## 关键提醒

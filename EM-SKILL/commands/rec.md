@@ -37,7 +37,7 @@
    > 这是硬闸门不是建议——瘦身为 rec 的前置条件。
 4. **【旧版兼容】** state.md 不存在 → 读 `memory-log.md` 前 ~30 行（会话指纹+快速恢复信息+当前状态），跳过会话历史
 5. **【嵌入式插件】** 若 `project.json.type == "embedded"` → 加载 `plugins/embedded/PLUGIN.md`（仅文件名提示，不展开内容）
-6. **【生成摘要】** 输出 5 行内的恢复摘要
+6. **【生成摘要】** 输出 5 行内的恢复摘要；v4 项目顺带检查 `journal.md` > 500 行 → 提示 `/em arch` 截出
 7. **【交互】** 提示下一步可选动作；用户问详情时再加载 L2
 
 ## 摘要输出格式
@@ -72,6 +72,7 @@
 
 ## 相关文件
 - `templates/state.md` — state.md 模板
+- `docs/LIFECYCLE.md` — 生命周期总表（v4）
 - `commands/stat.md` — 详细状态查询（含 `-v` 详情模式）
 - `commands/sessions.md` — 会话历史浏览（新增）
 - `commands/migrate-state.md` — 一键生成 state.md（新增）

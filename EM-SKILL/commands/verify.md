@@ -27,7 +27,7 @@
 
 ## HVR 文件
 
-- 路径：`<STATE_DIR>/checkpoints/HVR-<步骤>-<序号>.md`
+- 路径：`<STATE_DIR>/features/S<N>-<slug>/hvr.md`（同步骤多份 → hvr-2.md；v3 旧项目为 `checkpoints/`，迁移见 migrate §v4）
 - **模板选择**（按 `project.json.type` 自动）：
   - `general` → `templates/hvr-template.md`（通用模板，无嵌入式三连）
   - `embedded` → `plugins/embedded/templates/hvr-template-embedded.md`（含「嵌入式执行记录」表 + 工具执行记录 + 共同决策段）
@@ -45,7 +45,7 @@ HVR 文件 + 工具执行结果记录完成后，AI **不直接 commit**，而�
   [S<step>] feat: verify <步骤描述> with HVR-<序号>
 
 待提交文件:
-  M  <STATE_DIR>/checkpoints/HVR-<步骤>-<序号>.md
+  M  <STATE_DIR>/features/S<N>-<slug>/hvr.md
   M  <STATE_DIR>/state.md
   M  <STATE_DIR>/project-spec.md
 

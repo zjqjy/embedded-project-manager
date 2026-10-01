@@ -45,12 +45,11 @@
    ```
    .em/
    ├── state.md           # ✅ 创建（唯一恢复源，≤50 行）
-   ├── project.json       # ✅ 创建（类型/插件元数据）
-   ├── sessions/          # 目录骨架（空目录）
-   ├── discussion/
-   ├── checkpoints/
+   ├── project.json       # ✅ 创建（类型/插件元数据，含 embedded 锁定位）
+   ├── features/          # 目录骨架（每步骤一目录；README 索引首次 new 时创建）
    ├── history/
    └── logs/
+   # journal.md / problem-log.md 首次写入时创建（journal 条目由 result/arch 追加）
    ```
    > ❌ **不再预创建** project-spec.md / decisions.md / problem-log.md 空表头文件——
    > 分别由 `/em new`（写步骤表）、首次记决策、首次记问题时**首次写入自动创建**（套 templates/ 模板）。

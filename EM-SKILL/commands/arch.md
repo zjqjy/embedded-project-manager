@@ -23,6 +23,8 @@
 | problem-log.md | > 300行 **或** closed 条目 > 30 天 | 问题追踪记录；closed 条目整段剪切到 history（S17-A） |
 | decision-log.md | > 300行 | 关键决策记录 |
 | state.md | > 50 行 | **不归档**——提示运行 `/em migrate-state` 瘦身（rec 硬闸门，见 commands/rec.md） |
+| journal.md | > 500 行 | 头部条目截出到 `history/journal-<date>.md`（v4，append-only 尾部保留） |
+| features/S<N>-<slug>/ | 主步骤 result 通过 | **整目录 mv** `history/features/`（v4 归档单位 = 目录） |
 | logs/*.log | 份数超限 | 引导 `/em logs-clean`（S17-A） |
 
 > **problem-log closed 条目归档（S17-A）**：扫描 `### [日期] …` 条目，`状态: ✅ closed`

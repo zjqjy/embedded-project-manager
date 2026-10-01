@@ -16,7 +16,7 @@
 | 模式 | 加载文件 | 用途 |
 |------|---------|------|
 | 默认 | `state.md` + `project.json` | 快速看现在做啥 |
-| `-v` | + `project-spec.md` + 最新 `sessions/<id>.md` + `decisions.md` + `problem-log.md` | 全景 |
+| `-v` | + `features/README.md` 步骤索引 + `journal.md` 尾部 + `problem-log.md`（v4；v3 旧项目读 project-spec/sessions/decisions） | 全景 |
 | `steps` | `project-spec.md` 的步骤表区段 | 看进度 |
 | `next` | `state.md` 的「下一步动作」区段 | 极简 |
 
@@ -40,7 +40,7 @@
 详情: /em stat -v
 ```
 
-### `-v` 模式
+### `-v` 模式（v4 步骤状态读 features/README.md 各状态卡）
 ```
 📍 <项目名> (<type>) — S<N> <状态>
 

@@ -15,9 +15,9 @@
 
 | 档位 | 适用 | 产出文件 | 时长 | 工作流 |
 |------|------|---------|------|--------|
-| **轻 light** | < 2h 工作量、单文件改动、bugfix、调参 | `quick-plan.md` (1) | ~5 min | `workflows/new-light.md` |
-| **中 standard**（默认）| 跨模块特性、需设计但非系统级 | `brainstorm.md` + `milestones.md` (2) | ~15 min | `workflows/new-standard.md` |
-| **重 deep** | 系统级、新外设、协议栈、状态机重构 | 5 个文件（split/req/hardware/brainstorm/milestones）| ~45 min | `workflows/discussion-flow.md`（沿用）|
+| **轻 light** | < 2h 工作量、单文件改动、bugfix、调参 | 0（对话内计划，`留档`例外）| ~5 min | `workflows/new-light.md` |
+| **中 standard**（默认）| 跨模块特性、需设计但非系统级 | `features/S<N>-<slug>/plan.md` (1，R1/R2 确认后写) | ~15 min | `workflows/new-standard.md` |
+| **重 deep** | 系统级、新外设、协议栈、状态机重构 | `features/S<N>-<slug>/`（plan + requirements/hardware 等）| ~45 min | `workflows/discussion-flow.md`（沿用）|
 
 ## 档位推荐启发式
 
@@ -59,7 +59,7 @@ AI 收到 `<功能描述>` 后，按以下规则推荐：
 ## 公共规则
 
 - **步骤编号**：`S<数字>`，废弃不复用
-- **讨论目录**：`<STATE_DIR>/discussion/<YYYYMMDD>-<slug>/`
+- **feature 目录**：`<STATE_DIR>/features/S<N>-<slug>/`（R1 首个落盘点时创建，含 README 状态卡）
 - **进度文件**：`status.json` 标记当前阶段（轻档可省）
 - **强制约束**：流程未完成（如重档 5 阶段没走完）禁止 `/em verify`/`/em result`
 
@@ -82,8 +82,8 @@ AI 收到 `<功能描述>` 后，按以下规则推荐：
 - **嵌入式自动加档**：涉及硬件外设自动推荐 deep（保留嵌入式严谨性）
 
 ## 相关文件
-- `workflows/new-light.md` — 轻档流程（新）
-- `workflows/new-standard.md` — 中档流程（新，brainstorm + milestones）
+- `workflows/new-light.md` — 轻档流程（不落盘）
+- `workflows/new-standard.md` — 中档流程（R1/R2/R3，落盘 features/plan.md）
 - `workflows/discussion-flow.md` — 重档 5 阶段流程（沿用）
 - `commands/disc.md` — 单独触发讨论模式（可继续重档）
-- `commands/state.md` — 步骤号读自 state.md
+- `docs/LIFECYCLE.md` — 文件生命周期总表
