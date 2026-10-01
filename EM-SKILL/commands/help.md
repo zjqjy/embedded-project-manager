@@ -13,33 +13,36 @@
 
 ```
 项目管理:
-  init <name>      项目初始化（自动识别 general/embedded）
+  init <name>      项目初始化（自动识别 general/embedded；最小生成 2 文件）
   si <path>        存量接入
-  rec [name]       恢复项目（只读 state.md，瘦身）
+  rec [name]       恢复项目（只读 state.md，瘦身；>50 行硬拒绝）
   stat [-v/steps/next]  状态查看（默认极简）
   sessions [id]    会话历史浏览
   migrate          迁移 .emv2/ → .em/
   migrate-state    一键生成 state.md（瘦身）
+  logs-clean [-n N] 日志滚动清理（保留最新 N 份，默认 10）
 
 开发流程（new 三档分流，superpower 风格）:
   new <描述> [--light/--std/--deep]   AI 推荐档位
-    轻档 → quick-plan.md (5 min)
-    中档 → brainstorm.md + milestones.md (15 min) — 默认
+    轻档 → 对话内 quick-plan（不落盘）(5 min)
+    中档 → R1/R2/R3 渐进确认 → brainstorm.md + milestones.md (15 min) — 默认
     重档 → 5 阶段 disc (45 min)
   disc [id]        独立触发讨论（重档）
   verify s<N>      验证（按 type 选 HVR 模板；嵌入式注入三连）
   result <步>-<结果>  提交结果（自动推进 + 写会话日志）
+  pro <描述>       上报 EM-SKILL 问题到管家项目 problem-log
 
 工具/索引:
-  arch             归档（主步骤完成自动 tag + CHANGELOG）
+  arch             归档（主步骤完成自动 tag + CHANGELOG；problem-log closed 归档）
   sum              上下文摘要
   pi               项目索引
   gi               全局索引
   sw <项目>        跨项目切换
   help [命令]      查看帮助
 
-嵌入式插件命令（type=embedded 自动加载）:
-  initem           工具初始化（OpenOCD/Keil/串口工具路径注册）
+插件命令（lazy-load，敲命令时按需加载，S15）:
+  initem / build / flash / serial   嵌入式（tools/adapters/ + registry.json，S17-B）
+  learn new/verify/status/humanize  学习模式（LPR 闭环）
 ```
 
 ## Git 集成（S10-D）

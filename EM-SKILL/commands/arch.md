@@ -20,8 +20,15 @@
 |------|----------|------|
 | memory-log.md | > 600行 | 记忆日志，按会话归档 |
 | project-spec.md | S完成后 | 项目规格单，按里程碑归档 |
-| problem-log.md | > 300行 | 问题追踪记录 |
+| problem-log.md | > 300行 **或** closed 条目 > 30 天 | 问题追踪记录；closed 条目整段剪切到 history（S17-A） |
 | decision-log.md | > 300行 | 关键决策记录 |
+| state.md | > 50 行 | **不归档**——提示运行 `/em migrate-state` 瘦身（rec 硬闸门，见 commands/rec.md） |
+| logs/*.log | 份数超限 | 引导 `/em logs-clean`（S17-A） |
+
+> **problem-log closed 条目归档（S17-A）**：扫描 `### [日期] …` 条目，`状态: ✅ closed`
+> 且关闭日期距今 > 30 天的整段（标题到下一个 `---`）剪切到
+> `<STATE_DIR>/history/<年>/<月>/problem-log-closed.md`（追加式），原文件只留 open 条目。
+> 保守起见：单次归档条目 > 20 条时先列清单请用户确认。
 
 ## 执行流程
 
@@ -170,8 +177,10 @@ Branch:     feature/s<n>（如已合并到 main 则为 main）
 - 文件过大时自动归档
   - memory-log.md: > 600行
   - project-spec.md: S完成后
-  - problem-log.md: > 300行
+  - problem-log.md: > 300行 或 closed > 30 天（S17-A）
   - decision-log.md: > 300行
+  - state.md: > 50 行 → 引导 `/em migrate-state`（不归档）
+  - logs/: 超保留份数 → 引导 `/em logs-clean`（不归档）
 - 手动命令归档: `/em arch`
 
 ## 引用完整性

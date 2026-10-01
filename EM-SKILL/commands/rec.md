@@ -21,14 +21,24 @@
 ## 执行流程
 
 1. **【状态目录】** 调用 `get_state_dir()` → `<STATE_DIR>`
-   - `.em/` 优先 → 使用
-   - 回退 `.emv2/` → 使用并提示「建议运行 `/em migrate` 升级到 `.em/`」
-   - 都无 → 提示「请先 `/em init`」
+   - `.em/` 不存在 → 提示「请先 `/em init`」
+   - 都无 → 报错「非 EM 项目」（不再回退 `.emv2/`，旧版项目请先 `/em migrate`）
 2. **【最小加载】** 读 `<STATE_DIR>/state.md`（若存在）+ `<STATE_DIR>/project.json`（若存在）
-3. **【旧版兼容】** state.md 不存在 → 读 `memory-log.md` 前 ~30 行（会话指纹+快速恢复信息+当前状态），跳过会话历史
-4. **【嵌入式插件】** 若 `project.json.type == "embedded"` 或检测到 `.emv2/embedded/` → 加载 `plugins/embedded/PLUGIN.md`（仅文件名提示，不展开内容）
-5. **【生成摘要】** 输出 5 行内的恢复摘要
-6. **【交互】** 提示下一步可选动作；用户问详情时再加载 L2
+3. **【止血硬检查（S17-A）】** `state.md` 行数 > 50 → **拒绝继续**，输出：
+   ```
+   ❌ state.md 已 <N> 行，超出 ≤50 行预算，rec 拒绝加载
+
+      请先运行 /em migrate-state 瘦身：
+      - 保留 Meta / 下一步动作 / 最近决策 / 阻塞项
+      - 历史步骤、计划文件指针等下沉 project-spec.md 或 history/
+      瘦身完成后重新 /em rec
+   ```
+   > 检查时只允许读前 50 行（用于提示当前行数），**不**展开全文。
+   > 这是硬闸门不是建议——瘦身为 rec 的前置条件。
+4. **【旧版兼容】** state.md 不存在 → 读 `memory-log.md` 前 ~30 行（会话指纹+快速恢复信息+当前状态），跳过会话历史
+5. **【嵌入式插件】** 若 `project.json.type == "embedded"` → 加载 `plugins/embedded/PLUGIN.md`（仅文件名提示，不展开内容）
+6. **【生成摘要】** 输出 5 行内的恢复摘要
+7. **【交互】** 提示下一步可选动作；用户问详情时再加载 L2
 
 ## 摘要输出格式
 

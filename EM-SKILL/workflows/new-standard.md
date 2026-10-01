@@ -1,130 +1,93 @@
-# 工作流: new 中档（standard）
+# 工作流: new 中档（standard）— R1/R2/R3 渐进确认流
 
 > 适用：跨模块特性、需设计但非系统级（默认档位）
-> 产出：`brainstorm.md` + `milestones.md`（2 个文件）
+> 产出：`brainstorm.md` + `milestones.md`（2 个文件，**每个都经用户确认后才落盘**）
+> S17-A 起收编 S16-A 设计：**落盘前必须确认**——AI 不得未经确认把任何草稿写进状态目录。
 
 ## 核心理念（借鉴 superpower）
-**brainstorm → plan → execute**：
-1. **brainstorm（发散）**：列方案、对比、取舍 → 选定方向
-2. **plan（收敛）**：拆 milestones（子步骤） → 锁定路径
-3. **execute**：进 verify
-
-跳过 deep 档的 split/requirements/hardware（这些放到重档讨论）。
-
-## 流程
+**brainstorm → plan → execute**，每一步都是「对话先行、落盘在后」：
 
 ```
-阶段 1: brainstorm — AI 提案 → 用户确认
-   ↓
-阶段 2: milestones — AI 拆子步骤 → 用户确认
-   ↓
-阶段 3: 同步状态 → 提示 verify
+R1 brainstorm 对话轮 → 用户确认 → ✅落盘 brainstorm.md
+        ↓
+R2 milestones 对话轮 → 用户确认 → ✅落盘 milestones.md
+        ↓
+R3 同步状态（3 个落盘点逐一确认）→ 提示 verify
 ```
 
-## 阶段 1: brainstorm
+## R1: brainstorm（发散）
 
 **目标**: 用 ~3 个候选方案对比，选定方向。
 
-**AI 输出格式**:
+**规则**：草稿**只在对话中呈现**，用户确认选定方案之前不写任何文件。
+
+**AI 对话输出格式**（非文件内容）：
 
 ```markdown
-# brainstorm: S<N>-<slug>
-
-## 需求理解
-<1-2 段，AI 复述需求，对齐认知>
-
-## 候选方案
+## S<N>-<slug> 方案对比
 
 ### 方案 A: <名字>
-- 思路：<一段话>
-- 优点：<列表>
-- 缺点 / 风险：<列表>
-- 预估工作量：<S/M/L>
+- 思路：<一段话>  优点：…  缺点/风险：…  工作量：<S/M/L>
 
 ### 方案 B: <名字>
 （同上）
 
-### 方案 C: <名字>
-（同上，若有）
-
-## 推荐
-**方案 <X>**，理由：<一句话>
-
-## 关键技术点
-- <技术点 1>
-- <技术点 2>
+## 推荐: 方案 <X>，理由：<一句话>
 ```
 
 提示：
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ 输入 `继续` 采用推荐方案
-🅰️🅱️🅲️ 输入 `A` / `B` / `C` 选别的方案
+✅ 输入 `继续` 采用推荐方案 → 写入 brainstorm.md
+🅰️🅱️ 输入 `A` / `B` 选别的方案
 ✏️ 输入 `补充: <...>` 添加缺失方案/约束
 ❌ 输入 `取消` 退出
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-**保存**: `<STATE_DIR>/discussion/<YYYYMMDD>-<slug>/brainstorm.md`
+**【落盘点 1/3】** 用户确认后，把完整 brainstorm（需求理解 + 全部候选方案 + 选定理由 + 关键技术点）写入：
+`<STATE_DIR>/discussion/<YYYYMMDD>-<slug>/brainstorm.md`（目录不存在则创建）
 
-## 阶段 2: milestones
+## R2: milestones（收敛）
 
 **目标**: 把选定方案拆成可独立 verify 的子步骤。
 
-**AI 输出格式**:
-
-```markdown
-# milestones: S<N>-<slug>
-
-## 选定方案
-<复述 brainstorm 选定的方案 + 关键决策>
-
-## 子步骤
-
-### S<N>-A: <名字>
-- 内容：<2-3 行>
-- 依赖：无 | S<N>-? 完成
-- 验证：<verify 时怎么验>
-- 预估：<S/M/L>
-
-### S<N>-B: <名字>
-（同上）
-
-### S<N>-C: <名字>
-（同上）
-
-## 关键决策（记入 decisions.md）
-- [YYYY-MM-DD] <决策一句话>
-```
+**规则**：同样对话先行——先展示拆分，确认后才落盘。
 
 **约束**:
 - 子步骤数量 ≤ 5（否则建议升档 deep）
 - 每个子步骤必须可独立 verify
 
+**AI 对话输出**：子步骤清单（ID / 名称 / 依赖 / 验证方式 / 预估），
+
 提示：
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ 输入 `继续` 采用拆分
+✅ 输入 `继续` 采用拆分 → 写入 milestones.md
 🔧 输入 `合并 A B` / `拆分 A` 调整
-✏️ 直接编辑拆分内容
+✏️ 直接口述修改
+❌ 输入 `取消` 退出
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-**保存**: `<STATE_DIR>/discussion/<YYYYMMDD>-<slug>/milestones.md`
+**【落盘点 2/3】** 用户确认后写入：`<STATE_DIR>/discussion/<YYYYMMDD>-<slug>/milestones.md`（含选定方案复述 + 子步骤表 + 关键决策）+ `status.json`
 
-## 阶段 3: 同步状态
+## R3: 同步状态（3 个落盘点逐一确认）
 
-1. `state.md`:
-   - 当前步骤 = `S<N>-A`（首子步骤）
-   - 下一步动作 = `/em verify s<N>-a`
-   - 追加最近决策
-2. `project-spec.md` 步骤表追加：`| S<N> | <名字> | 🚧 开发中 | YYYY-MM-DD |`
-3. `decisions.md` 追加 brainstorm 选定方案的关键决策
+不是一口气写完——**先展示每处将写入的内容摘要，用户确认一批写入一批**：
+
+| # | 落盘点 | 将写入的内容 | 确认方式 |
+|---|--------|-------------|----------|
+| 1 | `state.md` | 当前步骤 = S<N>-A、下一步动作 = 编码后 `/em verify s<N>-a`、追加最近决策 | 展示 diff 摘要 → `继续` |
+| 2 | `project-spec.md` | 步骤表追加 `| S<N> | <名字> | 🚧 开发中 | <日期> |`（文件不存在则先从模板创建，S17-A 首次写入原则） | 展示行内容 → `继续` |
+| 3 | `decisions.md` | brainstorm 选定方案的关键决策 1-3 条（文件不存在则先创建） | 展示条目 → `继续` |
+
+> 用户说「都写」可一次确认三处；任何一处有异议就单处修改后重确认。
 
 ## 收尾输出
 
 ```
-🎉 S<N> 计划完成（中档）
+🎉 S<N> 计划完成（中档，R1/R2/R3 全部落盘均已确认）
 
 📄 brainstorm: <STATE_DIR>/discussion/<...>/brainstorm.md
 📄 milestones: <STATE_DIR>/discussion/<...>/milestones.md
@@ -142,6 +105,10 @@
 
 | 触发 | 建议 |
 |------|------|
-| brainstorm 时发现「这就是个 bugfix」| 降轻档（`--light`），保留 brainstorm.md 作参考 |
-| brainstorm 时发现「涉及新外设/协议栈」| 升重档（`--deep`），追加 hardware/requirements 讨论 |
-| milestones 子步骤 > 5 | 升重档，做子流程拆分 |
+| R1 发现「这就是个 bugfix」| 降轻档（`--light`），R1 结论保留在对话即可 |
+| R1 发现「涉及新外设/协议栈」| 升重档（`--deep`），追加 hardware/requirements 讨论 |
+| R2 子步骤 > 5 | 升重档，做子流程拆分 |
+
+## 与 S16 的关系
+
+本文件的 R1/R2/R3 渐进确认流即原 S16-A 的设计目标（2026-07-14 决策「落盘前必须确认」+「阶段 3 拆 3 个落盘点」），由 S17-A 收编落地。

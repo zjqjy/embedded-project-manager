@@ -1,7 +1,7 @@
 ---
-name: em-skill
+name: em
 description: 项目开发管家 - 通用核（HVR 工作流 + state.md 瘦身 + new 三档分流）+ 双插件架构（embedded 嵌入式 + learning 学习模式）。支持通用/嵌入式/学习三类项目。
-version: 3.1.0
+version: 3.2.0
 ---
 
 # EM-SKILL
@@ -32,7 +32,7 @@ version: 3.1.0
 
 ---
 
-## 通用命令（16 个）
+## 通用命令（19 个）
 
 | 命令 | 用途 |
 |------|------|
@@ -51,8 +51,10 @@ version: 3.1.0
 | `/em pi` | 项目索引 |
 | `/em gi` | 全局索引 |
 | `/em help` | 帮助 |
+| `/em pro` | **跨项目记录**（追加到管家项目 problem-log，集中处理） |
 | `/em migrate` | `.emv2/` → `.em/` 深度迁移 |
 | `/em migrate-state` | 一键生成 state.md（瘦身） |
+| `/em logs-clean` | **日志滚动清理**（保留最新 N 份，S17-A） |
 
 > **子命令路由约定**：AI 执行任一通用命令时，读取 `commands/<cmd>.md`。
 > 通用核不维护命令-文件路由表，约定即可（统一前缀 `commands/`）。
@@ -86,16 +88,16 @@ EM-SKILL 提供三类项目支持：
 
 - **HVR 工作流**：需求 → 设计 → 验证 → 归档
 - **状态文件瘦身**：`state.md` ≤ 50 行作单一恢复源；会话独立成文件
-- **new 三档分流**（superpower 风格）：
-  - 轻档 → `quick-plan.md`（5 min）
-  - 中档（默认） → `brainstorm.md` + `milestones.md`（15 min）
+- **new 三档分流**（superpower 风格，S17-A 起落盘前必须确认）：
+  - 轻档 → 对话内 quick-plan，**不落盘**（5 min）
+  - 中档（默认） → R1/R2/R3 渐进确认 → `brainstorm.md` + `milestones.md`（15 min）
   - 重档 → 5 阶段 disc（45 min）
 - **Git 集成**：verify 时提议 commit；归档时打 tag
 
 ### 嵌入式项目（按需加载插件）
 
 触发方式：用户敲 `/em initem` 或 `/em build/flash/serial` 时 lazy-load，无需 `type=embedded`。
-- `tools/` 含 `serial-mcp` / `serial-monitor` / `build-keil` / `flash-openocd`
+- `tools/adapters/{build,flash,observe}/` adapter 集 + `tools/registry.json` 能力矩阵（S17-B：芯片×动词×adapter 数据驱动）+ `serial-mcp` GUI
 - `/em verify` 注入编译→烧录→串口三连子流程
 - `/em init` / `/em si` 注入芯片选择 + 学习
 
@@ -109,8 +111,10 @@ EM-SKILL 提供三类项目支持：
 - `/em learn new <slug> [title]` — 创建新主题（LPR 闭环起点）
 - `/em learn verify [slug] [l<N>]` — 阶段验证 + 推进 L1→L5
 - `/em learn status [slug] [-v]` — 查看学习状态
+- `/em learn humanize [slug]` — 去 AI 味检查（L5 定稿工序）
 - **LPR 5 阶段**：Learn → Pack → Practice → Verify → Surface
 - **唯一硬交付物**：主题 README 卡片（5 段式：钩子 → 总结 → 概念图 → 架构 → 踩坑）
+- **风格硬约束**：所有讲解产物遵守 [plugins/learning/STYLE.md](plugins/learning/STYLE.md) —— 行业术语当主语、禁自造拟人名词、类比 ≤1 个/篇、结论先行、标题即结论
 - **多格式分发**：`tools/build-html.py` / `generate-script.py` / `generate-poster.py` / `package-skill.py`
 
 详见：[`plugins/learning/PLUGIN.md`](plugins/learning/PLUGIN.md)

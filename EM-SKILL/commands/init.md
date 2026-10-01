@@ -14,7 +14,8 @@
 
 ## 执行流程（总入口）
 
-1. **【目录检测】** 当前目录已有 `.em/` 或 `.emv2/` → 提示「项目已初始化」+ 给 `/em rec` 建议
+1. **【目录检测】** 当前目录已有 `.em/` → 提示「项目已初始化」+ 给 `/em rec` 建议
+   > 旧版 `.emv2/` 项目（v3.0 之前）请先 `/em migrate` 升级到 `.em/`
 2. **【类型判定】**
    - 命令带 `--type=...` → 直接采用
    - 否则按下表启发式扫描，给推荐：
@@ -40,20 +41,20 @@
         输入 `继续` 采用推荐，或 `general` / `embedded` 改选。
      ```
 
-3. **【创建 `<STATE_DIR>/`】** 新项目默认 `.em/`：
+3. **【创建 `<STATE_DIR>/`】** 新项目默认 `.em/`，**最小生成**（S17-A 止血包：只建 2 个文件，其余首次写入时才创建）：
    ```
    .em/
-   ├── state.md           # 最小状态文件（rec 默认只读）
-   ├── project.json       # { type, name, created, embedded?, plugins }
-   ├── project-spec.md    # 项目规格单（最简骨架，仅 Meta + 步骤表）
-   ├── decisions.md       # 决策日志（空表头）
-   ├── problem-log.md     # 问题追踪（空表头）
-   ├── sessions/          # 会话历史目录（每会话一文件）
-   ├── discussion/        # 讨论目录
-   ├── checkpoints/       # HVR 目录
-   ├── history/           # 归档目录
-   └── logs/              # 日志目录（嵌入式串口日志等）
+   ├── state.md           # ✅ 创建（唯一恢复源，≤50 行）
+   ├── project.json       # ✅ 创建（类型/插件元数据）
+   ├── sessions/          # 目录骨架（空目录）
+   ├── discussion/
+   ├── checkpoints/
+   ├── history/
+   └── logs/
    ```
+   > ❌ **不再预创建** project-spec.md / decisions.md / problem-log.md 空表头文件——
+   > 分别由 `/em new`（写步骤表）、首次记决策、首次记问题时**首次写入自动创建**（套 templates/ 模板）。
+   > 新项目 init 完成的文件产物 = 2 个。
 
 4. **【按类型分支】**
    - **general**：到此结束 → 提示 `/em new <第一个功能>`
@@ -83,9 +84,9 @@
 类型: general
 状态目录: .em/
 
-📁 已创建文件:
-  state.md / project.json / project-spec.md / decisions.md / problem-log.md
-  sessions/ / discussion/ / checkpoints/ / history/ / logs/
+📁 已创建文件（最小生成，S17-A）:
+  state.md / project.json + 空目录骨架
+  （project-spec / decisions / problem-log 首次写入时自动创建）
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 下一步:
@@ -127,18 +128,16 @@
 
 ```python
 def get_state_dir(project_root: str) -> str | None:
-    em_dir   = os.path.join(project_root, '.em')
-    emv2_dir = os.path.join(project_root, '.emv2')
-    if os.path.isdir(em_dir):   return em_dir
-    if os.path.isdir(emv2_dir): return emv2_dir
+    em_dir = os.path.join(project_root, '.em')
+    if os.path.isdir(em_dir): return em_dir
     return None
 ```
 
-存量 `.emv2/` 项目可用 `/em migrate` 升级。
+旧版 `.emv2/` 项目 → 请先 `/em migrate` 升级（v3.1 起 init/si 不再生成 `.emv2/`）。
 
 ## 相关文件
 - `commands/rec.md` — 恢复时也读 `project.json` 决定是否加载嵌入式插件
-- `commands/migrate.md` — 存量 `.emv2/` → `.em/` 迁移
+- `commands/migrate.md` — 旧版 `.emv2/` → `.em/` 一次性迁移（v3.1 起 init/si 不再生成 `.emv2/`）
 - `plugins/embedded/PLUGIN.md` — 嵌入式插件清单
 - `plugins/embedded/commands/initem.md` — 嵌入式工具初始化
 - `plugins/embedded/workflows/chip-learning.md` — 芯片学习/识别
