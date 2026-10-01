@@ -35,10 +35,8 @@
     "Edit(**/.emv2/**/*.md)",
     "Write(**/.emv2/**/*.md)",
     "Bash(python:*)",
-    "Bash(python */EM-SKILL/plugins/embedded/tools/build-keil/*.py)",
-    "Bash(python */EM-SKILL/plugins/embedded/tools/flash-openocd/*.py)",
-    "Bash(python */EM-SKILL/plugins/embedded/tools/serial-monitor/*.py)",
-    "Bash(python */EM-SKILL/plugins/embedded/tools/shared/register_claude_md.py)"
+    "Bash(python */EM-SKILL/plugins/embedded/tools/adapters/*/*.py)",
+    "Bash(python */EM-SKILL/plugins/embedded/tools/lib/*.py)"
   ],
   "ask": [
     "Write(**/.em/discussion/**/*.md)",
@@ -57,8 +55,10 @@
 ### 步骤 2: 探测工具路径
 
 ```bash
-python EM-SKILL/plugins/embedded/tools/shared/detect_tools.py
+python EM-SKILL/commands/scripts/detect_tools.py
 ```
+
+> S17-B 起 adapters 在 `tools/adapters/{build,flash,observe}/`，共享库在 `tools/lib/`。
 
 找到的工具自动注册到 `%APPDATA%/em_skill/config.json`。
 
@@ -68,11 +68,13 @@ python EM-SKILL/plugins/embedded/tools/shared/detect_tools.py
 |------|-----------|------|------|
 | OpenOCD | `openocd` | ✅ 必须 | 烧录工具（未安装则自动下载） |
 | Keil UV4 | `uv4` | 必须 | 编译工具（用户手动指定） |
+| CCS | `ccs` | 可选 | TI 编译（`eclipsec` headless 路径） |
+| DSLite | `dslite` | 可选 | TI 烧录（XDS100/XDS110） |
 | J-Link | `jlink` | 可选 | 烧录工具 |
 
 未找到的工具：
 - OpenOCD → 自动下载
-- Keil UV4 → 提示用户手动指定
+- Keil UV4 / CCS / DSLite → 提示用户手动指定
 - 其他 → 提示用户手动指定
 
 ### 步骤 4: 自动下载 OpenOCD
@@ -87,14 +89,51 @@ https://github.com/xpack-dev-tools/openocd-xpack/releases
 # 解压到常用目录
 ```
 
-### 步骤 5: 注册全局 CLAUDE.md（嵌入式工具触发器，S13）
+### 步骤 5: 锁定芯片工具组合（S17-B 核心）
+
+一次性把「本项目用哪套 adapter」定死并写入 `project.json.embedded`，
+后续 `/em build` / `/em flash` / verify 三连**按此调用，不再猜测**。
+
+1. **识别芯片**：正则 `system_xxx.c` / `startup_xxx.s`（ST/GD）或 `.cproject`/`.ccsproject`（TI CCS 工程）
+2. **查 registry**：`tools/registry.json → chips.<vendor>.<family>` 得推荐组合
+   （如 `st.f4 → build:keil + flash:openocd(target/stm32f4x.cfg)`）
+3. **用户确认**：
+
+   ```
+   🔧 工具组合锁定（registry 推荐）
+
+      芯片:    STM32F407VGT6 (st/f4)
+      编译:    keil        → adapters/build/keil.py
+      烧录:    openocd     → adapters/flash/openocd.py
+               target_cfg: target/stm32f4x.cfg
+      观测:    serial      → adapters/observe/serial.py
+
+   输入 `继续` 锁定，或口述修改（如 烧录改 jlink）
+   ```
+
+4. **写入** `project.json`：
+
+   ```json
+   "embedded": {
+     "vendor": "st", "family": "f4", "chip": "STM32F407VGT6",
+     "build": "keil", "flash": "openocd",
+     "flash_args": { "target_cfg": "target/stm32f4x.cfg", "interface": "stlink" }
+   }
+   ```
+
+5. **芯片学习联动**：同时更新 `~/.claude/chips.json` 的 lastUsed（见 workflows/chip-learning.md）
+
+> registry 里没有的芯片：initem 仍可手动锁定（口述 adapter + 参数），
+> 并提示「是否把该组合写回 registry.json 的 chips 段？」——积累私有芯片矩阵。
+
+### 步骤 6: 注册全局 CLAUDE.md（嵌入式工具触发器，S13）
 
 把「编译/烧录/串口」三组关键词 → 命令文档的指针表幂等写入
 `~/.claude/CLAUDE.md`，实现「按需动态加载」机制——
 对话提到关键词时，Claude 再去 Read 对应命令文档了解用法，不灌全文。
 
 ```bash
-python EM-SKILL/plugins/embedded/tools/shared/register_claude_md.py
+python EM-SKILL/plugins/embedded/tools/lib/register_claude_md.py
 ```
 
 | 文件状态 | 行为 |
@@ -108,7 +147,7 @@ python EM-SKILL/plugins/embedded/tools/shared/register_claude_md.py
 **仅检查**（不写入）：
 
 ```bash
-python EM-SKILL/plugins/embedded/tools/shared/register_claude_md.py --check
+python EM-SKILL/plugins/embedded/tools/lib/register_claude_md.py --check
 # 返回 0 = 已注册；1 = 未注册
 ```
 

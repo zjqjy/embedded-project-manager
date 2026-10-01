@@ -1,6 +1,6 @@
 ---
 plugin: embedded
-version: 1.0.0
+version: 1.1.0
 description: 嵌入式开发场景插件 — 串口、烧录、编译、芯片学习、嵌入式 verify 流程
 min_skill_version: 3.0.0
 author: zjq <2339311136@qq.com>
@@ -40,20 +40,33 @@ provides:
       inject_into: verify
       summary: 编译→烧录→串口三连子流程
 
+  # S17-B: adapter 注册表 —— 芯片×动词×adapter，单一事实来源见 tools/registry.json
   tools:
     - name: build-keil
-      path: tools/build-keil/scripts/keil_builder.py
+      path: tools/adapters/build/keil.py
       kind: python
+      verb: build
+    - name: build-ccs
+      path: tools/adapters/build/ccs.py
+      kind: python
+      verb: build
     - name: flash-openocd
-      path: tools/flash-openocd/scripts/openocd_flasher.py
+      path: tools/adapters/flash/openocd.py
       kind: python
-    - name: serial-monitor
-      path: tools/serial-monitor/scripts/serial_monitor.py
+      verb: flash
+    - name: flash-dslite
+      path: tools/adapters/flash/dslite.py
       kind: python
+      verb: flash
+    - name: observe-serial
+      path: tools/adapters/observe/serial.py
+      kind: python
+      verb: observe
     - name: tool-config
-      path: tools/shared/tool_config.py
+      path: tools/lib/tool_config.py
       kind: python
       internal: true   # 内部共享，不直接调用
+  registry: tools/registry.json   # 能力矩阵：chips.{vendor}.{family} → verb → adapter+args
 
   templates:
     - name: serial-log-reference
@@ -70,11 +83,7 @@ provides:
       command: python tools/serial-mcp/mcp_server.py
       capabilities: [serial_read, serial_status, serial_send, serial_log_file]
 
-  hooks:
-    - event: PostToolUse
-      matcher: Bash
-      script: hooks/log-build.sh
-      description: 编译/烧录后记录到 logs/
+  # hooks: 暂无（曾声明 hooks/log-build.sh 但文件从未存在，S17 review 移除；实现后再声明）
 
 # 依赖与冲突
 depends:
@@ -124,13 +133,16 @@ keywords: 单片机 嵌入式 串口 烧录 编译 芯片学习
 
 ## 嵌入式工具集
 
-| 工具 ID | 路径 | 用途 | 类型 |
+| 工具 ID | 路径 | 用途 | 动词 |
 |---------|------|------|------|
-| `build-keil` | `tools/build-keil/scripts/keil_builder.py` | Keil 编译脚本 | python |
-| `flash-openocd` | `tools/flash-openocd/scripts/openocd_flasher.py` | OpenOCD 烧录脚本 | python |
-| `serial-monitor` | `tools/serial-monitor/scripts/serial_monitor.py` | 串口 CLI（自动化抓日志）| python |
-| `serial-mcp` | `tools/serial-mcp/` | 串口 GUI（tkinter + MCP）| mcp_server |
-| `tool-config` | `tools/shared/tool_config.py` | 工具路径配置共享库（内部）| python |
+| `build-keil` | `tools/adapters/build/keil.py` | Keil 编译 adapter | build |
+| `build-ccs` | `tools/adapters/build/ccs.py` | TI CCS headless 编译 adapter（S17-C）| build |
+| `flash-openocd` | `tools/adapters/flash/openocd.py` | OpenOCD 烧录 adapter | flash |
+| `flash-dslite` | `tools/adapters/flash/dslite.py` | TI DSLite 烧录 adapter（S17-C）| flash |
+| `observe-serial` | `tools/adapters/observe/serial.py` | 串口 CLI adapter（自动化抓日志）| observe |
+| `serial-mcp` | `tools/serial-mcp/` | 串口 GUI（tkinter + MCP）| — |
+| `tool-config` | `tools/lib/tool_config.py` | 工具路径配置共享库（内部）| — |
+| **registry** | `tools/registry.json` | **能力矩阵**：芯片×动词→adapter+参数（S17-B 单一事实来源）| — |
 
 调用方式：脚本通过 `~/.claude/settings.json` 中的路径白名单直接调用（`initem` 命令负责注册）。
 
@@ -175,7 +187,7 @@ keywords: 单片机 嵌入式 串口 烧录 编译 芯片学习
 
 - `commands/initem.md` `commands/build.md` `commands/flash.md` `commands/serial.md`
 - `workflows/chip-learning.md` `workflows/verify-embedded.md`
-- `tools/{build-keil,flash-openocd,serial-mcp,serial-monitor,shared}/`
+- `tools/adapters/{build,flash,observe}/` + `tools/lib/` + `tools/registry.json` + `tools/serial-mcp/`
 - `templates/{serial-log-reference.md, serial_config.json, hvr-template-embedded.md}`
 - `mcp-servers/serial-mcp.json`
 - 通用核入口：[`../../SKILL.md`](../../SKILL.md)
@@ -186,6 +198,7 @@ keywords: 单片机 嵌入式 串口 烧录 编译 芯片学习
 
 | 版本 | 日期 | 变更 |
 |------|------|------|
+| 1.1.0 | 2026-10-01 | S17-B/C：tools 重构为 `adapters/{build,flash,observe}/` + `lib/`；新增 `registry.json` 能力矩阵（芯片×动词×adapter 数据驱动）；新增 ccs/dslite adapter（TI，实测待做）；移除从未存在的 hooks 声明；verify-embedded/initem/build/flash/serial 改为组合驱动 |
 | 1.0.0 | 2026-07-01 | 应用 PLUGIN-SPEC v1.0 规范；补全 frontmatter（version/requires/hooks/mcp_servers）；注册 build/flash/serial 三个新命令；添加 MCP server 配置引用 |
 | 0.x | 2026-06-03 | S11 重构：物理解耦到 plugins/embedded/ |
 | 0.x | 2026-05-09 | V0.1260509 工具整合（远程）|

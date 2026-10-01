@@ -1,5 +1,6 @@
 ---
 plugin: learning
+version: 4.1.0
 description: 学习模式插件 — LPR 闭环、主题 README 卡片、知识图谱、调研管理、多格式构建
 prefix: learn  # S15-A: user-facing prefix; /em learn new 等
 provides:
@@ -7,6 +8,7 @@ provides:
     - learn-new        # /em learn new <topic>
     - learn-verify     # /em learn verify [topic]
     - learn-status     # /em learn status
+    - learn-humanize   # /em learn humanize <slug> 去 AI 味检查
   workflows:
     - learn-lpr        # L1-L5 阶段流转
   tools:
@@ -75,6 +77,7 @@ flowchart TB
 | `/em learn new` | `plugins/learning/commands/learn-new.md` |
 | `/em learn verify` | `plugins/learning/commands/learn-verify.md` |
 | `/em learn status` | `plugins/learning/commands/learn-status.md` |
+| `/em learn humanize` | `plugins/learning/commands/learn-humanize.md` |
 
 并对以下通用命令注入学习分支：
 
@@ -116,7 +119,7 @@ flowchart TB
 - **L2 Pack（打包）**：把零散知识收敛成概念图与结构化笔记。产物：`topics/<slug>/deep-dive.md`
 - **L3 Practice（实现）**：用最小可运行代码把概念落地，验证理解。产物：主题目录内实践片段 + `cheatsheet.md`
 - **L4 Verify（验证）**：实战检验结论是否成立，补齐盲点。产物：`learn verify` 的验证记录
-- **L5 Surface（浮现）**：产出可分享的 5 段式 README 卡片，并可衍生视频/海报。产物：`topics/<slug>/README.md`
+- **L5 Surface（浮现）**：产出可分享的 5 段式 README 卡片，并可衍生视频/海报。产物：`topics/<slug>/README.md`，全文遵守 [STYLE.md](STYLE.md)
 
 ## 何时**不**用此插件
 

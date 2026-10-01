@@ -1,2 +1,0 @@
-[console_scripts]
-em-loader = plugins._loader:main

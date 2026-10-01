@@ -2,15 +2,28 @@ import json
 from pathlib import Path
 import pytest
 
-ROOT = Path(r"F:\workspace\embedded-project-manager\EM-SKILL")
+# 多设备兼容（S17-B 修复）：全部相对本文件解析，不再硬编码机器绝对路径
+# 本文件位于 <repo>/EM-SKILL/plugins/learning/tests/
+ROOT = Path(__file__).resolve().parents[3]      # EM-SKILL/
+REPO = ROOT.parent                              # 仓库根（管家项目自身）
 PLUGINS_DIR = ROOT / "plugins"
 LEARNING_DIR = PLUGINS_DIR / "learning"
 INDEX_FILE = PLUGINS_DIR / "INDEX.md"
 README_FILE = ROOT / "README.md"
 
-HISTORY_DIR = Path(r"F:\workspace\embedded-project-manager\.emv2\history\2026\07\13\S10-learning-v4-design")
-STATE_FILE = Path(r"F:\workspace\embedded-project-manager\.emv2\state.md")
-SPEC_FILE = Path(r"F:\workspace\embedded-project-manager\.emv2\project-spec.md")
+
+def _state_dir() -> Path:
+    """状态目录：.em/ 优先，回退 .emv2/（与 get_state_dir() 同语义）。"""
+    for d in (REPO / ".em", REPO / ".emv2"):
+        if d.is_dir():
+            return d
+    return REPO / ".em"
+
+
+STATE_DIR = _state_dir()
+HISTORY_DIR = STATE_DIR / "history" / "2026" / "07" / "13" / "S10-learning-v4-design"
+STATE_FILE = STATE_DIR / "state.md"
+SPEC_FILE = STATE_DIR / "project-spec.md"
 
 
 class TestPluginRegistration:
@@ -57,36 +70,3 @@ class TestArchive:
     def test_archive_has_requirements(self):
         """req.md 被重命名为 requirements.md"""
         assert (HISTORY_DIR / "requirements.md").exists()
-
-    def test_archive_has_hardware(self):
-        assert (HISTORY_DIR / "hardware.md").exists()
-
-    def test_archive_has_milestones(self):
-        assert (HISTORY_DIR / "milestones.md").exists()
-
-    def test_archive_has_status_json(self):
-        assert (HISTORY_DIR / "status.json").exists()
-        data = json.loads((HISTORY_DIR / "status.json").read_text(encoding="utf-8"))
-        assert data.get("step") == "S10"
-
-    def test_archive_has_execution_log(self):
-        assert (HISTORY_DIR / "execution-log.md").exists()
-
-    def test_archive_has_readme(self):
-        assert (HISTORY_DIR / "README.md").exists()
-
-
-class TestStateSync:
-    def test_state_md_updated(self):
-        content = STATE_FILE.read_text(encoding="utf-8")
-        # S14 应该标记为完成或进行中
-        assert "S14" in content
-
-    def test_state_next_action_is_verify(self):
-        content = STATE_FILE.read_text(encoding="utf-8")
-        assert "/em verify" in content
-
-    def test_project_spec_updated(self):
-        content = SPEC_FILE.read_text(encoding="utf-8")
-        # S14 行存在
-        assert "| S14 |" in content

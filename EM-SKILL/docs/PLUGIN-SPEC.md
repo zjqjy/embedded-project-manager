@@ -108,16 +108,20 @@ provides:
       file: workflows/verify-embedded.md
       inject_into: verify                # 注入到 /em verify
 
-  tools:                                # 可调用工具（脚本）
+  tools:                                # 可调用工具（S17-B 起 adapter 化，verb 标注动词）
     - name: build-keil
-      path: tools/build-keil/scripts/keil_builder.py
+      path: tools/adapters/build/keil.py
       kind: python
+      verb: build
     - name: flash-openocd
-      path: tools/flash-openocd/scripts/openocd_flasher.py
+      path: tools/adapters/flash/openocd.py
       kind: python
-    - name: serial-monitor
-      path: tools/serial-monitor/scripts/serial_monitor.py
+      verb: flash
+    - name: observe-serial
+      path: tools/adapters/observe/serial.py
       kind: python
+      verb: observe
+  registry: tools/registry.json        # S17-B: 芯片×动词×adapter 能力矩阵（单一事实来源）
 
   templates:                            # 状态文件模板
     - name: serial-log-reference

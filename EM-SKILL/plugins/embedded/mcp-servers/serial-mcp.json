@@ -11,7 +11,7 @@
   ],
   "env": {
     "SERIAL_CONFIG": "${PLUGIN_DIR}/tools/serial-mcp/serial_config.json",
-    "PYTHONPATH": "${PLUGIN_DIR}/tools/shared:${PYTHONPATH}"
+    "PYTHONPATH": "${PLUGIN_DIR}/tools/lib:${PYTHONPATH}"
   },
   "capabilities": {
     "tools": [

@@ -209,17 +209,17 @@ B. **建议的排查方向**:
 
 ---
 
-### 技能声明
-| 技能 | 工具 | 状态 |
-|------|------|------|
-| build-keil | `EM-SKILL/plugins/embedded/tools/build-keil/scripts/keil_builder.py` | ⬜ 待执行 |
-| flash-openocd | `EM-SKILL/plugins/embedded/tools/flash-openocd/scripts/openocd_flasher.py` | ⬜ 待执行 |
-| serial-monitor | `EM-SKILL/plugins/embedded/tools/serial-mcp/` + `EM-SKILL/plugins/embedded/tools/serial-monitor/` | ⬜ 待执行 |
+### 技能声明（S17-B adapter 化，按 project.json.embedded 路由）
+| adapter | 工具 | 状态 |
+|---------|------|------|
+| build（keil/ccs） | `EM-SKILL/plugins/embedded/tools/adapters/build/` | ⬜ 待执行 |
+| flash（openocd/dslite） | `EM-SKILL/plugins/embedded/tools/adapters/flash/` | ⬜ 待执行 |
+| observe（serial） | `EM-SKILL/plugins/embedded/tools/adapters/observe/` + `serial-mcp/`（GUI） | ⬜ 待执行 |
 
 ### AI 自动验证流程
-1. AI 调用 build-keil 编译固件
-2. AI 调用 flash-openocd 烧录固件（如需要）
-3. AI 启动 S5 串口工具（后台）
+1. AI 调用 build adapter 编译固件（registry 路由）
+2. AI 调用 flash adapter 烧录固件（如需要）
+3. AI 启动串口工具（后台）
 4. AI 记录结果 → 提示人类进行最终验证
 
 ---

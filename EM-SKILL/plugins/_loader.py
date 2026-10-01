@@ -27,20 +27,29 @@ CLI:
 from __future__ import annotations
 
 import argparse
-import io
 import json
 import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-# Force UTF-8 on Windows consoles (avoid GBK encoding errors for CJK output)
-if sys.platform == "win32":
-    try:
-        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
-    except Exception:
-        pass
+
+def _force_utf8_console() -> None:
+    """Best-effort UTF-8 for Windows consoles（避免 GBK 下 CJK 乱码）。
+
+    只在 CLI 入口调用。不能在 import 时做——替换 sys.stdout 会破坏
+    pytest 等宿主的输出捕获（S17-B 修复：曾导致 pytest 以
+    "ValueError: I/O operation on closed file" 崩溃）。
+    """
+    if sys.platform != "win32":
+        return
+    for name in ("stdout", "stderr"):
+        stream = getattr(sys, name, None)
+        try:
+            if stream is not None and hasattr(stream, "reconfigure"):
+                stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
 
 try:
     import yaml
@@ -57,24 +66,32 @@ CACHE_FILENAME = "plugin-registry.json"
 # Path resolution
 # ============================================================================
 
+_STATE_MARKERS = ("project.json", "state.md", "memory-log.md")
+
+
 def find_state_dir(start: Path) -> Optional[Path]:
-    """Locate `.em/` (preferred) or `.emv2/` (fallback) from `start` upward."""
+    """Locate the project's state dir (`.em/` preferred, `.emv2/` fallback).
+
+    目录必须带状态标记（project.json / state.md / memory-log.md）才算——
+    否则一个只装了 loader 缓存的 `.em/` 会劫持解析，让真正的 `.emv2/`
+    项目失效（S17-B 修复，元仓库自身踩过这个坑）。
+    """
     current = start.resolve()
     for p in [current] + list(current.parents):
         for d in (".em", ".emv2"):
             candidate = p / d
-            if candidate.is_dir():
+            if candidate.is_dir() and any((candidate / m).is_file() for m in _STATE_MARKERS):
                 return candidate
     return None
 
 
 def default_cache_dir() -> Path:
-    """Default cache directory: <STATE_DIR>/cache/ or fallback to skill/.cache/."""
+    """Cache directory: <STATE_DIR>/cache/ in-project, else user-level."""
     state_dir = find_state_dir(Path.cwd())
     if state_dir:
         return state_dir / "cache"
-    # Fallback: alongside the skill (so the loader works even outside a project)
-    return Path(__file__).resolve().parent.parent / ".cache"
+    # 项目外运行：用户级缓存（不在技能目录旁产生垃圾状态目录）
+    return Path.home() / ".em-skill" / "cache"
 
 
 # ============================================================================
@@ -327,6 +344,7 @@ def _build_argparser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    _force_utf8_console()
     args = _build_argparser().parse_args(argv)
 
     skill_root = Path(__file__).resolve().parent.parent

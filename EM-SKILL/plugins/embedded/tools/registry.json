@@ -1,0 +1,83 @@
+{
+  "$schema": "em-embedded-tool-registry/v1",
+  "version": 1,
+  "description": "EM-SKILL 嵌入式工具能力矩阵（S17-B）。三层正交：芯片(vendor×family) × 动词(verb) × 适配器(adapter)。新增芯片支持 = 在 chips 加行；新增工具 = 在 adapters 加条目 + 对应 .py 文件；命令文档（build/flash/serial/verify-embedded）不随工具增长而修改。动词口诀：能进 verify 循环的进 adapters，低频的进 workflows，人手的进 HVR。",
+  "verbs": ["build", "flash", "observe"],
+  "adapters": {
+    "build": {
+      "keil": {
+        "file": "adapters/build/keil.py",
+        "desc": "Keil MDK UV4 命令行编译（ST/GD/NXP 等 Keil 工程）"
+      },
+      "ccs": {
+        "file": "adapters/build/ccs.py",
+        "desc": "TI CCS headless 编译（C2000/MSP430 等 CCS 工程）",
+        "note": "S17-C 新增，slack_app TMS320F280033 实测待做"
+      }
+    },
+    "flash": {
+      "openocd": {
+        "file": "adapters/flash/openocd.py",
+        "desc": "OpenOCD 烧录，target cfg 按芯片选择"
+      },
+      "dslite": {
+        "file": "adapters/flash/dslite.py",
+        "desc": "TI DSLite（XDS100/XDS110 探针）烧录",
+        "note": "S17-C 新增，slack_app XDS100v2 实测待做"
+      }
+    },
+    "observe": {
+      "serial": {
+        "file": "adapters/observe/serial.py",
+        "desc": "串口监控 CLI（芯片无关，写入 logs/）"
+      }
+    }
+  },
+  "chips": {
+    "st": {
+      "f1": {
+        "aka": ["stm32f103", "stm32f10x"],
+        "build": { "adapter": "keil" },
+        "flash": { "adapter": "openocd", "args": { "target_cfg": "target/stm32f1x.cfg" } }
+      },
+      "f4": {
+        "aka": ["stm32f407", "stm32f4xx"],
+        "build": { "adapter": "keil" },
+        "flash": { "adapter": "openocd", "args": { "target_cfg": "target/stm32f4x.cfg" } }
+      }
+    },
+    "gd": {
+      "f1": {
+        "aka": ["gd32f103", "gd32f10x"],
+        "build": { "adapter": "keil" },
+        "flash": { "adapter": "openocd", "args": { "target_cfg": "target/stm32f1x.cfg" } },
+        "note": "GD32F10x 兼容 stm32f1x cfg；若校验失败改用 jlink adapter"
+      },
+      "f4": {
+        "aka": ["gd32f407", "gd32f45x"],
+        "build": { "adapter": "keil" },
+        "flash": { "adapter": "openocd", "args": { "target_cfg": "target/stm32f4x.cfg" } }
+      }
+    },
+    "ti": {
+      "c2000": {
+        "aka": ["tms320f280033", "f28003x"],
+        "build": { "adapter": "ccs", "args": { "configuration": "Debug" } },
+        "flash": { "adapter": "dslite", "args": { "ccxml": "user_files/config/tms320f280033.ccxml" } },
+        "observe": { "adapter": "serial", "args": { "baud": 115200 } },
+        "note": "slack_app 现场：TMS320F280033 + CCS 12.5.0 + XDS100v2 + TI CGT 22.6.1.LTS"
+      }
+    }
+  },
+  "project_json_shape": {
+    "desc": "initem 锁定组合后写入 project.json.embedded，verify 三连按此调用，不再猜测",
+    "example": {
+      "vendor": "st",
+      "family": "f4",
+      "chip": "STM32F407VGT6",
+      "build": "keil",
+      "flash": "openocd",
+      "flash_args": { "target_cfg": "target/stm32f4x.cfg", "interface": "stlink" }
+    }
+  }
+}
