@@ -9,10 +9,10 @@
 - **分支**: master（含大量删除的变更集，commit 前请 review；v4 演练时切 feature/s17-v4）
 
 ## 下一步动作
-1. **review + commit**：70 个文件变更（S17 + 此前 pro/sync-to-install 未提交项），建议按 HVR-S17-001 提议分批 commit
-2. L2 验收（slack_app）：/em initem 锁 TI 组合 → /em build → /em flash（ccs/dslite 首战）+ rec 硬闸门体感 + logs-clean
-3. v4 演练：本仓库 feature 分支跑 migrate v4 段 → 通过后统一切命令路径发 v4.0
-4. install 副本同步：dev 领先（S17 + humanize 回流），跑 sync-to-install.cmd /y（注意其交互确认有 cmd 延迟展开 bug，review 遗留未修）
+1. ~~review + commit~~ ✅ 已分 4 批提交（fb79970/84782ae/c82b3e5/c007395），**未 push**（手动 `git push origin master`）
+2. L2 余项：CCS 机器上跑 slack_app build/flash（命令在 HVR-S17-001 L2 表）；管家 .emv2/logs 演练 logs-clean
+3. v4 演练：feature/s17-v4 分支跑 migrate v4 段（映射预览逐项确认，需用户在场）
+4. install 副本同步：dev 领先，跑 sync-to-install.cmd /y（交互确认有 cmd 延迟展开 bug，用 /y 绕过；修复该 bug 可开轻档）
 
 ## 最近 3 条关键决策
 - [2026-10-01] S17-两步走落地: v3.2 止血包（生命周期规则+生成减量，零破坏，SKILL 3.2.0）+ v4.0 换骨能力已交付（LIFECYCLE + migrate v4 段 + journal/feature 模板）；命令层暂保持 v3 兼容，管家项目演练后才切换
