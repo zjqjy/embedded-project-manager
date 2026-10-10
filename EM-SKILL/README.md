@@ -331,6 +331,6 @@ pip install -r requirements.txt
 - [SKILL.md](./SKILL.md) - 技能入口定义
 - [workflows/hvr-workflow.md](./workflows/hvr-workflow.md) - HVR工作流细则
 - [workflows/discussion-flow.md](./workflows/discussion-flow.md) - 讨论流程
-- [workflows/chip-learning.md](./workflows/chip-learning.md) - 芯片学习机制
+- [plugins/embedded/workflows/chip-learning.md](./plugins/embedded/workflows/chip-learning.md) - 芯片学习机制
 - [commands/](./commands/) - 各命令详细文档
-- [tools/serial-mcp/README.md](./tools/serial-mcp/README.md) - S5串口工具说明
+- [plugins/embedded/tools/serial-mcp/README.md](./plugins/embedded/tools/serial-mcp/README.md) - S5串口工具说明
