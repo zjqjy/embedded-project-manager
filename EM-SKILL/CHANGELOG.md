@@ -13,12 +13,12 @@
 ## [Unreleased]
 
 ### Changed
-- **[S18] new 三档「追问先行、落盘最后」**: 修复「AI 不问人工就直接写计划文档」——`/em new` 三档现在必经 **R0 追问轮**（新 `workflows/new-clarify.md`：一次一问、选择题优先、预算轻≤2/中≤5/重每子系统≤3、免问也须理解摘要确认）；硬闸门写入 `commands/new.md` 公共规则（理解未确认禁止出方案草稿/写文件）。中档 R1/R2 改纯对话，落盘合并为 R3 统一批次（plan.md 一次成文，产物形状不变）；重档阶段2 改追问式、补硬闸门、status.json 路径与文件集对齐 v4（plan.md 合并 brainstorm/milestones 两章）。产物形状零变化，verify/result/arch 零改动；状态同步目标按项目形态自适应（v4: features/README.md + journal.md；v3: project-spec.md + decisions.md）。依据调研 `docs/research/2026-10-10-clarify-before-write.md`（github/spec-kit /clarify 模板原文 + obra/superpowers brainstorming + OpenSpec）。
+- **[S18] new 三档「追问先行、落盘最后」**: 修复「AI 不问人工就直接写计划文档」——`/em new` 三档现在必经 **R0 追问轮**（新 `workflows/new-clarify.md`：一次一问、选择题优先；**问题数不设上限，S18.1 按用户反馈修订**——上限会诱导 AI「问够数就停」，退出条件 = AI 判断意图清晰 + 理解摘要确认；下限保底轻 ≥1/中 ≥2/重每子系统 ≥1，无真歧义用「确认题」满足下限）；硬闸门写入 `commands/new.md` 公共规则（理解未确认禁止出方案草稿/写文件）。中档 R1/R2 改纯对话，落盘合并为 R3 统一批次（plan.md 一次成文，产物形状不变）；重档阶段2 改追问式、补硬闸门、status.json 路径与文件集对齐 v4（plan.md 合并 brainstorm/milestones 两章）。产物形状零变化，verify/result/arch 零改动；状态同步目标按项目形态自适应（v4: features/README.md + journal.md；v3: project-spec.md + decisions.md）。依据调研 `docs/research/2026-10-10-clarify-before-write.md`（github/spec-kit /clarify 模板原文 + obra/superpowers brainstorming + OpenSpec）。
 - SKILL.md / help.md / disc.md: 三档描述同步 R0 语义；help.md 中档产物陈旧描述修正（brainstorm.md+milestones.md → plan.md）。
 - **【breaking·v4.0】状态目录 v4 结构**（feature/s17-v4 分支演练通过后生效）: `discussion/`+`checkpoints/` 收敛为 `features/S<N>-<slug>/`（plan.md + hvr.md + README 状态卡）；`sessions/`+`decisions.md`+`memory-log.md` 合并为 append-only `journal.md`；`project-spec.md` 转为 `features/README.md` 索引。活文件 11 类 → 2 个（state.md + journal.md）。命令文档（new/verify/result/init/stat/rec/arch）与 SKILL.md 布局已切 v4 路径；v3 项目由 `/em migrate` §v4 一键迁移。管家项目迁移映射三段式提交：28edd20（move）/ a85dc26（consolidate）/ ce26da1（slim）。
 
 ### Added
-- **[S18] 工作流**: 新增 `workflows/new-clarify.md` — R0 需求澄清追问轮（三档共用）：一次一问、选择题优先、Why it matters、问题预算、免问路径、理解摘要确认门；依据为 spec-kit `/clarify` 与 superpowers `brainstorming` 的共识实践。
+- **[S18] 工作流**: 新增 `workflows/new-clarify.md` — R0 需求澄清追问轮（三档共用）：一次一问、选择题优先、Why it matters、追问下限（不设上限，意图清晰为准）、最简确认路径（确认题）、理解摘要确认门；依据为 spec-kit `/clarify` 与 superpowers `brainstorming` 的共识实践（问题数量策略与 spec-kit 上限有意分歧，S18.1 用户反馈）。
 - **[S18] 调研**: 新增 `docs/research/2026-10-10-clarify-before-write.md` — 需求澄清实践调研（spec-kit clarify 模板原文 / superpowers brainstorming / OpenSpec proposal），含共性提炼与 EM 映射、兼容性核对清单。
 - **命令**: 新增 `/em pro` 插件问题上报命令 — 在任意项目使用 EM-SKILL 遇到 bug / 输出异常 / 缺失功能 / 文档不清时执行，把问题详情 + 源项目现场快照（state.md / problem-log.md / git 状态 / EM-SKILL 版本）追加到管家项目 `problem-log.md > 跨项目问题记录 (EM-SKILL)` 段，集中处理。**只用于 EM-SKILL 自身问题**，通用项目状态用 `/em stat` / `/em rec`。管家路径解析顺序 `$EM_PROJECT_MANAGER_HOME` → `~/.em-skill/manager-home` → 首次直接问路径（不强制新建目录）。
 - **脚本**: 新增 `tools/sync-to-install.cmd` — EM-SKILL dev → install 同步脚本，使用 robocopy `/E`「只补不删」语义（不执行 rm），避免误删 install 中本地新增文件。多设备兼容：路径用 `<PROJECT_ROOT>` / `<INSTALL_ROOT>` 占位符，支持 `EM_INSTALL_PATH` 环境变量覆盖。
