@@ -88,10 +88,12 @@ EM-SKILL 提供三类项目支持：
 
 - **HVR 工作流**：需求 → 设计 → 验证 → 归档
 - **状态文件瘦身**：`state.md` ≤ 50 行作单一恢复源；会话独立成文件
-- **new 三档分流**（superpower 风格，落盘前必须确认）：
-  - 轻档 → 对话内 quick-plan，**不落盘**（5 min）
-  - 中档（默认） → R1/R2/R3 渐进确认 → `features/S<N>-<slug>/plan.md`（15 min）
-  - 重档 → 5 阶段 disc（45 min）
+- **new 三档分流**（superpower 风格，S18 起追问先行、落盘最后）：
+  - 三档必经 **R0 追问轮**（`workflows/new-clarify.md`）：一次一问澄清需求（轻 ≤2 / 中 ≤5 / 重每子系统 ≤3），理解摘要经用户确认才继续
+  - 轻档 → R0 + 对话内 quick-plan，**不落盘**（5 min）
+  - 中档（默认） → R0 + R1/R2 对话 → R3 统一落盘 `features/S<N>-<slug>/plan.md`（15 min）
+  - 重档 → R0 + 5 阶段 disc（45 min）
+  - **硬闸门**：理解未确认禁止出方案；写文档永远是流程最后一步
 - **Git 集成**：verify 时提议 commit；归档时打 tag
 
 ### 嵌入式项目（按需加载插件）
@@ -143,7 +145,7 @@ EM-SKILL 提供三类项目支持：
 ## 详细文档
 
 - `commands/` — 各命令完整定义
-- `workflows/` — 工作流细则（discussion-flow / hvr-workflow / new-light / new-standard）
+- `workflows/` — 工作流细则（new-clarify / discussion-flow / hvr-workflow / new-light / new-standard）
 - `templates/` — 模板（state / session / project / project-spec / decisions / problem-log / hvr / global-index / history-index / em-migration）
 - `plugins/embedded/` — 嵌入式插件（独立可拆）
 - `tools/git-changelog/` — 通用 CHANGELOG 生成工具

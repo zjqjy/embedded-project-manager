@@ -16,8 +16,10 @@
 | 档位 | 适用 | 产出文件 | 时长 | 工作流 |
 |------|------|---------|------|--------|
 | **轻 light** | < 2h 工作量、单文件改动、bugfix、调参 | 0（对话内计划，`留档`例外）| ~5 min | `workflows/new-light.md` |
-| **中 standard**（默认）| 跨模块特性、需设计但非系统级 | `features/S<N>-<slug>/plan.md` (1，R1/R2 确认后写) | ~15 min | `workflows/new-standard.md` |
-| **重 deep** | 系统级、新外设、协议栈、状态机重构 | `features/S<N>-<slug>/`（plan + requirements/hardware 等）| ~45 min | `workflows/discussion-flow.md`（沿用）|
+| **中 standard**（默认）| 跨模块特性、需设计但非系统级 | `features/S<N>-<slug>/plan.md` (1，R3 统一落盘) | ~15 min | `workflows/new-standard.md` |
+| **重 deep** | 系统级、新外设、协议栈、状态机重构 | `features/S<N>-<slug>/`（plan + requirements/hardware/split）| ~45 min | `workflows/discussion-flow.md`（沿用）|
+
+> **三档共用前置**：`workflows/new-clarify.md` 的 R0 追问轮——档位选定后、任何方案输出之前，AI 先一次一问澄清需求（轻 ≤2 / 中 ≤5 / 重每子系统 ≤3 问），需求理解摘要经用户确认后才进入档位工作流。**写文档永远是最后一步。**
 
 ## 档位推荐启发式
 
@@ -37,7 +39,7 @@ AI 收到 `<功能描述>` 后，按以下规则推荐：
 ## 执行流程（总入口）
 
 1. **【状态目录】** `get_state_dir()` → `<STATE_DIR>`；不存在提示 `/em init`
-2. **【步骤号分配】** 读 `<STATE_DIR>/state.md` 或 `project-spec.md` 步骤表，取最大 S + 1
+2. **【步骤号分配】** 读 `<STATE_DIR>/state.md` 或步骤索引（v4: `features/README.md` 步骤总表；v3: `project-spec.md` 步骤表），取最大 S + 1
 3. **【档位选择】**
    - 命令带 `--light/--std/--deep` → 直接采用
    - 否则按启发式推荐，输出：
@@ -53,14 +55,21 @@ AI 收到 `<功能描述>` 后，按以下规则推荐：
    - 轻 → 立即读 `workflows/new-light.md`
    - 中 → 立即读 `workflows/new-standard.md`
    - 重 → 立即读 `workflows/discussion-flow.md`（沿用 5 阶段）
-5. **【按工作流执行】** 详见对应 workflow 文件
-6. **【收尾】** 更新 `state.md`（下一步动作 = `/em verify s<N>`），写入 `project-spec.md` 步骤表
+5. **【R0 追问轮（三档必经）】** 读 `workflows/new-clarify.md` 执行：
+   - 一次一问澄清需求（预算：轻 ≤2 / 中 ≤5 / 重每子系统 ≤3）
+   - 无关键歧义走免问路径，但**理解摘要仍须用户确认**
+   - 确认前禁止输出方案草稿、禁止写任何文件
+6. **【按工作流执行】** 详见对应 workflow 文件（中档 R1/R2 对话、R3 统一落盘；重档 5 阶段对话后统一保存）
+7. **【收尾】** 更新 `state.md`（下一步动作 = `/em verify s<N>`），同步步骤索引（v4: `features/README.md`；v3: `project-spec.md`）
 
 ## 公共规则
 
 - **步骤编号**：`S<数字>`，废弃不复用
-- **feature 目录**：`<STATE_DIR>/features/S<N>-<slug>/`（R1 首个落盘点时创建，含 README 状态卡）
+- **feature 目录**：`<STATE_DIR>/features/S<N>-<slug>/`（各档**首个落盘点**时创建——中档 R3 / 重档阶段5，含 README 状态卡；轻档不创建）
 - **进度文件**：`status.json` 标记当前阶段（轻档可省）
+- **硬闸门（HARD-GATE）**：
+  - R0 需求理解摘要未经用户确认 → 禁止输出任何完整方案/计划草稿，禁止创建/写入任何文件
+  - **写文档永远是流程的最后一步**——所有方案、拆分先在对话中确认，落盘集中在各档末尾的统一批次
 - **强制约束**：流程未完成（如重档 5 阶段没走完）禁止 `/em verify`/`/em result`
 
 ## 输出格式（确认阶段后）
@@ -76,14 +85,18 @@ AI 收到 `<功能描述>` 后，按以下规则推荐：
 
 ## 设计原则
 - **superpower 精神**：先 brainstorm → 再 plan → 再 execute
-- **三档分流**：避免轻量需求被重流程拖累
-- **披露式加载**：每档独立 workflow 文件，按选档加载
-- **现有重档保留**：原 5 阶段 disc 完整保留，零破坏
+- **clarify-first（S18）**：spec-kit `/clarify` + superpowers brainstorming 共识——追问在方案之前，一次一问、选择题优先、有预算、高影响优先
+- **write-last（S18）**：写文档永远是最后一步，人工确认理解之前 AI 不产出任何文档
+- **三档分流**：避免轻量需求被重流程拖累（追问预算按档位递增，轻档不被拖累）
+- **披露式加载**：每档独立 workflow 文件，按选档加载；R0 三档共用一份规范
+- **现有重档保留**：原 5 阶段 disc 完整保留，仅提问形式升级为追问式，零破坏
 - **嵌入式自动加档**：涉及硬件外设自动推荐 deep（保留嵌入式严谨性）
 
 ## 相关文件
-- `workflows/new-light.md` — 轻档流程（不落盘）
-- `workflows/new-standard.md` — 中档流程（R1/R2/R3，落盘 features/plan.md）
-- `workflows/discussion-flow.md` — 重档 5 阶段流程（沿用）
+- `workflows/new-clarify.md` — **R0 追问轮规范（三档共用，S18 新增）**
+- `workflows/new-light.md` — 轻档流程（R0 + 不落盘）
+- `workflows/new-standard.md` — 中档流程（R0/R1/R2 对话 + R3 统一落盘）
+- `workflows/discussion-flow.md` — 重档 5 阶段流程（阶段2 追问式）
 - `commands/disc.md` — 单独触发讨论模式（可继续重档）
+- `docs/research/2026-10-10-clarify-before-write.md` — 本次改造的调研依据
 - `docs/LIFECYCLE.md` — 文件生命周期总表

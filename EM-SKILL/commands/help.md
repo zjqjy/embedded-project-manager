@@ -22,11 +22,13 @@
   migrate-state    一键生成 state.md（瘦身）
   logs-clean [-n N] 日志滚动清理（保留最新 N 份，默认 10）
 
-开发流程（new 三档分流，superpower 风格）:
+开发流程（new 三档分流，superpower 风格，S18 追问先行/落盘最后）:
   new <描述> [--light/--std/--deep]   AI 推荐档位
-    轻档 → 对话内 quick-plan（不落盘）(5 min)
-    中档 → R1/R2/R3 渐进确认 → brainstorm.md + milestones.md (15 min) — 默认
-    重档 → 5 阶段 disc (45 min)
+    三档必经 R0 追问轮: 一次一问澄清 → 理解摘要确认后才出方案（轻≤2/中≤5/重每子系统≤3 问）
+    轻档 → R0 + 对话内 quick-plan（不落盘）(5 min)
+    中档 → R0 + R1/R2 对话 → R3 统一落盘 plan.md (15 min) — 默认
+    重档 → R0 + 5 阶段 disc (45 min)
+    硬闸门: 理解未确认禁止写任何文档
   disc [id]        独立触发讨论（重档）
   verify s<N>      验证（按 type 选 HVR 模板；嵌入式注入三连）
   result <步>-<结果>  提交结果（自动推进 + 写会话日志）
@@ -79,6 +81,7 @@ Git 权限（initem.md 配置）:
 
 | 工作流 | 文件 |
 |--------|------|
+| R0 需求澄清（三档共用）| `workflows/new-clarify.md` |
 | HVR 工作流 | `workflows/hvr-workflow.md` |
 | 讨论流程（重档）| `workflows/discussion-flow.md` |
 | new 轻档 | `workflows/new-light.md` |
