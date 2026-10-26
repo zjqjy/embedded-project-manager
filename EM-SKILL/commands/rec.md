@@ -38,7 +38,12 @@
 4. **【旧版兼容】** state.md 不存在 → 读 `memory-log.md` 前 ~30 行（会话指纹+快速恢复信息+当前状态），跳过会话历史
 5. **【嵌入式插件】** 若 `project.json.type == "embedded"` → 加载 `plugins/embedded/PLUGIN.md`（仅文件名提示，不展开内容）
 6. **【生成摘要】** 输出 5 行内的恢复摘要；v4 项目顺带检查 `journal.md` > 500 行 → 提示 `/em arch` 截出
-7. **【交互】** 提示下一步可选动作；用户问详情时再加载 L2
+7. **【vault briefing（S1-D，可选）】** `~/.em/config.json` 配置了 vault 时附带一行入库摘要：
+   ```bash
+   python "<SKILL_DIR>/tools/vault/search.py" briefing
+   ```
+   取「近 7 天入库 N 张（快捕 a / 待确认 b）」一行拼进摘要；待确认 > 0 提醒用户去 `08_快捕/` 确认。未配置 vault 则静默跳过。
+8. **【交互】** 提示下一步可选动作；用户问详情时再加载 L2
 
 ## 摘要输出格式
 

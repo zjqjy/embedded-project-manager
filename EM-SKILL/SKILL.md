@@ -55,6 +55,11 @@ version: 4.0.0
 | `/em migrate` | `.emv2/` → `.em/` 深度迁移 |
 | `/em migrate-state` | 一键生成 state.md（瘦身） |
 | `/em logs-clean` | **日志滚动清理**（保留最新 N 份，S17-A） |
+| `/em note` | **知识快捕**（对话一句话入 vault 快捕区，S19） |
+| `/em ask` | **知识提取**（检索 vault + surfaced 回写，S19） |
+| `/em vault` | vault 连接/状态/近 7 天入库摘要（S19） |
+
+> **知识入库提议（S19 软约定，锦上添花）**：对话中出现明显值得沉淀的产出（踩坑/结论/方案/决策）且用户没提时，可一句话提议入库（「这个坑要不要入库？建议卡：《X》」）；同话题只提一次。**主机制是 hook 会话分拣**（SessionEnd/Stop → `tools/vault/triage.py` 出待确认卡），本约定只作补充，不依赖。
 
 > **子命令路由约定**：AI 执行任一通用命令时，读取 `commands/<cmd>.md`。
 > 通用核不维护命令-文件路由表，约定即可（统一前缀 `commands/`）。
