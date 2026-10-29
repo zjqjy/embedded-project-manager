@@ -28,13 +28,18 @@ def out(s: str) -> None:
     print(s, flush=True)
 
 
+NUM_RE = re.compile(r"\d{1,3}(?:\.\d{1,3}){3}|\d{4,}")
+
+
 def tokenize(text: str) -> list[str]:
     words = [w.lower() for w in re.findall(r"[A-Za-z][A-Za-z0-9_+-]{1,}", text)]
+    # IP 与 4 位以上数字（端口/编号）；19xx/20xx 视作年份丢弃，否则 "2026" 会命中每篇的 created 字段
+    nums = [n for n in NUM_RE.findall(text) if not (len(n) == 4 and n.startswith(("19", "20")))]
     cjk = re.sub(r"[^\u4e00-\u9fff]", " ", text)
     grams = []
     for chunk in cjk.split():
         grams += [chunk[i:i + 2] for i in range(len(chunk) - 1)]
-    return words + grams
+    return words + nums + grams
 
 
 def md_files(vault: Path, dirs: list[str]):
@@ -93,6 +98,7 @@ def do_query(vault: Path, q: str, limit: int, surface_top: int, dirs: list[str])
     toks = [t for t in tokenize(q) if t]
     if not toks:
         raise SystemExit("❌ 查询词为空")
+    q_norm = " ".join(q.split()).lower()
     scored = []
     for p in md_files(vault, dirs):
         try:
@@ -106,21 +112,35 @@ def do_query(vault: Path, q: str, limit: int, surface_top: int, dirs: list[str])
         if fm:
             tm = re.search(r"^tags:.*$", fm.group(1), re.M)
             tags_line = tm.group(0) if tm else ""
+        body = text.lower()
+        title_l = title.lower()
+        tags_l = tags_line.lower()
         score = 0
         for t in set(toks):
-            if t in title.lower():
+            if t in title_l:
                 score += 3
-            if t in tags_line.lower():
+            if t in tags_l:
                 score += 2
-            score += 1 if t in text.lower() else 0
+            n = body.count(t)
+            if n:
+                score += min(n, 3)  # 正文出现次数计入，封顶 3，避免高频词盖过标题权重
+        for qq in {q_norm, q_norm.replace(" ", "")}:
+            if len(qq) >= 4 and qq in body:
+                score += 5  # 整串命中（IP/端口/型号/错误码），比单个二元组命中强得多
+                break
         if score <= 0:
             continue
-        snippet = ""
-        for line in text.splitlines():
+        lines = text.splitlines()
+        hit_at = None
+        for i, line in enumerate(lines):
             ll = line.lower()
             if any(t in ll for t in toks) and line.strip() and not line.startswith(("---", "type:", "tags:", "status:", "created:")):
-                snippet = line.strip()[:120]
+                hit_at = i
                 break
+        snippet = ""
+        if hit_at is not None:
+            near = lines[max(0, hit_at - 1):hit_at + 2]
+            snippet = " ⏎ ".join(x.strip() for x in near if x.strip())[:200]
         scored.append({
             "path": str(p.relative_to(vault)), "title": title, "score": score,
             "status": parse_fm(text).get("status", ""),
