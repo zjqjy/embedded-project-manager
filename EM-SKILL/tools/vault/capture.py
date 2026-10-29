@@ -107,6 +107,13 @@ def write_card(vault: Path, title: str, body: str, tags: list[str], status: str,
 
 def git_commit(vault: Path, msg: str) -> str | None:
     try:
+        # vault 必须是仓库根：选在父仓库子目录时，避免 add -A 波及无关改动
+        top = subprocess.run(
+            ["git", "-C", str(vault), "rev-parse", "--show-toplevel"],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+        )
+        if top.returncode != 0 or Path(top.stdout.strip()).resolve() != vault.resolve():
+            return None
         subprocess.run(
             ["git", "-C", str(vault), "add", "-A"], check=True, capture_output=True
         )

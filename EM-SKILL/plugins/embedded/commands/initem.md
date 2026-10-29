@@ -6,6 +6,7 @@
 2. 探测并注册工具路径
 3. 自动下载 OpenOCD（如果未安装）
 4. 注册全局 CLAUDE.md 触发器（编译/烧录/串口关键词 → 命令文档指针）
+5. 知识库引导（可选，一次；选目录建库 / 装 Obsidian 指引）
 
 ## 触发
 ```
@@ -154,6 +155,25 @@ python EM-SKILL/plugins/embedded/tools/lib/register_claude_md.py --check
 > ⚠️ **原则**：CLAUDE.md 是高频读文件，只写指针（≤10 行）不灌用法；
 > Claude 按需 Read 命令文档，避免 prompt 膨胀。
 
+### 步骤 7: 知识库引导（可选，一次）
+
+读 `~/.em/config.json`：
+- 已有 `vault_path` → 跳过，不提
+- 未配置 → 一句话问（不展开长篇）：
+
+  ```
+  📚 还没有知识库。要不要顺手建一个？之后 /em note 入库、/em ask 检索。
+     1. 选一个目录（现有笔记目录或新建都行）
+     2. 装 Obsidian（给安装指引，装完选目录）
+     3. 以后再说
+  ```
+
+- 选 1/2 → 走 `commands/vault.md` §init 流程（`--init <路径> [--git]`），完成后继续
+- 选 3 → 跳过，不再追问
+
+> 知识库是**全局**配置（`~/.em/config.json`），与嵌入式项目无关；已有库的机器不会重复问。
+> Obsidian 不是必需：任何本地 Markdown 目录都能当库，装 OB 只是多双链/图谱/移动端。
+
 ## Git 权限配置
 
 EM-SKILL 集成 Git 工作流，需在 Claude Code settings.json 中添加以下白名单。
@@ -216,6 +236,9 @@ EM-SKILL 集成 Git 工作流，需在 Claude Code settings.json 中添加以下
 
 [5/5] 注册全局 CLAUDE.md...
   ✅ 已写入 ~/.claude/CLAUDE.md（关键词触发器）
+
+[可选] 知识库...
+  📚 未配置知识库 → 已询问（选目录 / 装 Obsidian / 以后再说）
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✅ 初始化完成！

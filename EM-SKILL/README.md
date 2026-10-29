@@ -251,6 +251,47 @@ EM-SKILL自动识别项目使用的芯片型号，并建立知识库。
 
 ---
 
+## 知识库（对话沉淀，可选）
+
+把开发中踩的坑、结论、方案沉淀到本地 Markdown 知识库，之后 `/em ask` 带出处检索回来。**不需要 Obsidian**——任何本地目录都能当 vault。
+
+首次 `/em initem` 会顺带问一次「要不要建库」（选目录 / 装 OB / 以后再说）；也可以直接走下面任一条。
+
+### 初始化（二选一）
+
+| 情况 | 做法 |
+|------|------|
+| 已有笔记目录 | `/em vault init <目录>`（只补 `AGENTS.md` + `08_快捕/`，不动原笔记） |
+| 从零开始 | `/em vault init ~/notes`（目录不存在会自动创建） |
+| 想用 Obsidian | 按 `/em vault init` 的指引安装，把同一目录作为 vault 打开；不装也完全可用 |
+| 已有 vault | `/em vault connect <路径>` |
+
+`--git` 可选：新目录顺手 `git init` 并首次提交，之后 `/em note` 落卡即 commit。
+
+### 命令
+
+| 命令 | 说明 |
+|------|------|
+| `/em vault init [路径] [--git]` | 初始化/接管目录为知识库并连接（幂等） |
+| `/em vault connect <路径>` | 连接已有 vault（刷新检索目录） |
+| `/em vault status` | 连接状态 + 快捕卡统计 |
+| `/em vault briefing` | 近 7 天入库摘要（`/em rec` 自动附带） |
+| `/em note [标题]` | 对话知识入 `08_快捕/`（查重 + 落卡 + commit） |
+| `/em ask <问题>` | 检索 vault，命中快捕卡回写 `surfaced` |
+
+### 库结构
+
+```
+<vault>/
+├── AGENTS.md        # 知识库宪法 §九（快捕/转正/检索/归属，init 生成）
+├── 08_快捕/         # 快捕卡 YYYY-MM-DD_<标题>.md，status: 快捕/待确认/已归档
+└── <其他目录>/      # 参与检索；06_归档/、点目录除外
+```
+
+配置写在 `~/.em/config.json`（`vault_path` + `vault_dirs`，init 时自动探测顶层目录；新增目录后重跑 init 刷新）。未配置库时 `/em note`、`/em ask` 不可用，其余命令不受影响。
+
+---
+
 ## 归档规则
 
 | 文件类型 | 触发条件 | 说明 |
@@ -264,7 +305,7 @@ EM-SKILL自动识别项目使用的芯片型号，并建立知识库。
 
 ## 插件扩展
 
-EM-SKILL 采用「通用核 + 插件」架构（v3.0）。通用核提供 17 个基础命令，插件提供场景化扩展，**物理解耦**：每个插件可独立卸载，通用核不依赖。
+EM-SKILL 采用「通用核 + 插件」架构（v3.0）。通用核提供 22 个基础命令，插件提供场景化扩展，**物理解耦**：每个插件可独立卸载，通用核不依赖。
 
 ### 已注册插件
 
@@ -302,7 +343,8 @@ EM-SKILL 采用「通用核 + 插件」架构（v3.0）。通用核提供 17 个
 ### 方式1: 复制到Claude Skills目录
 
 ```bash
-cp -r EM-SKILL ~/.claude/skills/
+cp -r EM-SKILL ~/.claude/skills/    # Claude Code
+cp -r EM-SKILL ~/.zcode/skills/     # ZCode
 ```
 
 ### 方式2: 使用skill-install安装

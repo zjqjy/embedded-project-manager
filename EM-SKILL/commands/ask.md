@@ -9,7 +9,7 @@
 ```
 
 ## 前置
-vault 未连接 → 提示 `/em vault connect <路径>`。
+未配置库时**不要只甩报错**：按 `commands/vault.md` §init 引导用户二选一（选目录建库 / 装 Obsidian 指引），建好再继续本次提问；用户明确说「以后」才中止。
 
 ## 执行流程
 

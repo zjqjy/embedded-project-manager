@@ -18,8 +18,9 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from em_config import vault_or_die  # noqa: E402
+from em_config import load_config, vault_or_die  # noqa: E402
 
+# 旧配置回退用；新库由 /em vault init 把探测到的顶层目录写进 vault_dirs
 DEFAULT_DIRS = ["10_嵌入式", "20_自媒体", "30_方法论", "08_快捕"]
 SKIP_PARTS = {".git", ".obsidian", ".em", ".scripts", ".prompts", ".logs", "06_归档", "node_modules"}
 
@@ -83,6 +84,13 @@ def bump_surface(vault: Path, rel: str) -> bool:
 
 def git_commit(vault: Path, msg: str) -> str | None:
     try:
+        # vault 必须是仓库根：选在父仓库子目录时，避免 add -A 波及无关改动
+        top = subprocess.run(
+            ["git", "-C", str(vault), "rev-parse", "--show-toplevel"],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+        )
+        if top.returncode != 0 or Path(top.stdout.strip()).resolve() != vault.resolve():
+            return None
         subprocess.run(["git", "-C", str(vault), "add", "-A"], check=True, capture_output=True)
         r = subprocess.run(["git", "-C", str(vault), "commit", "-m", msg],
                            capture_output=True, text=True, encoding="utf-8", errors="replace")
@@ -181,6 +189,16 @@ def do_briefing(vault: Path) -> None:
     out(f"📋 近 7 天入库 {len(recent)} 张（快捕 {counts.get('快捕',0)} / 待确认 {counts.get('待确认',0)} / 已归档 {counts.get('已归档',0)}）")
 
 
+def resolve_dirs(cli_dirs: str | None) -> list[str]:
+    """--dirs 显式指定 > 配置 vault_dirs > 旧默认分类。"""
+    if cli_dirs:
+        return [d.strip() for d in cli_dirs.split(",") if d.strip()]
+    dirs = load_config().get("vault_dirs")
+    if isinstance(dirs, list) and dirs:
+        return [str(d) for d in dirs]
+    return DEFAULT_DIRS
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -188,14 +206,14 @@ def main() -> None:
     q.add_argument("text")
     q.add_argument("--limit", type=int, default=5)
     q.add_argument("--surface-top", type=int, default=3)
-    q.add_argument("--dirs", default=",".join(DEFAULT_DIRS))
+    q.add_argument("--dirs", default=None, help="逗号分隔；默认读配置 vault_dirs")
     sub.add_parser("briefing")
     a = ap.parse_args()
     vault = vault_or_die()
     if a.cmd == "briefing":
         do_briefing(vault)
     else:
-        do_query(vault, a.text, a.limit, a.surface_top, [d.strip() for d in a.dirs.split(",") if d.strip()])
+        do_query(vault, a.text, a.limit, a.surface_top, resolve_dirs(a.dirs))
 
 
 if __name__ == "__main__":

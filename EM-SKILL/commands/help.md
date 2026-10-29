@@ -42,6 +42,13 @@
   sw <项目>        跨项目切换
   help [命令]      查看帮助
 
+知识库（可选，无需 Obsidian；任意本地 md 目录即可）:
+  vault init [路径]  新建/接管目录为知识库并连接（--git 可选）
+  vault connect <路径>  连接已有 vault
+  vault status       连接状态（briefing = 近 7 天入库摘要）
+  note [标题]        对话知识入 08_快捕/
+  ask <问题>         检索 vault（命中回写 surfaced）
+
 插件命令（lazy-load，敲命令时按需加载，S15）:
   initem / build / flash / serial   嵌入式（tools/adapters/ + registry.json，S17-B）
   learn new/verify/status/humanize  学习模式（LPR 闭环）
@@ -75,6 +82,7 @@ Git 权限（initem.md 配置）:
 /em help sessions   # 会话浏览
 /em help migrate    # .emv2/ → .em/ 深度迁移
 /em help migrate-state # 一键生成 state.md
+/em help vault      # 知识库 init（选目录 / OB 指引）/ connect / note / ask
 ```
 
 ## 工作流细则

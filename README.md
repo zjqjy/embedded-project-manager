@@ -93,7 +93,7 @@ embedded-project-manager/
 在 Claude Code 对话中输入：
 
 ```
-帮我安装 https://github.com/zjqjy/embedded-project-manager.git 的 skill，指定 embed-ai-tool整合 分支
+帮我安装 https://github.com/zjqjy/embedded-project-manager.git 的 skill（master 分支）
 ```
 
 这会克隆整个项目仓库，其中包含：
@@ -150,6 +150,27 @@ embedded-project-manager/
               │  用户口述观察结果  │
               └───────────────────┘
 ```
+
+## 知识库（可选）
+
+开发中踩的坑、结论、方案可以沉淀到本地 Markdown 知识库，之后 `/em ask` 带出处检索回来。**不依赖 Obsidian**——任意本地目录都能当库；用 Obsidian 只是多出双链、图谱和移动端体验。
+
+首次 `/em initem` 会顺带问一次「要不要建知识库」；也可以直接：
+
+```bash
+/em vault init ~/notes          # 没有库：选一个目录，建库并连接（加 --git 顺手版本化）
+/em vault connect <vault路径>    # 已有库：直接连接
+/em note ESP32 GPIO 死锁根因     # 对话知识入库（08_快捕/，自动 commit）
+/em ask GPIO 死锁怎么排查        # 检索 vault，命中快捕卡回写 surfaced
+```
+
+| 想用 Obsidian | 不用 Obsidian |
+|---|---|
+| 按 `/em vault init` 的指引安装，把同一目录作为 vault 打开即可 | 目录里就是普通 md 文件，任何编辑器都能看 |
+
+- 库结构和规则写进库根的 `AGENTS.md`（快捕 / 转正 / 检索 / 归属）
+- `init` 幂等：已有笔记目录只补 `AGENTS.md` + `08_快捕/`，不覆盖、不删改原笔记
+- 未配置库时 `/em note`、`/em ask` 不可用，其余命令不受影响
 
 ## 参考链接
 
