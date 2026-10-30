@@ -22,3 +22,9 @@
 - 背景：技能要给别人用（含 AI agent），环境构建（python/vault/引擎/hook 注册）全靠手工粘配置
 - R0 两轮修订：合并 /em initem（职责迁 embedded 插件检查组，命令别名化）；Codex CLI 纳入（sweep 源 + 引擎备选）
 - 选定 A+C 混合：检查项注册表+插件追加为架构，--guide 向导为交互；拆分 A 框架 → B 引擎/hook/Codex → C embedded 组 → D 挂表验收
+
+## [2026-10-30 17:45] 步骤: S22 A-D 编码完成，全链路实测通过
+- setup.py 框架 + 7 通用检查项（三态/双输出/--guide/--fix-only/--smoke）；embedded 插件检查组 4 项经 provides.setup_checks 注册（initem 合并，initem.md 别名化）；commands/setup.md + SKILL.md 挂表
+- 实测：本机 auto 模式 3 ok/3 自动修（ai_cmd 写入、ZCode SessionStart 补注册、Claude SessionEnd 补注册，各带备份）；破坏性测试 guide 不动手/fix-only 修回/buddy_bridge 无损；--embedded 8 ok（UV4 真实探测），OpenOCD 缺失给指引
+- 修复的坑：em_config 路径（tools/vault 子目录）、YAML 行内注释、nowin 遮蔽、detect_tools PYTHONPATH
+- 下一步：用户验收 → /em verify s22

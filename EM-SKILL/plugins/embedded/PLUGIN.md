@@ -16,6 +16,7 @@ enabled_when:
 
 # 提供能力清单
 provides:
+  setup_checks: setup_checks.py  # S22: /em setup --embedded 检查组
   commands:
     - name: initem
       file: commands/initem.md

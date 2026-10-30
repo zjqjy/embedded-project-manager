@@ -30,7 +30,7 @@ version: 4.0.0
 | 旧版 `.emv2/` 升级 | `/em migrate` |
 | 老项目体感瘦身 | `/em migrate-state` |
 
-> 知识库（可选）：首次 `/em initem` 会顺带问一次「建不建库」（选目录 / 装 Obsidian 均可，不装也能用）；也可 `/em vault init <目录>` 直接建。`/em note` 入库、`/em ask` 检索。
+> 知识库（可选）：首次 `/em setup` 会检测环境并引导建库（选目录 / 装 Obsidian 均可，不装也能用；`/em initem` 已废弃为 `/em setup --embedded` 别名）；也可 `/em vault init <目录>` 直接建。`/em note` 入库、`/em ask` 检索。
 
 ---
 
@@ -61,6 +61,7 @@ version: 4.0.0
 | `/em ask` | **知识提取**（AI 中介检索：拆词多变体+复筛 + surfaced 回写，S19/S21） |
 | `/em vault` | **知识库初始化/连接/状态**（无库可 init，Obsidian 可选，S19/S20） |
 | `/em digest` | **手动蒸馏+自维护**（清积压/归档冷卡/转正建议，S21） |
+| `/em setup` | **环境自检+修复**（外部用户/AI agent 一条命令到可用，S22） |
 
 > **知识入库提议（S19 软约定，锦上添花）**：对话中出现明显值得沉淀的产出（踩坑/结论/方案/决策）且用户没提时，可一句话提议入库（「这个坑要不要入库？建议卡：《X》」）；同话题只提一次。**主机制是 S21 自动管线**：Stop hook 确定性入队书签（零 token）→ SessionStart 后台蒸馏成结构化卡（有用性闸门，零产出正常）；`/em digest` 手动触发，本约定只作补充，不依赖。
 
@@ -106,7 +107,7 @@ EM-SKILL 提供三类项目支持：
 
 ### 嵌入式项目（按需加载插件）
 
-触发方式：用户敲 `/em initem` 或 `/em build/flash/serial` 时 lazy-load，无需 `type=embedded`。
+触发方式：用户敲 `/em setup --embedded`（原 `/em initem`，已别名化）或 `/em build/flash/serial` 时 lazy-load，无需 `type=embedded`。
 - `tools/adapters/{build,flash,observe}/` adapter 集 + `tools/registry.json` 能力矩阵（S17-B：芯片×动词×adapter 数据驱动）+ `serial-mcp` GUI
 - `/em verify` 注入编译→烧录→串口三连子流程
 - `/em init` / `/em si` 注入芯片选择 + 学习

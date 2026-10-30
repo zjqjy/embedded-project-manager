@@ -3,12 +3,12 @@
 ## Meta
 - **项目**: embedded-project-manager（EM-SKILL 元仓库）
 - **类型**: general
-- **当前步骤**: S22-A 🚧
+- **当前步骤**: S22-D 🚧（编码完成，待验收）
 - **更新时间**: 2026-10-30
 - **会话**: sess-20261030-001
 
 ## 下一步动作
-1. 编码 S22-A（setup.py 框架 + 基础检查组 + --guide）→ 完成后 `/em verify s22-a`
+1. 用户验收 S22（本机已全绿+破坏性/降级测试通过）→ `/em verify s22`
 2. 依据：`features/S22-setup-onboarding/plan.md`
 
 ## 最近 3 条关键决策
