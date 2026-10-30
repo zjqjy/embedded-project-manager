@@ -58,7 +58,7 @@ version: 4.0.0
 | `/em migrate-state` | 一键生成 state.md（瘦身） |
 | `/em logs-clean` | **日志滚动清理**（保留最新 N 份，S17-A） |
 | `/em note` | **知识快捕**（对话一句话入 vault 快捕区，S19） |
-| `/em ask` | **知识提取**（检索 vault + surfaced 回写，S19） |
+| `/em ask` | **知识提取**（AI 中介检索：拆词多变体+复筛 + surfaced 回写，S19/S21） |
 | `/em vault` | **知识库初始化/连接/状态**（无库可 init，Obsidian 可选，S19/S20） |
 | `/em digest` | **手动蒸馏+自维护**（清积压/归档冷卡/转正建议，S21） |
 

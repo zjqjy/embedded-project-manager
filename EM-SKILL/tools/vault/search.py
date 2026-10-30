@@ -102,12 +102,13 @@ def git_commit(vault: Path, msg: str) -> str | None:
     return None
 
 
-def do_query(vault: Path, q: str, limit: int, surface_top: int, dirs: list[str]) -> None:
+def score_one(vault: Path, q: str, dirs: list[str]) -> dict[str, dict]:
+    """单查询计分 → {相对路径: result}"""
     toks = [t for t in tokenize(q) if t]
     if not toks:
-        raise SystemExit("❌ 查询词为空")
+        return {}
     q_norm = " ".join(q.split()).lower()
-    scored = []
+    scored: dict[str, dict] = {}
     for p in md_files(vault, dirs):
         try:
             text = p.read_text(encoding="utf-8", errors="replace")
@@ -149,14 +150,35 @@ def do_query(vault: Path, q: str, limit: int, surface_top: int, dirs: list[str])
         if hit_at is not None:
             near = lines[max(0, hit_at - 1):hit_at + 2]
             snippet = " ⏎ ".join(x.strip() for x in near if x.strip())[:200]
-        scored.append({
+        scored[str(p.relative_to(vault))] = {
             "path": str(p.relative_to(vault)), "title": title, "score": score,
             "status": parse_fm(text).get("status", ""),
             "snippet": snippet,
-        })
-    scored.sort(key=lambda x: -x["score"])
-    results = scored[:limit]
-    out(json.dumps({"results": results}, ensure_ascii=False, indent=1))
+        }
+    return scored
+
+
+def do_query(vault: Path, q: str, expand: str, limit: int, surface_top: int, dirs: list[str]) -> None:
+    """AI 中介检索（S21-E）：AI 拆多组变体 → 本地逐组计分 → 合并（多变体独立命中加分）→ surfaced 回写一次"""
+    variants = [q] + [x.strip() for x in (expand or "").split(",") if x.strip()]
+    merged: dict[str, dict] = {}
+    for query in variants:
+        for path, r in score_one(vault, query, dirs).items():
+            m = merged.get(path)
+            if m is None:
+                merged[path] = {**r, "variants": 1}
+                continue
+            m["variants"] += 1
+            if r["score"] > m["score"]:
+                m["score"] = r["score"]
+                if r["snippet"]:
+                    m["snippet"] = r["snippet"]
+    for m in merged.values():
+        if m["variants"] > 1:
+            m["score"] += 2 * (m["variants"] - 1)  # 多组变体独立命中 → 语义相关性强
+    ranked = sorted(merged.values(), key=lambda x: -x["score"])
+    results = ranked[:limit]
+    out(json.dumps({"query": q, "variants": variants, "results": results}, ensure_ascii=False, indent=1))
     if surface_top and results:
         n = 0
         for r in results[:surface_top]:
@@ -204,6 +226,7 @@ def main() -> None:
     sub = ap.add_subparsers(dest="cmd", required=True)
     q = sub.add_parser("query")
     q.add_argument("text")
+    q.add_argument("--expand", default="", help="逗号分隔的检索变体（AI 拆词）：英文/同义/相关术语，多变体独立命中加分")
     q.add_argument("--limit", type=int, default=5)
     q.add_argument("--surface-top", type=int, default=3)
     q.add_argument("--dirs", default=None, help="逗号分隔；默认读配置 vault_dirs")
@@ -213,7 +236,7 @@ def main() -> None:
     if a.cmd == "briefing":
         do_briefing(vault)
     else:
-        do_query(vault, a.text, a.limit, a.surface_top, resolve_dirs(a.dirs))
+        do_query(vault, a.text, a.expand, a.limit, a.surface_top, resolve_dirs(a.dirs))
 
 
 if __name__ == "__main__":
