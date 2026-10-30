@@ -199,7 +199,7 @@ def build_material(records: list[dict], cfg: dict, big: bool = False, big_ids: s
 
 EXIST_NOTE = """## 输出动作协议（只输出一个 JSON 对象，禁止 markdown 代码块、禁止解释）
 {"actions": [
-  {"action": "NEW", "card_type": "CTYPES", "title": "结论式标题", "summary": "≤40字核心结论", "body": "按骨架的正文", "tags": ["英文或短中文"], "sensitive": false, "files": ["可选：涉及的文件名"]},
+  {"action": "NEW", "card_type": "CTYPES", "title": "结论式标题", "summary": "≤40字核心结论", "body": "按骨架的正文", "tags": ["英文或短中文"], "sensitive": false, "files": ["可选：涉及的文件名"], "related": ["可选：0-3张最相关现有卡标题，从下方列表选"]},
   {"action": "UPDATE", "match_title": "现有过程卡标题（见下方列表）", "body": "过程跟踪五段新快照全文", "tags": ["..."]},
   {"action": "NONE", "reason": "一句话"},
   {"action": "need_context", "ids": [0, 2], "why": "一句话"}
@@ -360,7 +360,8 @@ def apply_actions(actions: list[dict], vault: Path) -> dict:
             files = [f for f in (a.get("files") or []) if f][:6]
             if files:
                 extra["files"] = files
-            capture.write_card(vault, title, full_body, tags, "快捕", "自动蒸馏", extra)
+            capture.write_card(vault, title, full_body, tags, "快捕", "自动蒸馏", extra,
+                               related=[t for t in (a.get("related") or []) if t][:4])
             rep["new"] += 1
             log(f"NEW: {title}（{ct}）")
         elif act == "UPDATE":
@@ -404,13 +405,13 @@ def maintain(vault: Path, cfg: dict) -> dict:
             continue
         age = (today - created).days
         if status == "待确认" and age >= backlog_days:
-            capture.set_status(p, "已归档")
+            capture.archive_card(vault, p)
             rep["archived_backlog"] += 1
             changed = True
         elif status == "快捕" and age >= arch_days:
             sc = re.sub(r"\D", "", str(meta.get("surfaced_count", "0"))) or "0"
             if int(sc) == 0:
-                capture.set_status(p, "已归档")
+                capture.archive_card(vault, p)
                 rep["archived_cold"] += 1
                 changed = True
             elif int(sc) >= 3:

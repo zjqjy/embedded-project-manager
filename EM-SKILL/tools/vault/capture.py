@@ -93,7 +93,7 @@ def frontmatter(status: str, source: str, tags: list[str], created: str, extra: 
 
 
 def write_card(vault: Path, title: str, body: str, tags: list[str], status: str, source: str,
-               extra: dict | None = None) -> Path:
+               extra: dict | None = None, related: list[str] | None = None) -> Path:
     d = vault / CAPTURE_DIR
     d.mkdir(parents=True, exist_ok=True)
     now = dt.datetime.now()
@@ -104,9 +104,11 @@ def write_card(vault: Path, title: str, body: str, tags: list[str], status: str,
     while p.exists():
         p = d / f"{stem}-{n}.md"
         n += 1
+    rel = (related or [])[:4]
+    rel_s = "\n".join(f"- 《{t}》" for t in rel) if rel else "<!-- 暂无相关笔记 -->"
     content = (
         frontmatter(status, source, tags, created, extra)
-        + f"\n# {title}\n\n{body.strip()}\n\n## 相关\n\n<!-- 暂无相关笔记 -->\n"
+        + f"\n# {title}\n\n{body.strip()}\n\n## 相关\n\n{rel_s}\n"
     )
     p.write_text(content, encoding="utf-8")
     return p
@@ -146,7 +148,7 @@ def set_status(p: Path, new_status: str) -> bool:
 
 
 def rewrite_body(p: Path, new_body: str) -> bool:
-    """过程卡覆盖：保留 frontmatter 和标题行，正文整段替换（S21 过程卡 UPDATE）"""
+    """过程卡覆盖：保留 frontmatter、标题行和已有 ## 相关 段（手填双链不丢），正文整段替换"""
     try:
         t = p.read_text(encoding="utf-8")
     except Exception:
@@ -154,9 +156,29 @@ def rewrite_body(p: Path, new_body: str) -> bool:
     m = re.match(r"^(---\n.*?\n---\n)(\n#[^\n]*\n)\n", t, re.S)
     if not m:
         return False
-    t2 = m.group(1) + m.group(2) + "\n" + new_body.strip() + "\n\n## 相关\n\n<!-- 暂无相关笔记 -->\n"
+    new_body = re.sub(r"\n## 相关\n[\s\S]*$", "", new_body.strip()).strip()
+    rel = re.search(r"\n## 相关\n[\s\S]*$", t)
+    rel_text = rel.group(0) if rel else "\n## 相关\n\n<!-- 暂无相关笔记 -->\n"
+    t2 = m.group(1) + m.group(2) + "\n" + new_body + "\n" + rel_text
     p.write_text(t2, encoding="utf-8")
     return True
+
+
+def archive_card(vault: Path, p: Path) -> bool:
+    """归档 = 移入 08_快捕/归档/ 子目录 + 状态改已归档（用户整理标准，S21-D 校准）"""
+    dest_dir = vault / CAPTURE_DIR / "归档"
+    try:
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        dest = dest_dir / p.name
+        n = 2
+        while dest.exists():
+            dest = dest_dir / f"{p.stem}-{n}.md"
+            n += 1
+        p.replace(dest)
+        set_status(dest, "已归档")
+        return True
+    except Exception:
+        return False
 
 
 def git_commit(vault: Path, msg: str) -> str | None:
