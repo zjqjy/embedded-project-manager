@@ -17,3 +17,8 @@
 - A: triage.py 重写为入队器（书签+指针+角色，model_io 只取新增轮次）；B: distill.py 蒸馏器（sweep/门控/三合一prompt/NEW-UPDATE-NONE协议/need_context扩窗/过程卡快照覆盖/日志+熔断）；C: hook_session_start.py + /em digest + SKILL.md 挂表；D: 19 张存量 hook 卡重蒸判定后删除（df84d58）
 - 实测：无用材料 NONE、决策卡达 LX 标准、过程卡同主题合并稳定（2 次 UPDATE 0 新建）、门控跳过/放行正确、后台无窗口（CREATE_NO_WINDOW 修复弹窗 bug）
 - 下一步：用户 sync install + 注册 hook + 隔夜验收 → /em verify s21
+
+## [2026-10-30 16:40] 决策: S22 立项——/em setup 一条命令环境自检+修复（中档）
+- 背景：技能要给别人用（含 AI agent），环境构建（python/vault/引擎/hook 注册）全靠手工粘配置
+- R0 两轮修订：合并 /em initem（职责迁 embedded 插件检查组，命令别名化）；Codex CLI 纳入（sweep 源 + 引擎备选）
+- 选定 A+C 混合：检查项注册表+插件追加为架构，--guide 向导为交互；拆分 A 框架 → B 引擎/hook/Codex → C embedded 组 → D 挂表验收
