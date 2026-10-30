@@ -528,6 +528,34 @@ def run(vault: Path, cfg: dict, mode: str) -> dict:
     return res
 
 
+def show_queue(limit: int = 50) -> dict:
+    """队列视图：看积压里有什么（/em digest 的"看队列"触发）"""
+    records = []
+    if triage.QUEUE.exists():
+        for ln in triage.QUEUE.read_text(encoding="utf-8", errors="replace").splitlines():
+            s = ln.strip()
+            if not s:
+                continue
+            try:
+                r = json.loads(s)
+                records.append({
+                    "line": r.get("line", "")[:120],
+                    "role": r.get("role", ""),
+                    "ts": str(r.get("ts", ""))[:16],
+                    "src": Path(r.get("src", "")).name if r.get("src") else "（无来源）",
+                })
+            except Exception:
+                records.append({"line": s[:120], "role": "?", "ts": "", "src": "解析失败"})
+    parked = triage.QUEUE.parent / (triage.QUEUE.name + ".bak")
+    return {
+        "count": len(records),
+        "showing": min(len(records), limit),
+        "records": records[:limit],
+        "parked_bak": parked.exists(),
+        "last_distill": load_state().get("last_distill"),
+    }
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     g = ap.add_mutually_exclusive_group(required=True)
@@ -535,11 +563,15 @@ def main() -> None:
     g.add_argument("--run", action="store_true")
     g.add_argument("--maintain", action="store_true")
     g.add_argument("--dry", action="store_true")
+    g.add_argument("--queue", action="store_true", help="查看积压队列内容")
     a = ap.parse_args()
 
     try:
         vault = vault_or_die()
         cfg = cfg_all()
+        if a.queue:
+            print(json.dumps(show_queue(), ensure_ascii=False, indent=1), flush=True)
+            return
         if a.dry:
             records = load_records(int(cfg["queue_cap"])) or [
                 {"line": "示例：LX音源导入超时原来是GitHub raw被墙，换jsDelivr就行", "role": "user",
