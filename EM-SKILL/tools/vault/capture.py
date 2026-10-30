@@ -71,22 +71,29 @@ def safe_name(title: str) -> str:
     return (s or "快捕")[:60]
 
 
-def frontmatter(status: str, source: str, tags: list[str], created: str) -> str:
+def frontmatter(status: str, source: str, tags: list[str], created: str, extra: dict | None = None) -> str:
     tags_s = "[" + ", ".join(tags) + "]" if tags else "[]"
-    return (
-        "---\n"
-        "type: 快捕\n"
-        f"created: {created}\n"
-        f"tags: {tags_s}\n"
-        f"status: {status}          # 快捕 / 待确认 / 已归档\n"
-        "surfaced_count: 0\n"
-        "last_surfaced: null\n"
-        f"source: {source}\n"
-        "---\n"
-    )
+    lines = [
+        "---",
+        "type: 快捕",
+        f"created: {created}",
+        f"tags: {tags_s}",
+        f"status: {status}          # 快捕 / 待确认 / 已归档",
+        "surfaced_count: 0",
+        "last_surfaced: null",
+        f"source: {source}",
+    ]
+    for k, v in (extra or {}).items():
+        if isinstance(v, list):
+            lines.append(f"{k}: [" + ", ".join(str(x) for x in v) + "]")
+        elif v is not None:
+            lines.append(f"{k}: {v}")
+    lines.append("---")
+    return "\n".join(lines) + "\n"
 
 
-def write_card(vault: Path, title: str, body: str, tags: list[str], status: str, source: str) -> Path:
+def write_card(vault: Path, title: str, body: str, tags: list[str], status: str, source: str,
+               extra: dict | None = None) -> Path:
     d = vault / CAPTURE_DIR
     d.mkdir(parents=True, exist_ok=True)
     now = dt.datetime.now()
@@ -98,28 +105,79 @@ def write_card(vault: Path, title: str, body: str, tags: list[str], status: str,
         p = d / f"{stem}-{n}.md"
         n += 1
     content = (
-        frontmatter(status, source, tags, created)
+        frontmatter(status, source, tags, created, extra)
         + f"\n# {title}\n\n{body.strip()}\n\n## 相关\n\n<!-- 暂无相关笔记 -->\n"
     )
     p.write_text(content, encoding="utf-8")
     return p
 
 
+def read_meta(p: Path) -> dict:
+    """frontmatter → dict（值保留字符串；列表解析为 list）"""
+    try:
+        t = p.read_text(encoding="utf-8")
+    except Exception:
+        return {}
+    m = re.match(r"^---\n(.*?)\n---\n", t, re.S)
+    if not m:
+        return {}
+    meta: dict = {}
+    for ln in m.group(1).splitlines():
+        if ":" not in ln:
+            continue
+        k, _, v = ln.partition(":")
+        v = v.split("#")[0].strip()
+        if v.startswith("[") and v.endswith("]"):
+            v = [x.strip() for x in v[1:-1].split(",") if x.strip()]
+        meta[k.strip()] = v
+    return meta
+
+
+def set_status(p: Path, new_status: str) -> bool:
+    try:
+        t = p.read_text(encoding="utf-8")
+    except Exception:
+        return False
+    t2, n = re.subn(r"^(status:).*$", rf"\1 {new_status}", t, count=1, flags=re.M)
+    if not n:
+        return False
+    p.write_text(t2, encoding="utf-8")
+    return True
+
+
+def rewrite_body(p: Path, new_body: str) -> bool:
+    """过程卡覆盖：保留 frontmatter 和标题行，正文整段替换（S21 过程卡 UPDATE）"""
+    try:
+        t = p.read_text(encoding="utf-8")
+    except Exception:
+        return False
+    m = re.match(r"^(---\n.*?\n---\n)(\n#[^\n]*\n)\n", t, re.S)
+    if not m:
+        return False
+    t2 = m.group(1) + m.group(2) + "\n" + new_body.strip() + "\n\n## 相关\n\n<!-- 暂无相关笔记 -->\n"
+    p.write_text(t2, encoding="utf-8")
+    return True
+
+
 def git_commit(vault: Path, msg: str) -> str | None:
     try:
+        nowin = getattr(subprocess, "CREATE_NO_WINDOW", 0) if sys.platform == "win32" else 0
         # vault 必须是仓库根：选在父仓库子目录时，避免 add -A 波及无关改动
         top = subprocess.run(
             ["git", "-C", str(vault), "rev-parse", "--show-toplevel"],
             capture_output=True, text=True, encoding="utf-8", errors="replace",
+            creationflags=nowin,
         )
         if top.returncode != 0 or Path(top.stdout.strip()).resolve() != vault.resolve():
             return None
         subprocess.run(
-            ["git", "-C", str(vault), "add", "-A"], check=True, capture_output=True
+            ["git", "-C", str(vault), "add", "-A"], check=True, capture_output=True,
+            creationflags=nowin,
         )
         r = subprocess.run(
             ["git", "-C", str(vault), "commit", "-m", msg],
             capture_output=True, text=True, encoding="utf-8", errors="replace",
+            creationflags=nowin,
         )
         if r.returncode == 0:
             h = subprocess.run(
@@ -145,7 +203,7 @@ def main() -> None:
     w.add_argument("--body-file", default=None)
     w.add_argument("--tags", default="")
     w.add_argument("--status", default="快捕", choices=["快捕", "待确认"])
-    w.add_argument("--source", default="对话快捕", choices=["对话快捕", "hook分拣"])
+    w.add_argument("--source", default="对话快捕", choices=["对话快捕", "hook分拣", "自动蒸馏"])
     w.add_argument("--no-commit", action="store_true")
 
     a = ap.parse_args()
