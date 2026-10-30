@@ -3,23 +3,22 @@
 ## Meta
 - **项目**: embedded-project-manager（EM-SKILL 元仓库）
 - **类型**: general
-- **当前步骤**: S21-D 🚧（编码完成，待实战验收）
+- **当前步骤**: S22-A 🚧
 - **更新时间**: 2026-10-30
 - **会话**: sess-20261030-001
 
 ## 下一步动作
-1. 用户同步 install：`EM-SKILL\tools\sync-to-install.cmd /y`（**旧 triage 仍在 install 上，不同步会继续产垃圾卡**）
-2. 用户注册 hook：ZCode SessionStart + Claude Code SessionEnd（片段在 `EM-SKILL/commands/digest.md`）
-3. 隔夜自然触发后看卡质量 → `/em verify s21`
+1. 编码 S22-A（setup.py 框架 + 基础检查组 + --guide）→ 完成后 `/em verify s22-a`
+2. 依据：`features/S22-setup-onboarding/plan.md`
 
 ## 最近 3 条关键决策
-- [2026-10-30] S21 蒸馏引擎 = claude CLI headless（`--ai-cmd` 可配），零新基础设施
-- [2026-10-30] 卡结构 = 3 硬规则 + 模板族 5+1；蒸馏卡直接落快捕，NONE 默认
-- [2026-10-30] 全部子进程加 CREATE_NO_WINDOW（后台蒸馏弹 cmd 窗口的修复）
+- [2026-10-30] S22 架构 = 检查项注册表+插件追加（A），交互 = --guide 向导（C 混入）
+- [2026-10-30] /em initem 废弃为 /em setup --embedded 别名，职责经 provides.setup_checks 由 embedded 插件注册
+- [2026-10-30] 蒸馏引擎自动发现链 claude → codex exec → 手动降级；hook 注册改前必备份
 
 ## 阻塞项 / 待办
-- [ ] install 未同步（live hook 还是旧版 triage）
-- [ ] 实测验收：真实隔夜场景卡质量由用户判定
+- [ ] S21 隔夜实战验收（用户侧）
+- [ ] github 推送时好时坏，提交后注意补推
 
 ## 详细资料指针
 | 内容 | 文件 |
@@ -27,6 +26,7 @@
 | 步骤全表 | `features/README.md` |
 | 决策/会话时间线 | `journal.md` |
 | S21 计划 | `features/S21-distill-archive/plan.md` |
+| S22 计划 | `features/S22-setup-onboarding/plan.md` |
 
 <!-- state.md 由 init/new/result/arch 命令自动维护；用户也可直接编辑 -->
 
