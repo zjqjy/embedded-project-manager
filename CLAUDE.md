@@ -8,6 +8,7 @@
 - **状态目录**: `.emv2/`（旧版，建议 `/em migrate` 升级到 `.em/`）
 - **当前分支**: 跟随 `feature/s16-*` 等活跃分支
 - **会话连续性**: 见 `.emv2/state.md` 的 `sess-*` 字段
+- **知识流**: 会话知识经 `/em note` 入本机知识库 vault（路径见 `~/.em/config.json`，各机各自 `/em vault connect`，不写死在本仓）
 
 > ⚠️ **本项目多设备开发** — 每个开发者各自 clone 在不同位置。
 > 文档中所有路径用**占位符**（`<PROJECT_ROOT>` / `<INSTALL_ROOT>`），不写死绝对路径。
@@ -127,3 +128,4 @@ diff -r "<PROJECT_ROOT>/EM-SKILL/commands/" \
 - **[2026-09-07]** 同步脚本使用「只补不删」语义（robocopy `/E` / rsync 不带 `--delete`），避免误删 install 中本地新增文件
 - **[2026-09-07]** 新增 `/em pro` 命令 — 跨设备上报 EM-SKILL 插件问题到管家项目 `problem-log.md > 跨项目问题记录 (EM-SKILL)` 段
 - **[2026-09-07]** 项目多设备开发：所有文档 / 脚本 / 命令改用占位符（`<PROJECT_ROOT>` / `<INSTALL_ROOT>`），不写死绝对路径
+- **[2026-10-30]** 关联本机知识库 vault：vault 路径只存各机全局配置 `~/.em/config.json`（`/em vault connect` 设置），仓内不写死路径；`/em note` `/em ask` 会话知识直接入 vault 快捕区
